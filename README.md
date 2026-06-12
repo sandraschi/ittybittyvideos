@@ -1,8 +1,18 @@
 # ittybitty
 
-**Type a topic → get a narrated video.** Short clips for TikTok/Shorts, or longer explainers with chapters. Works as a Windows app or from source.
+**Topic or script in → narrated video out.** Shorts for TikTok and Reels, or longer chaptered explainers — with stock footage, your Jellyfin/Plex home videos, or local AI clips.
 
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+
+**Three ways to use it** (pick one):
+
+| | **Windows app** | **Web dashboard** | **MCP server** |
+|---|---|---|---|
+| **For** | Everyday use on your PC | Browser UI while you develop or self-host | Cursor, Claude, other MCP clients |
+| **You get** | Installer + desktop shortcut; backend starts automatically | Generate, Jobs, Depot, Settings, Help | `videogen_*` tools for agents |
+| **Start** | [Download installer](#windows-app) | [Run locally](#web-dashboard) or use the app above | [Connect MCP](#mcp-server) |
+
+Same engine under all three: Python backend on port **11054**, React dashboard on **11055** when running the dev stack.
 
 ---
 
@@ -10,34 +20,60 @@
 
 | | |
 |---|---|
-| [Get started](#get-started) | Install and first render |
+| [Windows app](#windows-app) | Installer — no Python required |
+| [Web dashboard](#web-dashboard) | Browser UI (dev or bundled in desktop app) |
+| [MCP server](#mcp-server) | Agent automation |
 | [What you need](#what-you-need) | Keys and optional extras |
 | [Footage sources](#footage-sources) | Where B-roll comes from |
-| [More help](#more-help) | Detailed docs (config, dev, MCP, fixes) |
+| [More help](#more-help) | Config, troubleshooting, API docs |
 
 ---
 
-## Get started
+## Windows app
 
-### Windows app (easiest)
+Best if you just want to make videos.
 
-1. Download **`ittybitty-0.2.0-x64-setup.exe`** from [Releases](https://github.com/sandraschi/ittybitty/releases/latest)
-2. Install → open **ittybitty** from Start or your desktop shortcut
-3. **Settings** → add a [Pexels](https://www.pexels.com/api/) key (free), then **Generate** with a topic or paste a script
+1. Download **`ittybitty-0.2.0-x64-setup.exe`** from [Releases](https://github.com/sandraschi/ittybittyvideos/releases/latest)
+2. Run the installer → launch **ittybitty** from Start or your desktop shortcut
+3. In **Settings**, add a free [Pexels](https://www.pexels.com/api/) key → **Generate** with a topic or paste a script
 
-Install folder: `%LOCALAPPDATA%\ittybitty\`
+The installer bundles the **web dashboard** and **Python backend** — no separate Python or Node install.
 
-### From source (developers)
+Install folder: `%LOCALAPPDATA%\ittybitty\`  
+If the backend fails to start: `%LOCALAPPDATA%\ai.fleet.ittybitty\logs\backend-spawn.log`
+
+---
+
+## Web dashboard
+
+The React UI: Generate, Plan (mid-length), Jobs, Depot, Publish, Settings, Help, Logs.
+
+**Already using the Windows app?** You're in the dashboard — nothing else to install.
+
+**Running on your dev machine** (live reload, for contributors):
 
 ```powershell
-git clone https://github.com/sandraschi/ittybitty.git videogen-mcp
+git clone https://github.com/sandraschi/ittybittyvideos.git videogen-mcp
 cd videogen-mcp
 .\start.bat
 ```
 
-Open **http://127.0.0.1:11055** (dashboard). API and MCP on **11054**.
+Open **http://127.0.0.1:11055**. The script starts the dashboard and the API together.
 
-Full install paths: [INSTALL.md](INSTALL.md)
+Needs **Python 3.10+**, **FFmpeg**, and **Node.js** — see [INSTALL.md](INSTALL.md).
+
+---
+
+## MCP server
+
+For AI agents that should generate or plan videos over the Model Context Protocol.
+
+1. Start the backend (Windows app running, or `.\start.bat -BackendOnly`, or `uv run python -m videogen_mcp.server`)
+2. Point your MCP client at **`http://127.0.0.1:11054/mcp`**
+
+Example prompts: *"Generate a 45-second video about Vienna coffee culture"* · *"Plan a 5-minute sourdough tutorial"*
+
+Tool list and REST API: [docs/TOOLS.md](docs/TOOLS.md) · Claude Desktop / MCPB: [INSTALL.md](INSTALL.md)
 
 ---
 
@@ -50,7 +86,7 @@ Full install paths: [INSTALL.md](INSTALL.md)
 | **Home videos as B-roll** | Jellyfin or Plex URL + token ([Settings](docs/CONFIGURATION.md)) |
 | **Local AI clips (GPU)** | CUDA ~24 GB + `.\start-localgen.bat` |
 
-Everything else is optional. The in-app **Help** page walks through each step.
+The in-app **Help** page walks through each step.
 
 ---
 
@@ -59,23 +95,23 @@ Everything else is optional. The in-app **Help** page walks through each step.
 Pick one in **Settings → Footage**:
 
 - **Pexels** — free stock (default, no GPU)
-- **Jellyfin / Plex** — cut clips from your own library (vacation, pets, …)
-- **Veo / Omni** — Google cloud (see [config](docs/CONFIGURATION.md))
+- **Jellyfin / Plex** — cut clips from your library (vacation, pets, …)
+- **Veo / Omni** — Google cloud ([config](docs/CONFIGURATION.md))
 - **LocalGen** — Wan 2.2 on your GPU
 
-Finished videos land in `./output/` and show up in **Depot**.
+Finished videos land in `./output/` and appear in **Depot**.
 
 ---
 
 ## Sample output
 
-Demo reel coming soon (GSD puppy short). Until then, run a quick test:
+Demo reel coming soon (GSD puppy short). Quick test render:
 
 ```powershell
 py scripts/smoke_render.py
 ```
 
-Details: [docs/examples/README.md](docs/examples/README.md)
+[docs/examples/README.md](docs/examples/README.md)
 
 ---
 
@@ -83,15 +119,13 @@ Details: [docs/examples/README.md](docs/examples/README.md)
 
 | Doc | When to read it |
 |-----|-----------------|
-| [INSTALL.md](INSTALL.md) | MCPB, Claude/Cursor MCP, verification |
-| [docs/CONFIGURATION.md](docs/CONFIGURATION.md) | All env vars and providers |
+| [INSTALL.md](INSTALL.md) | All install paths, MCPB, verification |
+| [docs/CONFIGURATION.md](docs/CONFIGURATION.md) | Env vars and providers |
 | [docs/TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md) | Something broke |
 | [docs/TOOLS.md](docs/TOOLS.md) | MCP tools and REST API |
-| [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md) | Tests, Tauri installer, CI |
+| [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md) | Tests, Tauri build, CI |
 | [SPEC.md](SPEC.md) | Architecture and roadmap |
 | [CHANGELOG.md](CHANGELOG.md) | Version history |
-
-**MCP:** after the server is running, point your client at `http://127.0.0.1:11054/mcp`.
 
 **Fleet docs:** [mcp-central-docs/projects/ittybitty](https://github.com/sandraschi/mcp-central-docs/tree/main/projects/ittybitty)
 
@@ -99,4 +133,4 @@ Details: [docs/examples/README.md](docs/examples/README.md)
 
 MIT · [sandraschi](https://github.com/sandraschi) · v0.2.0
 
-*Repo folder `videogen-mcp`, Python package `videogen_mcp` — names stay for MCP compatibility.*
+*Repo folder `videogen-mcp`, Python package `videogen_mcp` — kept for MCP tool compatibility.*

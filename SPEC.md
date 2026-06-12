@@ -1,10 +1,11 @@
 # videogen-mcp ("ittybitty") — AI Video Generation MCP Server
 
-**Version**: 0.1.0
-**Port**: 11054 (backend, serves webapp dist) / 11055 (Vite dev server)
-**Status**: MVP — core pipeline + mid-length mode; SOTA webapp (React/Vite, 10 pages)
+**Version**: 0.2.0  
+**Port**: 11054 (backend) / 11055 (Vite dev)  
+**Status**: MVP+ — pipelines, depot, webapp, NSIS desktop, Jellyfin/Plex stock
 
-**Fleet docs:** [ASSESSMENT-BY-CURSOR.md](./ASSESSMENT-BY-CURSOR.md) · [MCD project page](../mcp-central-docs/projects/ittybitty/README.md) · [Competition analysis](../mcp-central-docs/projects/ittybitty/COMPETITIVE_ANALYSIS.md)
+**Agent docs:** [ASSESSMENT-BY-CURSOR.md](./ASSESSMENT-BY-CURSOR.md) · [TODO.md](./TODO.md) · [docs/GITIGNORE-ASSESSMENT.md](./docs/GITIGNORE-ASSESSMENT.md)  
+**Fleet docs:** [MCD project page](../mcp-central-docs/projects/ittybitty/README.md) · [Competition analysis](../mcp-central-docs/projects/ittybitty/COMPETITIVE_ANALYSIS.md)
 
 ## Problem
 
@@ -36,8 +37,9 @@ Topic/Keyword
 │  4. FFmpeg compose with chapter structure             │
 │                                                       │
 │  Plugin Registry (implemented):                       │
-│  ├── LLM:   openai, ollama, qwen                      │
-│  ├── Stock: pexels, cogvideo                          │
+│  ├── LLM:   openai, deepseek, ollama, lmstudio       │
+│  ├── Stock: pexels, jellyfin, plex, veo, omni,       │
+│  │          localgen (Wan 2.2; cogvideo alias)        │
 │  └── TTS:   edge-tts, cosyvoice                       │
 └──────────────────────────────────────────────────────┘
 ```
@@ -140,14 +142,10 @@ timestamp plumbing with one universal post-pass.
 - Acceptance: CosyVoice job produces word-level .ass; sub timing within ±150ms
   of audio on test fixture. Removes the README roadmap caveat.
 
-**R2. Beat-aware cuts + music ducking**
-- `services/audio.py`: librosa beat-grid on the background track; compose
-  service snaps scene cut points to nearest beat (tolerance ±400ms, never
-  violates videographer pacing clamps).
-- FFmpeg `sidechaincompress` ducks music under narration (no manual keyframes).
-- Dep: `librosa`. Env: `VIDEOGEN_BEAT_SNAP=true`, `VIDEOGEN_DUCK_DB=-12`
-- Acceptance: golden test asserts cut timestamps land on detected beats;
-  ducked stem RMS under narration ≥10dB below music-only segments.
+**R2. Beat-aware cuts + music ducking — PARTIAL**
+- `services/audio.py`: librosa beat-grid (`detect_beats`, `snap_cut_durations`) — **module exists, not wired in pipeline**
+- `compose.py`: FFmpeg `sidechaincompress` ducking — **implemented**
+- TODO: `[project.optional-dependencies] beats`, pipeline integration, tests — see [TODO.md](./TODO.md)
 
 ### Phase 2 — The star-makers (v0.3, ~4-5 days)
 
@@ -190,10 +188,9 @@ no clip reuse within a video, alternate wide/close where metadata allows.
 
 **R6. Scene-level content-addressed cache + storyboard editor webapp**
 Cache key = hash(scene script, voice, clip id, aspect, style). Editing one
-scene re-renders one scene. Webapp (`webapp/src`, currently empty) becomes
-a storyboard editor: scene cards with thumbnails, drag to reorder, inline
-narration edit, clip swap from match candidates, render button, SSE progress
-per scene.
+scene re-renders one scene. Webapp (`webapp/src`) ships dashboard, generate,
+plan, jobs, depot, publish, settings, help, logs — **storyboard editor depth
+is future work** (inline scene edit, drag reorder).
 - Backend: `services/scene_cache.py`; `PATCH /api/v1/jobs/{id}/scenes/{n}`;
   SSE at `/api/v1/jobs/{id}/events`
 - Frontend: Vite/React per WEBAPP_SOTA_STANDARDS, Bun, port 11055;
@@ -227,6 +224,6 @@ Thin glue: `scripts/morning_briefing.py` + scheduled task; aiwatcher's
 
 ## Testing
 
-42 tests (`just test`), ruff (`just lint`), pyright basic (`just typecheck`),
-`just check` for all three. Test coverage: cache, compose, providers, schema,
-server, storyboard, videographer.
+113 tests (`uv run pytest -q`), ruff (`uv run ruff check src tests`), pyright optional (`uv run pyright src/`),
+`just check` for lint + typecheck + test. Coverage: cache, compose, providers, schema,
+server, storyboard, videographer, depot, library stock, webapp static.
