@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="ittybitty — topic or script in, narrated MP4 out. Windows app, web dashboard, and MCP for agents. Pexels, your Jellyfin library, or local Wan 2.2 AI clips."
+    />
+    <title>ittybitty — tiny name, full video pipeline</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,700;1,9..40,400&family=Instrument+Serif:ital@0;1&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="alpha-banner" role="status">
+      <strong>Alpha preview</strong> — under construction. Pipelines, MCP tools, and installers may change.
+      <a href="https://github.com/sandraschi/ittybittyvideos/releases">Pre-releases only</a>
+    </div>
+    <header class="site-header">
+      <div class="wrap header-inner">
+        <a class="logo" href="#top">
+          <span class="logo-mark" aria-hidden="true">▶</span>
+          ittybitty
+        </a>
+        <nav class="nav">
+          <a href="#surfaces">Surfaces</a>
+          <a href="#pipeline">Pipeline</a>
+          <a href="#footage">Footage</a>
+          <a href="#agents">MCP</a>
+          <a class="nav-cta" href="https://github.com/sandraschi/ittybittyvideos/releases">Download (alpha)</a>
+        </nav>
+      </div>
+    </header>
+
+    <main id="top">
+      <section class="hero">
+        <div class="wrap hero-grid">
+          <div class="hero-copy">
+            <p class="eyebrow">alpha · videogen-mcp · fleet 2026</p>
+            <h1>
+              <span class="hero-serif">Tiny name.</span>
+              <span class="hero-gradient">Massive pipeline.</span>
+            </h1>
+            <p class="lead">
+              Drop a topic or paste a script. Get a finished, narrated MP4 — vertical Shorts or chaptered
+              explainers — with real job history, a SQLite depot, and MCP tools your agents already know how to
+              drive.
+            </p>
+            <div class="hero-actions">
+              <a class="btn btn-primary" href="https://github.com/sandraschi/ittybittyvideos/releases">
+                Windows installer (alpha)
+              </a>
+              <a class="btn btn-ghost" href="https://github.com/sandraschi/ittybittyvideos">GitHub</a>
+            </div>
+            <ul class="hero-stats">
+              <li><strong>7</strong> MCP tools</li>
+              <li><strong>145+</strong> tests</li>
+              <li><strong>3</strong> ways to run</li>
+            </ul>
+          </div>
+          <div class="hero-card" aria-hidden="true">
+            <div class="terminal">
+              <div class="terminal-bar">
+                <span></span><span></span><span></span>
+                <code>videogen_generate</code>
+              </div>
+              <pre><span class="dim">topic</span>  Vienna coffee houses at dawn
+<span class="dim">aspect</span> 9:16 · 45s
+<span class="dim">stock</span>  pexels → edge-tts → ffmpeg
+<span class="ok">status</span> composing ████████░░ 82%
+<span class="dim">out</span>    ./output/a1b2c3….mp4</pre>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="surfaces" class="section">
+        <div class="wrap">
+          <h2 class="section-title">Three surfaces. One engine.</h2>
+          <p class="section-lead">Pick how you work — installer, browser, or agent — without relearning the pipeline.</p>
+          <div class="cards three">
+            <article class="card">
+              <h3>Windows app</h3>
+              <p>NSIS installer, desktop shortcut, backend sidecar included. Settings UI writes your <code>.env</code>.</p>
+              <p class="card-meta">Best for: Sandra, daily Shorts, zero terminal</p>
+            </article>
+            <article class="card card-accent">
+              <h3>Web dashboard</h3>
+              <p>Generate, Plan, Jobs, Depot, Publish, Help, Logs. Dev stack: API <code>:11054</code> + Vite <code>:11055</code>.</p>
+              <p class="card-meta">Best for: contributors, self-hosters</p>
+            </article>
+            <article class="card">
+              <h3>MCP server</h3>
+              <p>HTTP MCP at <code>/mcp</code>. Cursor, Claude Desktop, fleet agents call <code>videogen_*</code> tools.</p>
+              <p class="card-meta">Best for: automation, batch renders</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section id="pipeline" class="section section-dark">
+        <div class="wrap">
+          <h2 class="section-title">Script → footage → voice → MP4</h2>
+          <ol class="pipeline">
+            <li>
+              <span class="step-num">1</span>
+              <div>
+                <h3>Script</h3>
+                <p>DeepSeek, OpenAI, Ollama, LM Studio — or paste your own narration.</p>
+              </div>
+            </li>
+            <li>
+              <span class="step-num">2</span>
+              <div>
+                <h3>Footage</h3>
+                <p>Pexels, Jellyfin, Plex, Google Veo, or local Wan 2.2 clips. Cached per scene.</p>
+              </div>
+            </li>
+            <li>
+              <span class="step-num">3</span>
+              <div>
+                <h3>Voice &amp; compose</h3>
+                <p>Edge TTS (free), optional word-level karaoke, FFmpeg mix + subtitles.</p>
+              </div>
+            </li>
+            <li>
+              <span class="step-num">4</span>
+              <div>
+                <h3>Depot</h3>
+                <p>SQLite library, posters, publish handoff. Jobs survive restarts.</p>
+              </div>
+            </li>
+          </ol>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="wrap">
+          <h2 class="section-title">Shipped smarts (not vapor)</h2>
+          <div class="cards four">
+            <article class="card compact">
+              <h3>R1 Karaoke</h3>
+              <p>faster-whisper alignment · highlighted ASS subs</p>
+            </article>
+            <article class="card compact">
+              <h3>R2 Beats</h3>
+              <p>Cut on the beat · duck BGM under voice</p>
+            </article>
+            <article class="card compact">
+              <h3>R3 Screening</h3>
+              <p>Local VLM critiques finished cuts</p>
+            </article>
+            <article class="card compact">
+              <h3>R9 Talker</h3>
+              <p>PiP overlay via SadTalker / LivePortrait HTTP</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section id="footage" class="section section-dark">
+        <div class="wrap">
+          <h2 class="section-title">Your footage, your rules</h2>
+          <div class="footage-grid">
+            <div>
+              <h3>Cloud &amp; stock</h3>
+              <ul>
+                <li><strong>Pexels</strong> — free API, default B-roll</li>
+                <li><strong>Google Veo / Omni</strong> — cinematic AI clips</li>
+              </ul>
+            </div>
+            <div>
+              <h3>Your libraries</h3>
+              <ul>
+                <li><strong>Jellyfin</strong> — dog cam, vacation, phone uploads</li>
+                <li><strong>Plex</strong> — same fleet tokens as plex-mcp</li>
+              </ul>
+            </div>
+            <div>
+              <h3>Local GPU</h3>
+              <ul>
+                <li><strong>LocalGen</strong> — Wan 2.2 sidecar built into ittybitty</li>
+                <li><strong>Fleet externals</strong> — native <code>wan-video</code>, Hunyuan WorldPlay (roadmap)</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="agents" class="section">
+        <div class="wrap split">
+          <div>
+            <h2 class="section-title">Agents love HTTP MCP</h2>
+            <p class="section-lead">
+              No stdio spaghetti. Point Cursor at <code>http://127.0.0.1:11054/mcp</code> and go.
+            </p>
+            <ul class="tool-list">
+              <li><code>videogen_generate</code></li>
+              <li><code>videogen_plan_render</code></li>
+              <li><code>videogen_review</code></li>
+              <li><code>videogen_providers</code></li>
+            </ul>
+          </div>
+          <pre class="code-block"><code>{
+  "mcpServers": {
+    "ittybitty": {
+      "url": "http://127.0.0.1:11054/mcp"
+    }
+  }
+}</code></pre>
+        </div>
+      </section>
+
+      <section class="cta-band">
+        <div class="wrap cta-inner">
+          <h2>Make the next Short before lunch.</h2>
+          <p>Free Pexels key + optional cloud LLM. Or run fully local with Ollama and Wan on your 4090.</p>
+          <a class="btn btn-primary btn-lg" href="https://github.com/sandraschi/ittybittyvideos/releases">
+            Get ittybitty alpha
+          </a>
+          <p class="cta-disclaimer">Experimental build — no support SLA. Bring your own API keys.</p>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="wrap footer-inner">
+        <p>MIT · <a href="https://github.com/sandraschi/ittybittyvideos">sandraschi/ittybittyvideos</a></p>
+        <p class="footer-muted">Product: ittybitty · Package: videogen-mcp · Not affiliated with Pexels, Google, or Tencent</p>
+      </div>
+    </footer>
+  </body>
+</html>

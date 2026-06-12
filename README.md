@@ -3,6 +3,9 @@
 **Topic or script in → narrated video out.** Shorts for TikTok and Reels, or longer chaptered explainers — with stock footage, your Jellyfin/Plex home videos, or local AI clips.
 
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![Status](https://img.shields.io/badge/status-alpha-orange.svg)](docs/ALPHA-RELEASE-CHECKLIST.md)
+
+> **Alpha — under construction.** APIs, pipelines (R3 screening, R9 talker), and the Windows installer may change between releases. Not production-ready. See [alpha release checklist](docs/ALPHA-RELEASE-CHECKLIST.md) before going public or tagging.
 
 **Three ways to use it** (pick one):
 
@@ -26,6 +29,7 @@ Same engine under all three: Python backend on port **11054**, React dashboard o
 | [What you need](#what-you-need) | Keys and optional extras |
 | [Footage sources](#footage-sources) | Where B-roll comes from |
 | [More help](#more-help) | Config, troubleshooting, API docs |
+| [Marketing site](https://sandraschi.github.io/ittybittyvideos/) | GitHub Pages one-pager (also [website/](website/index.html) locally) |
 
 ---
 
@@ -33,7 +37,7 @@ Same engine under all three: Python backend on port **11054**, React dashboard o
 
 Best if you just want to make videos.
 
-1. Download **`ittybitty-0.2.0-x64-setup.exe`** from [Releases](https://github.com/sandraschi/ittybittyvideos/releases/latest)
+1. Download the latest **pre-release** installer from [Releases](https://github.com/sandraschi/ittybittyvideos/releases) (tag `v0.2.0-alpha.*` or newer)
 2. Run the installer → launch **ittybitty** from Start or your desktop shortcut
 3. In **Settings**, add a free [Pexels](https://www.pexels.com/api/) key → **Generate** with a topic or paste a script
 
@@ -122,6 +126,7 @@ py scripts/smoke_render.py
 | [INSTALL.md](INSTALL.md) | All install paths, MCPB, verification |
 | [docs/CONFIGURATION.md](docs/CONFIGURATION.md) | Env vars and providers |
 | [docs/TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md) | Something broke |
+| [docs/ALPHA-RELEASE-CHECKLIST.md](docs/ALPHA-RELEASE-CHECKLIST.md) | Going public / alpha tag |
 | [docs/TOOLS.md](docs/TOOLS.md) | MCP tools and REST API |
 | [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md) | Tests, Tauri build, CI |
 | [SPEC.md](SPEC.md) | Architecture and roadmap |

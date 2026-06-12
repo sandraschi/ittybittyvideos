@@ -9,6 +9,10 @@ Versioning tracks the Python package in `pyproject.toml`.
 
 ## [Unreleased]
 
+### Added
+
+- Alpha release path: README badge + warning, marketing site banner, [docs/ALPHA-RELEASE-CHECKLIST.md](docs/ALPHA-RELEASE-CHECKLIST.md), GitHub Pages static site in `docs/` (`index.html`, `.nojekyll`).
+
 ### Changed
 
 - **Rebrand:** product name **ittybitty** (was roughcutvideos); native binaries `ittybitty-native.exe` / `ittybitty-backend.exe`; Tauri identifier `ai.fleet.ittybitty`; GitHub repo `sandraschi/ittybitty`.
