@@ -2,7 +2,7 @@ use std::fs;
 use std::path::PathBuf;
 use std::process::{Child, Command, Stdio};
 use std::sync::Mutex;
-use tauri::{AppHandle, path::BaseDirectory};
+use tauri::{AppHandle, Manager, path::BaseDirectory};
 
 pub struct BackendProcess(pub Mutex<Option<Child>>);
 

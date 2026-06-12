@@ -1,0 +1,5 @@
+INFO:     Started server process [21276]
+INFO:     Waiting for application startup.
+2026-06-12 15:20:39.826 | INFO     | __main__:lifespan:26 - videogen-mcp v0.1.0 starting on port 11054
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://127.0.0.1:11054 (Press CTRL+C to quit)

@@ -321,7 +321,7 @@ async def api_providers():
 
 
 if FastMCP:
-    mcp.mount("api", rest)
+    rest.mount("/mcp", mcp.http_app())
 
 app = rest
 
@@ -330,10 +330,7 @@ def main():
     import uvicorn
 
     settings = get_settings()
-    if FastMCP:
-        mcp.run(transport="streamable-http", host=settings.videogen_host, port=settings.videogen_port)
-    else:
-        uvicorn.run(app, host=settings.videogen_host, port=settings.videogen_port)
+    uvicorn.run(app, host=settings.videogen_host, port=settings.videogen_port)
 
 
 if __name__ == "__main__":
