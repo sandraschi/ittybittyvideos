@@ -56,4 +56,4 @@ foreach ($f in $uploads) {
     gh release upload $Tag $f.FullName --clobber
 }
 
-Write-Host "Done: https://github.com/sandraschi/ittybitty/releases/tag/$Tag" -ForegroundColor Green
+Write-Host "Done: https://github.com/sandraschi/ittybittyvideos/releases/tag/$Tag" -ForegroundColor Green
