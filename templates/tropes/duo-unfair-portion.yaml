@@ -1,0 +1,31 @@
+id: duo-unfair-portion
+label: Unfair snack size (jealousy arc)
+video_types: [short, showcase]
+exemplar_views: "61M+ (Shiba Diva — two huskies, sausage sizes)"
+exemplar_refs:
+  - "https://www.youtube.com/watch?v=mlQvkFVGEJY"
+beats:
+  - scene_type: hook
+    narration_goal: What if one dog always gets the bigger piece?
+    duration_hint: 3
+  - scene_type: demo
+    narration_goal: Big portion to A, small to B — B eats but stares
+    duration_hint: 10
+  - scene_type: broll
+    narration_goal: Escalate unfairness; refused eat until swap
+    duration_hint: 15
+  - scene_type: outro
+    narration_goal: Fairness restored — both happy or comic twist
+    duration_hint: 8
+visual:
+  aspect: "9:16"
+  cut_every_seconds: 2
+  text_overlays: ["Big", "Small", "Unfair", "Fixed"]
+expand_to_mid:
+  chapters:
+    - Setup — two personalities
+    - Experiment design (sizes, order)
+    - Jealousy montage with beat-sync cuts
+    - Fairness test — swap roles
+    - Moral — or lack thereof
+example_hook: "We gave one dog the big sausage. Watch what happens next."

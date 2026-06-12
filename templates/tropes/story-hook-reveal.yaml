@@ -1,0 +1,29 @@
+id: story-hook-reveal
+label: Story hook + late reveal (interruption / twist)
+video_types: [documentary, showcase, explainer]
+exemplar_views: "47s proposal-dog class — ~200M+ case studies; reveal at end"
+beats:
+  - scene_type: hook
+    narration_goal: Start mid-drama — something is going wrong
+    duration_hint: 3
+  - scene_type: broll
+    narration_goal: Context — what was supposed to happen
+    duration_hint: 10
+  - scene_type: demo
+    narration_goal: Escalation — interruption builds
+    duration_hint: 15
+  - scene_type: recap
+    narration_goal: Reveal + emotional payoff — no hard stop
+    duration_hint: 12
+visual:
+  aspect: "9:16"
+  cut_every_seconds: 2
+  avoid: ["Thanks for watching", "Subscribe"]
+expand_to_mid:
+  chapters:
+    - Cold open — climax clip
+    - Backstory — characters and stakes
+    - Rising action — multiple angles
+    - The interruption beat-by-beat
+    - Aftermath — reactions + gentle outro
+example_hook: "He was mid-proposal when the dog had other plans."

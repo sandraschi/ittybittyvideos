@@ -1,0 +1,30 @@
+id: satisfying-process-loop
+label: Satisfying process (clean/build ASMR)
+video_types: [showcase, documentary, demo]
+exemplar_views: "Process Shorts — cleaning, cooking, organizing; loop >100% retention"
+beats:
+  - scene_type: hook
+    narration_goal: Mid-action close-up — already satisfying
+    duration_hint: 2
+  - scene_type: broll
+    narration_goal: Wide messy before — one glance
+    duration_hint: 3
+  - scene_type: demo
+    narration_goal: Process shots — no dead air, 1–2s cuts
+    duration_hint: 22
+  - scene_type: hook
+    narration_goal: Final pristine state — seamless loop to opening motion
+    duration_hint: 3
+visual:
+  aspect: "9:16"
+  cut_every_seconds: 1.5
+  audio: ambient_or_asmr
+  loop_to_start: true
+expand_to_mid:
+  chapters:
+    - Establish chaos — cinematic establishing
+    - Tools intro — hero shots
+    - Phase montages (3 acts of cleaning/building)
+    - Detail macro inserts
+    - Reveal + golden hour wide — optional narrator pride
+example_hook: "Watch this kennel go from disaster to spotless."

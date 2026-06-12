@@ -11,7 +11,7 @@
 |----------|------|--------|
 | P0 | Wire R2 beat snap (`audio.py` → pipeline) | ✅ 2026-06-12 (Fable) |
 | P0 | Rebuild NSIS installer post-rebrand (`ittybitty-*` binaries) | ⬜ |
-| P0 | GSD puppy demo (poster in README; MP4 via release or gitignored) | ⬜ |
+| P0 | GSD puppy demo (poster in README; MP4 via release or gitignored) | ⬜ use trope:pet-food-duo-review |
 | P1 | YouTube Shorts upload API (Publish Tier 2) | ⬜ |
 | P1 | Gitignore / untrack legacy `docs/examples/*.mp4` | ⬜ |
 | P1 | FFmpeg compose integration test (mocked) | ⬜ |
@@ -73,11 +73,12 @@
 
 Narrative structure presets before LLM calls. See [SPEC.md § R10](./SPEC.md#phase-3--from-generator-to-tool-v04-4-days).
 
-- [ ] Schema + `templates/tropes/*.yaml` (5–8 presets: tutorial, documentary, listicle, hype-short, …)
+- [ ] Schema + `templates/tropes/*.yaml` (8 viral exemplars — see EXEMPLARS-RESEARCH.md)
 - [ ] `services/prompt_director.py` — `enrich(system, user, structure_id) -> messages`
 - [ ] Wire into `generate_script` + `plan_video` when `structure` set
 - [ ] `PlanRequest` + REST/MCP optional `structure` param; `videogen_structures` list tool
-- [x] Webapp: `/prompts` library — localStorage CRUD + samples; Generate/Plan prefill (structure UI only until backend)
+- [x] Exemplar research doc + trope YAML seeds (`docs/EXEMPLARS-RESEARCH.md`, `templates/tropes/*.yaml`)
+- [x] Prompt library exemplar presets + GSD food duo sample
 - [x] Docs: `docs/PROMPT-DIRECTOR.md` — mermaid diagrams; no live TVTropes scraping
 
 **Out of scope for v1:** automated trope fetch/scrape; LLM free-form trope invention without template guardrails.

@@ -1,0 +1,29 @@
+id: myth-vs-truth
+label: Myth vs truth (cognitive dissonance)
+video_types: [explainer, tutorial]
+exemplar_views: "High-share education Shorts — 30–45s"
+beats:
+  - scene_type: hook
+    narration_goal: State the myth as if true — bold text MYTH
+    duration_hint: 4
+  - scene_type: explainer
+    narration_goal: Why everyone believes it
+    duration_hint: 8
+  - scene_type: explainer
+    narration_goal: TRUTH reveal — contrast visual
+    duration_hint: 12
+  - scene_type: recap
+    narration_goal: One actionable fix
+    duration_hint: 8
+visual:
+  aspect: "9:16"
+  text_overlays: ["MYTH", "TRUTH", "✓"]
+  color_grade: { myth: desaturated, truth: warm }
+expand_to_mid:
+  chapters:
+    - The myth stated dramatically
+    - Historical reason / anecdote
+    - Evidence chapter — tests, clips, citations
+    - Practical truth — what to do instead
+    - FAQ rapid fire
+example_hook: "Everyone thinks GSDs need raw eggs. They're wrong."

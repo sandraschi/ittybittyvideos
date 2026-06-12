@@ -149,6 +149,7 @@ py scripts/smoke_render.py
 | [docs/TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md) | Something broke |
 | [docs/ALPHA-RELEASE-CHECKLIST.md](docs/ALPHA-RELEASE-CHECKLIST.md) | Going public / alpha tag |
 | [docs/PROMPT-DIRECTOR.md](docs/PROMPT-DIRECTOR.md) | R10 trope templates (mermaid) |
+| [docs/EXEMPLARS-RESEARCH.md](docs/EXEMPLARS-RESEARCH.md) | Viral Short formats + mid expansion |
 | [docs/TOOLS.md](docs/TOOLS.md) | MCP tools and REST API |
 | [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md) | Tests, Tauri build, CI |
 | [SPEC.md](SPEC.md) | Architecture and roadmap |

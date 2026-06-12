@@ -1,0 +1,32 @@
+id: countdown-three-things
+label: "3 things" countdown tension
+video_types: [explainer, tutorial, documentary]
+exemplar_views: "Faceless Shorts staple — 30–50s, high completion"
+beats:
+  - scene_type: hook
+    narration_goal: Open loop — "3 things about X" or "Stop doing Y"
+    duration_hint: 3
+  - scene_type: explainer
+    narration_goal: Point 3 (weakest) — visual + one sentence
+    duration_hint: 8
+  - scene_type: explainer
+    narration_goal: Point 2 — escalate stakes
+    duration_hint: 8
+  - scene_type: explainer
+    narration_goal: Point 1 — strongest payoff
+    duration_hint: 10
+  - scene_type: outro
+    narration_goal: CTA question — which surprised you?
+    duration_hint: 5
+visual:
+  aspect: "9:16"
+  text_overlays: ["#3", "#2", "#1"]
+  cut_every_seconds: 2
+expand_to_mid:
+  chapters:
+    - Hook + why this list matters
+    - Item 3 deep dive with B-roll
+    - Item 2 — demo or case
+    - Item 1 — main thesis + proof
+    - Summary + myth cleanup + next video tease
+example_hook: "Three signs your dog's food is wrong — number one surprised vets."

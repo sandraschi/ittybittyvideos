@@ -1,0 +1,31 @@
+id: dog-tease-fridge
+label: Dog tease / fake-out food (Ultimate Dog Tease class)
+video_types: [short, showcase]
+exemplar_views: "212M+ (Clark — Ultimate Dog Tease); universal food comedy"
+exemplar_refs:
+  - "https://www.youtube.com/watch?v=nGeKSiCQkPw"
+beats:
+  - scene_type: hook
+    narration_goal: Human lists delicious foods — dog reacts each time
+    duration_hint: 3
+  - scene_type: demo
+    narration_goal: Yes yes yes — then FAKE OUT (not for you)
+    duration_hint: 15
+  - scene_type: demo
+    narration_goal: Repeat with escalating foods — peak frustration
+    duration_hint: 15
+  - scene_type: outro
+    narration_goal: Tiny real reward — relief laugh
+    duration_hint: 5
+visual:
+  aspect: "9:16"
+  text_overlays: ["Yes", "NOPE", "Maybe…"]
+  audio: voiceover_list + dog_reactions
+expand_to_mid:
+  chapters:
+    - Introduce the tease game
+    - Greatest hits montage (5 foods)
+    - Slow-mo reaction inserts
+    - The one time they actually get it
+    - Outro — why this never gets old
+example_hook: "Chicken. Bacon. Cat poop. He heard every word."

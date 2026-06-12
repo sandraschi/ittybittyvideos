@@ -1,0 +1,30 @@
+id: before-after-reveal
+label: Before / after (result-first hook)
+video_types: [tutorial, demo, showcase, explainer]
+exemplar_views: "Format class — transformation Shorts; 15–35s sweet spot"
+beats:
+  - scene_type: hook
+    narration_goal: Show AFTER state first — shocking result
+    duration_hint: 3
+  - scene_type: explainer
+    narration_goal: Flash BEFORE — problem state
+    duration_hint: 5
+  - scene_type: demo
+    narration_goal: Fast process montage — 3–5 micro steps
+    duration_hint: 18
+  - scene_type: recap
+    narration_goal: AFTER again — loop matches opening frame
+    duration_hint: 4
+visual:
+  aspect: "9:16"
+  cut_every_seconds: 1.5
+  transitions: [hard_cut, match_cut]
+  loop_to_start: true
+expand_to_mid:
+  chapters:
+    - Cold open — final result cinematic wide
+    - Act I — the mess / before
+    - Act II — tools and method (step chapters)
+    - Act III — timelapse + detail inserts
+    - Denouement — side-by-side + how-to recap
+example_hook: "This room looked impossible. Thirty seconds later…"
