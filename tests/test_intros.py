@@ -13,11 +13,37 @@ def test_alpine_mariachi_contrast():
     assert "mariachi" in text.lower()
 
 
+def test_all_contrast_packs_load():
+    ids = [
+        "bluey-horror-contrast",
+        "alpine-mariachi-contrast",
+        "asmr-demolition-contrast",
+        "nature-doc-toddler-chaos",
+        "elevator-jazz-fall",
+        "ikea-inspirational-piano",
+        "deadpan-corporate",
+        "documentary-gravitas",
+        "epic-trailer",
+    ]
+    for pid in ids:
+        pack = load_intro_pack(pid)
+        assert pack is not None, pid
+        block = intro_prompt_block(pid, seed=1)
+        assert len(block) > 80, pid
+
+
+def test_ikea_inspirational_screw():
+    text = intro_prompt_block("ikea-inspirational-piano", seed=3)
+    assert "screw" in text.lower() or "IKEA" in text or "flat-pack" in text.lower()
+    assert "inspirational" in text.lower() or "piano" in text.lower()
+
+
 def test_list_intro_packs():
     packs = list_intro_packs()
     ids = {p["id"] for p in packs}
     assert "bluey-horror-contrast" in ids
     assert "alpine-mariachi-contrast" in ids
+    assert "ikea-inspirational-piano" in ids
     assert "documentary-gravitas" in ids
 
 

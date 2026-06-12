@@ -47,12 +47,28 @@ export const INTRO_PRESETS: { id: string; label: string; note: string }[] = [
   { id: "", label: "(none)", note: "Jump straight to hook" },
   { id: "intro:bluey-horror-contrast", label: "Wholesome × horror sound", note: "Bluey-adjacent visuals, dread SFX" },
   { id: "intro:alpine-mariachi-contrast", label: "Alpine calm × loud mariachi", note: "Serene village, band slides in" },
+  { id: "intro:asmr-demolition-contrast", label: "ASMR whisper × demolition derby", note: "Spa voice, cars pancaked" },
+  { id: "intro:nature-doc-toddler-chaos", label: "Nature doc × toddler birthday", note: "Attenborough, cake smash" },
+  { id: "intro:elevator-jazz-fall", label: "Elevator jazz × free-fall", note: "Muzak while plummeting" },
+  { id: "intro:ikea-inspirational-piano", label: "Inspirational piano × IKEA hell", note: "Triumph music, one screw missing" },
   { id: "intro:documentary-gravitas", label: "Serious documentary", note: "Cinematic gravitas, measured VO" },
   { id: "intro:epic-trailer", label: "Epic trailer", note: "BRAAAM, in a world…" },
   { id: "intro:deadpan-corporate", label: "Deadpan corporate × chaos", note: "HR voice, visuals unhinged" },
 ];
 
 export const BUILTIN_PROMPTS: SavedPrompt[] = [
+  {
+    id: "sample-ikea-inspirational",
+    title: "IKEA build (inspirational piano)",
+    topic: "Flat-pack bookshelf assembly — uplifting piano montage energy while one critical screw is missing and the manual makes no sense",
+    kind: "short",
+    structure: "trope:contrast-intro-sequence",
+    intro: "intro:ikea-inspirational-piano",
+    styleNotes: "Piano never stops believing; hero close-up on empty screw hole; generic flat-pack not branded",
+    visual_tone: "hilarious",
+    createdAt: "2026-06-12T00:00:00.000Z",
+    updatedAt: "2026-06-12T00:00:00.000Z",
+  },
   {
     id: "sample-alpine-mariachi",
     title: "Alpine village (mariachi attack)",

@@ -1,0 +1,32 @@
+id: asmr-demolition-contrast
+label: ASMR whisper × demolition derby
+tone: hilarious_contrast
+description: >
+  Intimate ASMR whisper — tapping, soft breath, "hey guys" energy — over footage
+  of demolition derby crashes, metal crunching, dust clouds. Visual chaos, audio
+  treats it like a spa video.
+duration_hint: 10
+visual:
+  style: demolition derby, cars smashing, tire smoke, crunch impacts, crowd roaring
+  avoid: showing the whisperer unless comedic — contrast is VO/audio tone vs visuals
+  shot_types: [wide, close impact, slow-mo crash]
+  search_terms: [demolition derby crash, cars colliding arena, metal impact slow motion]
+audio:
+  music: none or barely audible — focus on ASMR whisper track
+  sfx: under whisper — distant crashes treated as "gentle tapping"; optional soft rain overlay on carnage
+  contrast_line: "Picture a car being pancaked. Sound: someone whispering about your chakras."
+  bgm_tags: [asmr whisper, soft ambient, comedic juxtaposition]
+  voice: breathy whisper, mouth sounds, "so relaxing…"
+narration:
+  mode: asmr_whisper
+  examples:
+    - "Hey lovelies… today we're exploring… gentle collision sounds…"
+    - "Notice the soft crunch… so satisfying…"
+    - "Let the debris settle through your body…"
+structure:
+  - Whisper hook — "welcome back" over establishing crash wide (3s)
+  - ASMR describes "textures" as cars smash (5s)
+  - One beat where whisper says "and… release" on biggest hit (2s)
+post_intro: Return to normal VO or stay in whisper for entire short as running gag
+example_lines:
+  - "The metal folding is just like origami, if origami hated you."

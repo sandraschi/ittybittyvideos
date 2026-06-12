@@ -1,0 +1,31 @@
+id: nature-doc-toddler-chaos
+label: Nature documentary × toddler birthday
+tone: hilarious_contrast
+description: >
+  Attenborough-grade nature documentary narration — measured, reverent, scientific
+  — over toddler birthday chaos: screaming, cake smash, balloon pop, parent panic.
+duration_hint: 11
+visual:
+  style: toddler birthday party chaos, cake face, running children, confetti, stressed parents
+  avoid: actual wildlife unless ironic cutaway to pigeon in parking lot
+  shot_types: [wide party room, close cake destruction, slow-mo juice spill]
+  search_terms: [kids birthday party messy, toddler cake smash, children running indoor party]
+audio:
+  music: soft BBC-style nature underscore — oboe, strings, wonder
+  sfx: party chaos ducked under VO; balloon pop treated as "rare mating call"
+  contrast_line: "Picture Planet Earth. Subject: a four-year-old named Brayden."
+  bgm_tags: [documentary nature gentle, bbc planet, orchestral wonder]
+  voice: British or American nature-doc gravitas — never breaks character
+narration:
+  mode: nature_documentary
+  examples:
+    - "Here, in the domestic savanna, the juvenile Homo sapiens marks its territory with frosting…"
+    - "The alpha parent attempts a defensive maneuver with paper plates…"
+    - "Observe the sugar-fueled stampede — a phenomenon occurring once per annum…"
+structure:
+  - Establish party wide — narrator introduces "the habitat" (4s)
+  - Close on key chaos beat — cake, scream, or pinata (4s)
+  - Thesis — "survival depends on juice box diplomacy" (3s)
+post_intro: Narrator may comment on main topic as if it were ecosystem behavior
+example_lines:
+  - "The gift table represents a fragile treaty between factions."

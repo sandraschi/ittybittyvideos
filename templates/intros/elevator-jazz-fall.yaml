@@ -1,0 +1,32 @@
+id: elevator-jazz-fall
+label: Elevator jazz × free-fall
+tone: hilarious_contrast
+description: >
+  Smooth elevator jazz — Muzak, polite, nothing to see here — while visuals show
+  an elevator in free-fall, lights flickering, people grabbing rails, or absurd
+  vertical plunge B-roll.
+duration_hint: 9
+visual:
+  style: elevator interior panic OR exterior shaft plunge — choose one; lights flicker optional
+  avoid: graphic injury — comedy panic faces, safety demo energy
+  shot_types: [close elevator panel, wide shaft, shaky interior]
+  search_terms: [elevator interior emergency, elevator shaft cinematic, people elevator surprise]
+audio:
+  music: smooth elevator jazz — saxophone, brushed drums, utterly unbothered
+  sfx: cable snap optional; jazz NEVER stops or speeds up during fall
+  contrast_line: "Picture falling 40 floors. Sound: lobby at a three-star hotel."
+  bgm_tags: [elevator jazz, muzak smooth, lounge sax]
+  tempo: steady 90 BPM — no Doppler effect on the music
+narration:
+  mode: elevator_announcement_calm
+  examples:
+    - "Floor twelve… floor eleven… please enjoy your descent…"
+    - "Thank you for riding with us today."
+    - "We apologize for the brief… unscheduled express service."
+structure:
+  - Ding — doors close, jazz starts (2s)
+  - Fall begins — jazz continues, VO calm (4s)
+  - Ding sting on black or hard cut to main hook (3s)
+post_intro: Jazz can cut abruptly to silence for punchline
+example_lines:
+  - "Going down. [screams] …Going down."

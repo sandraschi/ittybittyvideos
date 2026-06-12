@@ -168,6 +168,10 @@ Opens can be **serious** or **hilarious** — especially **visual × audio contr
 |------|------|-----|
 | `intro:bluey-horror-contrast` | hilarious | Sunny cute visuals, wrong horror sound |
 | `intro:alpine-mariachi-contrast` | hilarious | Serene alpine B-roll, mariachi band slams in loud |
+| `intro:asmr-demolition-contrast` | hilarious | ASMR whisper over demolition derby crashes |
+| `intro:nature-doc-toddler-chaos` | hilarious | Nature-doc VO over toddler birthday chaos |
+| `intro:elevator-jazz-fall` | hilarious | Smooth elevator jazz during free-fall |
+| `intro:ikea-inspirational-piano` | hilarious | Inspirational piano over missing-screw IKEA build |
 | `intro:documentary-gravitas` | serious | Ken Burns, piano, thesis statement |
 | `intro:epic-trailer` | epic | BRAAAM, quick cuts, "In a world…" |
 | `intro:deadpan-corporate` | hilarious | HR muzak VO, visuals go feral |

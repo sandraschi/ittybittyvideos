@@ -1,0 +1,33 @@
+id: ikea-inspirational-piano
+label: Inspirational piano × IKEA one-screw-short
+tone: hilarious_contrast
+description: >
+  Uplifting inspirational piano — montage energy, triumph, "you can do it" —
+  over someone assembling IKEA furniture with ONE screw missing, wrong allen key,
+  leftover mysterious parts, relationship tension optional.
+duration_hint: 12
+visual:
+  style: IKEA-style flat-pack assembly, instruction booklet, missing screw moment, baffled face
+  avoid: brand logos — generic Scandinavian flat-pack aesthetic
+  shot_types: [close hands allen key, wide living room carnage, instruction diagram]
+  search_terms: [assemble furniture frustration, flat pack assembly home, allen key furniture]
+audio:
+  music: inspirational piano swell — Think Dead Poets Society meets BÖRK
+  sfx: single sad trombone optional on missing-screw reveal; piano keeps believing
+  contrast_line: "Picture Rocky training montage. Task: one Billy bookcase. Screw count: wrong."
+  bgm_tags: [inspirational piano, emotional swell, montage hope]
+  crescendo: piano peaks exactly when user discovers extra peg dowel and no hole for it
+narration:
+  mode: inspirational_coach
+  examples:
+    - "Every legend begins with a single hex key…"
+    - "They said it couldn't be done with only seven screws… they were right."
+    - "In the face of adversity… we still have… this mysterious L-shaped metal thing."
+structure:
+  - Hero shot — box on floor, piano begins (3s)
+  - Montage of "progress" — backwards panel, upside-down shelf (5s)
+  - Missing screw close-up — piano hits emotional peak (4s)
+post_intro: Either collapse into absurd credits or pivot to actual topic with shelf as metaphor
+example_lines:
+  - "Greatness isn't built in a day. Sometimes it's not built at all."
+  - "The Swedish manual believes in you. The Swedish manual is mistaken."
