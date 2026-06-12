@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { generateVideo, getStatus } from "@/lib/api";
+import type { PromptNavState } from "@/lib/prompt-library";
 import { useJobsStore } from "@/store/jobs";
 
 type GenerateMode = "deepseek" | "openai" | "lmstudio" | "ollama" | "script";
@@ -38,6 +39,7 @@ function modeReady(
 
 export default function Generate() {
   const navigate = useNavigate();
+  const location = useLocation();
   const qc = useQueryClient();
   const setActiveJobId = useJobsStore((s) => s.setActiveJobId);
   const [mode, setMode] = useState<GenerateMode>("deepseek");
@@ -45,6 +47,15 @@ export default function Generate() {
   const [script, setScript] = useState("");
   const [aspect, setAspect] = useState("9:16");
   const [paragraphs, setParagraphs] = useState(3);
+  const [fromLibrary, setFromLibrary] = useState<string | null>(null);
+
+  useEffect(() => {
+    const s = location.state as PromptNavState | null;
+    if (!s?.topic) return;
+    setTopic(s.topic);
+    setFromLibrary(s.topic.slice(0, 48));
+    navigate(location.pathname, { replace: true, state: null });
+  }, [location.pathname, location.state, navigate]);
 
   const { data: status } = useQuery({ queryKey: ["status"], queryFn: getStatus, refetchInterval: 15_000 });
   const llm = status?.llm;
@@ -114,7 +125,15 @@ export default function Generate() {
     <div className="max-w-xl space-y-6">
       <div>
         <h1 className="text-2xl font-bold">Short video</h1>
-        <p className="text-sm text-zinc-500 mt-1">30–60s · pick scripting source</p>
+        <p className="text-sm text-zinc-500 mt-1">
+          30–60s · pick scripting source ·{" "}
+          <Link to="/prompts" className="text-blue-500 hover:underline">
+            Prompt library
+          </Link>
+        </p>
+        {fromLibrary && (
+          <p className="text-xs text-emerald-500/90 mt-1">Loaded from prompt library</p>
+        )}
       </div>
 
       <form

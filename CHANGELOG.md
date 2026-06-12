@@ -12,6 +12,7 @@ Versioning tracks the Python package in `pyproject.toml`.
 ### Added
 
 - Alpha release path: README badge + warning, marketing site banner, [docs/ALPHA-RELEASE-CHECKLIST.md](docs/ALPHA-RELEASE-CHECKLIST.md), GitHub Pages static site in `docs/` (`index.html`, `.nojekyll`).
+- R10 planning: [docs/PROMPT-DIRECTOR.md](docs/PROMPT-DIRECTOR.md) (mermaid), webapp **Prompt library** (`/prompts`) with sample topics + localStorage CRUD.
 
 ### Changed
 

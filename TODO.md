@@ -16,6 +16,7 @@
 | P1 | Gitignore / untrack legacy `docs/examples/*.mp4` | ⬜ |
 | P1 | FFmpeg compose integration test (mocked) | ⬜ |
 | P2 | mcpb packaging | ⬜ deferred |
+| P2 | **R10** Prompt director (trope/genre templates) | ⬜ planned |
 | P2 | MCD project page version → 0.2.0 sync | ⬜ |
 
 ---
@@ -67,6 +68,19 @@
 - [ ] `.mcpb` build + INSTALL Option B
 - [ ] Update `mcp-central-docs/projects/ittybitty/README.md` status to 0.2.0
 - [ ] Apps Hub / skills provider (deferred)
+
+### R10 Prompt director — trope & genre templates (SPEC Phase 3)
+
+Narrative structure presets before LLM calls. See [SPEC.md § R10](./SPEC.md#phase-3--from-generator-to-tool-v04-4-days).
+
+- [ ] Schema + `templates/tropes/*.yaml` (5–8 presets: tutorial, documentary, listicle, hype-short, …)
+- [ ] `services/prompt_director.py` — `enrich(system, user, structure_id) -> messages`
+- [ ] Wire into `generate_script` + `plan_video` when `structure` set
+- [ ] `PlanRequest` + REST/MCP optional `structure` param; `videogen_structures` list tool
+- [x] Webapp: `/prompts` library — localStorage CRUD + samples; Generate/Plan prefill (structure UI only until backend)
+- [x] Docs: `docs/PROMPT-DIRECTOR.md` — mermaid diagrams; no live TVTropes scraping
+
+**Out of scope for v1:** automated trope fetch/scrape; LLM free-form trope invention without template guardrails.
 
 ---
 

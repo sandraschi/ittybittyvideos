@@ -24,17 +24,19 @@ Topic/Keyword
 │  videogen-mcp (FastMCP 3.2 + FastAPI, port 11054)    │
 │                                                       │
 │  Short pipeline (30-60s):                             │
-│  1. LLM Provider → script + search terms              │
-│  2. Stock Provider → footage clips (cached)           │
-│  3. TTS Provider → narration audio + subtitles        │
-│  4. Compose Service → FFmpeg → final .mp4             │
+│  1. Prompt director (optional) → structure hints      │
+│  2. LLM Provider → script + search terms              │
+│  3. Stock Provider → footage clips (cached)           │
+│  4. TTS Provider → narration audio + subtitles        │
+│  5. Compose Service → FFmpeg → final .mp4             │
 │                                                       │
 │  Mid-length pipeline (3-15 min):                      │
-│  1. Planner (LLM) → chaptered storyboard              │
-│  2. Videographer rules → hook, pacing, B-roll,        │
+│  1. Prompt director (optional) → structure hints      │
+│  2. Planner (LLM) → chaptered storyboard              │
+│  3. Videographer rules → hook, pacing, B-roll,        │
 │     transitions, duration rebalancing                 │
-│  3. Scene-by-scene footage + TTS + subtitles          │
-│  4. FFmpeg compose with chapter structure             │
+│  4. Scene-by-scene footage + TTS + subtitles          │
+│  5. FFmpeg compose with chapter structure             │
 │                                                       │
 │  Plugin Registry (implemented):                       │
 │  ├── LLM:   openai, deepseek, ollama, lmstudio       │
@@ -205,6 +207,55 @@ is future work** (inline scene edit, drag reorder).
   Playwright e2e headless in `webapp/e2e`
 - Acceptance: single-scene narration edit re-renders in <30s on Goliath;
   full re-render untouched scenes = 100% cache hits.
+
+**R10. Prompt director — trope & genre templates (Planned, v0.4+)**
+Optional enrichment layer *before* LLM script/storyboard calls. Today prompts
+are thin: `SYSTEM_PROMPT` in `providers/llm_openai.py` (shorts) and
+`PLANNER_SYSTEM` in `services/planner.py` (mid-length). Prompt director
+injects **narrative structure** without changing the rest of the pipeline.
+
+Inspired by storytelling patterns (TV Tropes–style formulas: cold open,
+problem/solution, montage, listicle, hero's journey compressed) — **not**
+live scraping of tvtropes.org (ToS, HTML noise, rate limits). Ship a
+curated, offline corpus the project owns.
+
+```
+Topic + video_type + optional trope_id / genre
+        │
+        ▼
+┌───────────────────────────┐
+│ services/prompt_director  │  load templates/tropes/*.yaml
+│ enrich(system, user)      │  merge structure hints + examples
+└───────────────────────────┘
+        │
+        ▼
+  generate_script / plan_video (unchanged interfaces)
+        │
+        ▼
+  videographer rules (timing) + critic (R3, QC)
+```
+
+- **Data:** `templates/tropes/*.yaml` — id, label, `video_types[]`, beat
+  outline (scene types + narration goals), optional example hooks. Start with
+  5–8 presets: `tutorial`, `documentary`, `listicle`, `hype-short`,
+  `explainer-problem-solution`, `recap-montage`.
+- **API:** extend `PlanRequest` / short generate body with optional
+  `structure: str | null` (e.g. `trope:tutorial`, `genre:documentary`).
+  Existing `style_notes` remains freeform override.
+- **MCP / REST:** optional `structure` param on `videogen_generate`,
+  `videogen_plan`, `videogen_plan_render`; `videogen_structures` tool lists
+  available templates (mirrors R7 template-list pattern).
+- **Webapp:** genre/structure picker on Generate + Plan (presets + custom
+  `style_notes`).
+- **Tests:** each trope YAML validates against schema; one mocked LLM test
+  proves enriched system prompt contains beat outline when `structure` set.
+- **Docs:** [docs/PROMPT-DIRECTOR.md](./docs/PROMPT-DIRECTOR.md) (mermaid + API flow).
+- **Relation to R7:** R7 = visual presets (fonts, LUT, transitions); R10 =
+  narrative presets (what to say and in what order). Same "templates as data"
+  philosophy, different layer.
+- Acceptance: same topic with `structure=tutorial` vs `structure=hype-short`
+  produces visibly different scene ordering and hook style in storyboard JSON;
+  offline corpus only (no network fetch in default path).
 
 ### Phase 4 — Community + fleet (v0.5, ~2 days)
 

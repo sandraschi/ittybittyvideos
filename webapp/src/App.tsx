@@ -9,6 +9,7 @@ import Logs from "@/pages/logs";
 import Jobs from "@/pages/jobs";
 import Depot from "@/pages/depot";
 import Plan from "@/pages/plan";
+import PromptsPage from "@/pages/prompts";
 import Publish from "@/pages/publish";
 import SettingsPage from "@/pages/settings";
 import StatusPage from "@/pages/status";
@@ -21,6 +22,7 @@ export default function App() {
         <Route path="/" element={<Dashboard />} />
         <Route path="/generate" element={<Generate />} />
         <Route path="/plan" element={<Plan />} />
+        <Route path="/prompts" element={<PromptsPage />} />
         <Route path="/jobs" element={<Jobs />} />
         <Route path="/depot" element={<Depot />} />
         <Route path="/publish" element={<Publish />} />

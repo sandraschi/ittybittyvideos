@@ -1,17 +1,30 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { planRender, planVideo } from "@/lib/api";
+import type { PromptNavState } from "@/lib/prompt-library";
 import { useJobsStore } from "@/store/jobs";
 
 export default function Plan() {
   const navigate = useNavigate();
+  const location = useLocation();
   const qc = useQueryClient();
   const setActiveJobId = useJobsStore((s) => s.setActiveJobId);
   const [topic, setTopic] = useState("");
   const [videoType, setVideoType] = useState("explainer");
   const [duration, setDuration] = useState(300);
   const [preview, setPreview] = useState<string>("");
+  const [structureNote, setStructureNote] = useState<string | null>(null);
+
+  useEffect(() => {
+    const s = location.state as PromptNavState | null;
+    if (!s?.topic) return;
+    setTopic(s.topic);
+    if (s.videoType) setVideoType(s.videoType);
+    const notes = [s.structure, s.styleNotes].filter(Boolean).join(" · ");
+    setStructureNote(notes || null);
+    navigate(location.pathname, { replace: true, state: null });
+  }, [location.pathname, location.state, navigate]);
 
   const previewMut = useMutation({
     mutationFn: () =>
@@ -49,7 +62,17 @@ export default function Plan() {
     <div className="max-w-xl space-y-6">
       <div>
         <h1 className="text-2xl font-bold">Mid-length video</h1>
-        <p className="text-sm text-zinc-500 mt-1">3–15 min · chaptered storyboard + videographer rules</p>
+        <p className="text-sm text-zinc-500 mt-1">
+          3–15 min · chaptered storyboard + videographer rules ·{" "}
+          <Link to="/prompts" className="text-blue-500 hover:underline">
+            Prompt library
+          </Link>
+        </p>
+        {structureNote && (
+          <p className="text-xs text-violet-400/90 mt-1">
+            From library (R10 structure not sent to API yet): {structureNote}
+          </p>
+        )}
       </div>
 
       <div className="space-y-4 rounded-lg border border-zinc-800 bg-zinc-900/80 p-5">

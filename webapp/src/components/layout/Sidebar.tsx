@@ -1,5 +1,6 @@
 import { NavLink } from "react-router-dom";
 import {
+  BookMarked,
   Clapperboard,
   Film,
   HelpCircle,
@@ -21,6 +22,7 @@ const links = [
   { to: "/", label: "Dashboard", icon: LayoutDashboard },
   { to: "/generate", label: "Short video", icon: Sparkles },
   { to: "/plan", label: "Mid-length", icon: Film },
+  { to: "/prompts", label: "Prompt library", icon: BookMarked },
   { to: "/jobs", label: "Jobs", icon: ListVideo },
   { to: "/depot", label: "Depot", icon: Library },
   { to: "/publish", label: "Publish", icon: Share2 },
