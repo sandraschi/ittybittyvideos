@@ -21,11 +21,15 @@ def compose_video(
     bgm_path: Path | None = None,
     word_subtitles: list[SubtitleEntry] | None = None,
     sub_style: str = "sentence",
+    clip_durations: list[float] | None = None,
+    duck: bool = True,
+    duck_ratio: float = 8.0,
+    bgm_volume: float = 0.3,
 ) -> Path:
     output_path.parent.mkdir(parents=True, exist_ok=True)
     w, h = aspect.resolution
 
-    concat_file = _build_concat_file(footage_paths, clip_duration)
+    concat_file = _build_concat_file(footage_paths, clip_duration, clip_durations)
 
     use_karaoke = sub_style == "karaoke" and bool(word_subtitles)
     if sub_style == "karaoke" and not word_subtitles:
@@ -60,15 +64,10 @@ def compose_video(
     else:
         filter_parts.append("[scaled]copy[out]")
 
-    audio_filter = "[1:a]aresample=44100[aout]"
-    if bgm_path and bgm_path.exists():
+    has_bgm = bool(bgm_path and bgm_path.exists())
+    if has_bgm:
         cmd.extend(["-i", str(bgm_path)])
-        bgm_idx = 2  # bgm is the next -i after concat+audio (sub file is a filter input, not -i)
-        audio_filter = (
-            f"[1:a]aresample=44100,volume=1.0[voice];"
-            f"[{bgm_idx}:a]aresample=44100,volume=0.15[bgm];"
-            f"[voice][bgm]amix=inputs=2:duration=first[aout]"
-        )
+    audio_filter = _build_audio_filter(has_bgm, duck=duck, duck_ratio=duck_ratio, bgm_volume=bgm_volume)
 
     full_filter = ";".join(filter_parts) + ";" + audio_filter
     cmd.extend(
@@ -107,14 +106,40 @@ def compose_video(
     return output_path
 
 
-def _build_concat_file(paths: list[Path], clip_duration: float) -> Path:
+def _build_concat_file(paths: list[Path], clip_duration: float, clip_durations: list[float] | None = None) -> Path:
     tmp = Path(tempfile.mktemp(suffix=".txt"))
-    with open(tmp, "w") as f:
-        for p in paths:
-            f.write(f"file '{p}'\n")
+    with open(tmp, "w", encoding="utf-8") as f:
+        for i, p in enumerate(paths):
+            dur = clip_durations[i] if clip_durations and i < len(clip_durations) else clip_duration
+            # FFmpeg resolves concat entries relative to the list file; use absolute paths.
+            abs_path = str(p.resolve()).replace("\\", "/").replace("'", "'\\''")
+            f.write(f"file '{abs_path}'\n")
             f.write("inpoint 0\n")
-            f.write(f"outpoint {clip_duration}\n")
+            f.write(f"outpoint {dur:.3f}\n")
     return tmp
+
+
+def _build_audio_filter(has_bgm: bool, duck: bool = True, duck_ratio: float = 8.0, bgm_volume: float = 0.3) -> str:
+    """Audio graph: narration passthrough, or narration + bgm with optional
+    sidechain ducking (bgm compressed by the voice signal, SPEC R2).
+
+    Input indices: 1 = narration, 2 = bgm (subtitles are a filter source,
+    not an -i input).
+    """
+    if not has_bgm:
+        return "[1:a]aresample=44100[aout]"
+    if not duck:
+        return (
+            f"[1:a]aresample=44100[voice];"
+            f"[2:a]aresample=44100,volume={bgm_volume}[bgm];"
+            f"[voice][bgm]amix=inputs=2:duration=first:dropout_transition=0[aout]"
+        )
+    return (
+        f"[1:a]aresample=44100,asplit=2[voice][sc];"
+        f"[2:a]aresample=44100,volume={bgm_volume}[bgmpre];"
+        f"[bgmpre][sc]sidechaincompress=threshold=0.05:ratio={duck_ratio}:attack=20:release=400[bgmduck];"
+        f"[voice][bgmduck]amix=inputs=2:duration=first:dropout_transition=0[aout]"
+    )
 
 
 def _build_srt(subtitles: list[SubtitleEntry]) -> Path | None:

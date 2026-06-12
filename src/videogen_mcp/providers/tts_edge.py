@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import subprocess
 from pathlib import Path
 
 import edge_tts
@@ -35,7 +36,7 @@ class EdgeTTSProvider(TTSProvider):
                         )
                     )
 
-        duration = subs[-1].end if subs else 0.0
+        duration = subs[-1].end if subs else _probe_audio_duration(output_path)
         sentence_subs = _merge_word_to_sentence(subs, text)
 
         logger.debug(f"TTS: {len(text)} chars -> {duration:.1f}s audio, {len(sentence_subs)} subtitle entries")
@@ -52,6 +53,31 @@ class EdgeTTSProvider(TTSProvider):
         except Exception as e:
             logger.warning(f"Edge TTS health check failed: {e}")
             return False
+
+
+def _probe_audio_duration(path: Path) -> float:
+    try:
+        result = subprocess.run(
+            [
+                "ffprobe",
+                "-v",
+                "error",
+                "-show_entries",
+                "format=duration",
+                "-of",
+                "default=noprint_wrappers=1:nokey=1",
+                str(path),
+            ],
+            capture_output=True,
+            text=True,
+            timeout=30,
+            check=False,
+        )
+        if result.returncode == 0 and result.stdout.strip():
+            return float(result.stdout.strip())
+    except (OSError, ValueError) as e:
+        logger.warning(f"TTS duration probe failed for {path.name}: {e}")
+    return 0.0
 
 
 def _merge_word_to_sentence(words: list[SubtitleEntry], full_text: str) -> list[SubtitleEntry]:

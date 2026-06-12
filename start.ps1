@@ -8,6 +8,7 @@ $ScriptRoot = Split-Path -Parent $PSCommandPath
 $BackendPort = 11054
 
 Set-Location $ScriptRoot
+. (Join-Path $ScriptRoot "scripts\ensure_ffmpeg_path.ps1")
 
 function Write-Step($msg) { Write-Host "`n==> $msg" -ForegroundColor Cyan }
 function Write-OK($msg)   { Write-Host "    OK: $msg" -ForegroundColor Green }

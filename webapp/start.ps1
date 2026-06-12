@@ -10,6 +10,8 @@ $ProjectRoot = Split-Path -Parent $WebRoot
 $BackendPort = 11054
 $FrontendPort = 11055
 
+. (Join-Path $ProjectRoot "scripts\ensure_ffmpeg_path.ps1")
+
 Write-Host "=== roughcut webapp ===" -ForegroundColor Cyan
 
 foreach ($port in @($BackendPort, $FrontendPort)) {
@@ -27,7 +29,8 @@ if (-not $FrontendOnly) {
     uv sync --extra dev
     Pop-Location
 
-    $backendCmd = "Set-Location '$ProjectRoot'; uv run python -m videogen_mcp.server"
+    $ensureFfmpeg = Join-Path $ProjectRoot "scripts\ensure_ffmpeg_path.ps1"
+    $backendCmd = ". '$ensureFfmpeg'; Set-Location '$ProjectRoot'; uv run python -m videogen_mcp.server"
     Start-Process powershell -ArgumentList "-NoExit", "-Command", $backendCmd -WorkingDirectory $ProjectRoot
 
     $ready = $false
