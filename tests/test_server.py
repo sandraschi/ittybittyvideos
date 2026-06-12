@@ -32,6 +32,20 @@ def test_get_job_not_found(client):
     assert data["success"] is False
 
 
+def test_status_endpoint(client):
+    resp = client.get("/api/v1/status")
+    assert resp.status_code == 200
+    data = resp.json()
+    assert data["product"] == "roughcut"
+    assert "ffmpeg" in data
+
+
+def test_tools_endpoint(client):
+    resp = client.get("/api/v1/tools")
+    assert resp.status_code == 200
+    assert resp.json()["count"] == 6
+
+
 def test_providers_endpoint(client):
     resp = client.get("/api/v1/providers")
     assert resp.status_code == 200

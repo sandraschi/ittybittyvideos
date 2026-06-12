@@ -229,14 +229,6 @@ if FastMCP:
 
 
 _webapp_dir = Path(__file__).resolve().parent.parent.parent / "webapp" / "dist"
-if _webapp_dir.exists():
-    from fastapi.staticfiles import StaticFiles
-
-    @rest.get("/")
-    async def serve_index():
-        return FileResponse(_webapp_dir / "index.html")
-
-    rest.mount("/static", StaticFiles(directory=str(_webapp_dir)), name="static")
 
 
 @rest.get("/health")
@@ -318,6 +310,123 @@ async def api_providers():
     from videogen_mcp.providers import list_providers
 
     return {"success": True, "providers": list_providers()}
+
+
+@rest.get("/api/v1/status")
+async def api_status():
+    import shutil
+
+    from videogen_mcp.providers import list_providers
+    from videogen_mcp.services.align import is_available
+    from videogen_mcp.services.pipeline import list_jobs
+    from videogen_mcp.services.publish import PLATFORMS
+
+    settings = get_settings()
+    jobs = list_jobs(50)
+    complete = sum(1 for j in jobs if j.status == JobStatus.COMPLETE)
+    active = sum(1 for j in jobs if j.status not in (JobStatus.COMPLETE, JobStatus.FAILED))
+
+    return {
+        "status": "ok",
+        "version": __version__,
+        "service": "videogen-mcp",
+        "product": "roughcut",
+        "backend_port": settings.videogen_port,
+        "frontend_port": 11055,
+        "ffmpeg": shutil.which("ffmpeg") is not None,
+        "align_available": is_available(),
+        "providers": list_providers(),
+        "job_count": len(jobs),
+        "jobs_complete": complete,
+        "jobs_active": active,
+        "publish_platforms": len(PLATFORMS),
+        "tool_count": 6 if FastMCP else 0,
+    }
+
+
+@rest.get("/api/v1/tools")
+async def api_tools():
+    tools = [
+        {
+            "name": "videogen_generate",
+            "description": "Generate a short video (30-60s) from a topic or custom script.",
+            "kind": "solo",
+        },
+        {
+            "name": "videogen_plan",
+            "description": "Plan a mid-length chaptered storyboard without rendering.",
+            "kind": "solo",
+        },
+        {
+            "name": "videogen_plan_render",
+            "description": "Plan and render a mid-length video (3-15 min).",
+            "kind": "solo",
+        },
+        {"name": "videogen_status", "description": "Poll job progress.", "kind": "solo"},
+        {"name": "videogen_list_jobs", "description": "List recent generation jobs.", "kind": "solo"},
+        {"name": "videogen_providers", "description": "List LLM, stock, and TTS providers.", "kind": "solo"},
+    ]
+    return {"success": True, "tools": tools, "count": len(tools)}
+
+
+@rest.get("/api/v1/jobs/{job_id}/publish-pack")
+async def api_publish_pack(job_id: str):
+    from videogen_mcp.services.pipeline import get_job
+    from videogen_mcp.services.publish import build_publish_pack
+
+    job = get_job(job_id)
+    if not job:
+        return {"success": False, "message": f"Job {job_id} not found"}
+    return build_publish_pack(job)
+
+
+@rest.post("/api/v1/jobs/{job_id}/reveal")
+async def api_reveal_job(job_id: str):
+    import platform
+    import subprocess
+
+    from videogen_mcp.services.pipeline import get_job
+
+    job = get_job(job_id)
+    if not job or job.status != JobStatus.COMPLETE or not job.output_path:
+        return {"success": False, "message": "Video not ready"}
+    path = Path(job.output_path)
+    if not path.exists():
+        return {"success": False, "message": "Output file missing on disk"}
+
+    if platform.system() == "Windows":
+        subprocess.Popen(["explorer", "/select,", str(path.resolve())])  # noqa: S603
+        return {"success": True, "message": "Opened Explorer with file selected."}
+    return {
+        "success": True,
+        "message": "Reveal is Windows-only; use download or open path manually.",
+        "path": str(path.resolve()),
+    }
+
+
+if _webapp_dir.exists():
+    from fastapi.responses import JSONResponse
+    from fastapi.staticfiles import StaticFiles
+
+    assets_dir = _webapp_dir / "assets"
+    if assets_dir.is_dir():
+        rest.mount("/assets", StaticFiles(directory=str(assets_dir)), name="assets")
+
+    @rest.get("/")
+    async def serve_index():
+        return FileResponse(_webapp_dir / "index.html")
+
+    @rest.get("/{spa_path:path}")
+    async def spa_fallback(spa_path: str):
+        if spa_path.startswith(("api/", "mcp", "docs", "redoc", "openapi.json", "health")):
+            return JSONResponse({"success": False, "message": "Not found"}, status_code=404)
+        candidate = _webapp_dir / spa_path
+        if candidate.is_file():
+            return FileResponse(candidate)
+        index = _webapp_dir / "index.html"
+        if index.is_file():
+            return FileResponse(index)
+        return JSONResponse({"success": False, "message": "Webapp not built"}, status_code=404)
 
 
 if FastMCP:

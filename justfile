@@ -12,6 +12,20 @@ bootstrap:
 dev:
     uv run python -m videogen_mcp.server
 
+# Vite dev webapp (:11055)
+web:
+    Set-Location "{{justfile_directory()}}\webapp"
+    if (Get-Command bun -ErrorAction SilentlyContinue) { bun run dev -- --port 11055 --host 127.0.0.1 } else { npm run dev -- --port 11055 --host 127.0.0.1 }
+
+# Build webapp to webapp/dist (served by backend at /)
+build-web:
+    Set-Location "{{justfile_directory()}}\webapp"
+    if (Get-Command bun -ErrorAction SilentlyContinue) { bun install; bun run build } else { npm install; npm run build }
+
+# Full stack dev (backend + webapp)
+stack:
+    & "{{justfile_directory()}}\webapp\start.ps1"
+
 # Run with MCP transport
 serve:
     uv run python -m videogen_mcp.server

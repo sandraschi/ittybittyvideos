@@ -16,4 +16,5 @@ server_err.log
 .pyright/
 node_modules/
 webapp/dist/
+*.tsbuildinfo
 *.bak

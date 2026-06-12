@@ -1,238 +1,263 @@
 # roughcut / videogen-mcp — Assessment by Cursor
 
-**Date:** 2026-06-12  
+**Date:** 2026-06-12 (rev 2 — post-Fable timeout)  
 **Assessed by:** Cursor (Composer)  
-**Audience:** Fable 5, DeepSeek v4, and any agent continuing this repo  
+**Audience:** Fable 5 (resume after 5h timeout), DeepSeek v4, any continuing agent  
 **Repo path:** `D:\Dev\repos\videogen-mcp`  
 **GitHub remote:** `https://github.com/sandraschi/roughcut.git` (private)  
-**Version assessed:** 0.1.0 (last commit `2042d52`; **dirty working tree** — see § Uncommitted work)  
-**Supersedes:** n/a (first cross-agent assessment)
+**Version assessed:** 0.1.0  
+**HEAD commit:** `9ed0a75` — `feat(R1): universal word-level subtitles via faster-whisper forced alignment + karaoke ASS captions`  
+**Working tree:** **dirty** — webapp, publish API, R2 partial, doc drift (see § Uncommitted work)  
+**Supersedes:** rev 1 (same day; pre-R1 commit, pre-webapp)
+
+---
+
+## Fable 5 — resume here (5h timeout)
+
+Fable likely died mid-**SPEC R2** (beat snap + music ducking):
+
+| R2 piece | State | File |
+|----------|--------|------|
+| Music ducking (sidechaincompress) | **In compose, uncommitted** | `services/compose.py` — `_build_audio_filter`, `duck`/`duck_ratio` params |
+| Beat detection + snap | **Module written, not wired** | `services/audio.py` (untracked) — `detect_beats`, `snap_cut_durations` |
+| librosa extra | **Missing** | `pyproject.toml` has `align` extra only; needs `beats = ["librosa>=0.10"]` |
+| Beat tests | **Missing** | No `tests/test_audio.py` |
+| Pipeline integration | **Not done** | `pipeline.py` / `pipeline_extended.py` do not import `audio.py` yet |
+
+**Do not restart R2 from scratch.** Read Fable's `compose.py` diff and finish wiring: BGM path → `detect_beats(bgm)` → `snap_cut_durations` → concat timings. Commit as `feat(R2): beat snap + music ducking` after tests.
+
+**Do not touch** uncommitted `webapp/` or `publish.py` unless merging — Cursor owns that slice; rebase Fable work on top after webapp commit lands.
 
 ---
 
 ## Instructions for downstream agents
 
-Read this file **before** editing `src/`, README, or SPEC. Do not re-litigate naming (§ Naming). Do not start SPEC R3–R8 features until P0/P1 items here are closed. Prefer **consolidation over expansion**. When you finish a tracked item, update the reconciliation table and add your agent id + date to § Agent log.
+1. Read this file before editing `src/`, README, or SPEC.  
+2. Naming is settled (§ Naming) — do not reopen.  
+3. **Commit order:** (A) webapp + publish + server API → (B) Fable R2 finish → (C) job persistence.  
+4. Do not start SPEC R3–R8 until P1-1 (job store) is closed.  
+5. Update reconciliation table + agent log when closing items.
 
 ---
 
 ## Executive summary
 
-**roughcut** is a credible **0.1.0 MVP scaffold**: FastMCP 3.2 + FastAPI, short-form pipeline, mid-length planner + videographer rules, seven provider plugins, Tauri/NSIS shell, and **59 passing unit tests**. Architecture is genuinely better than MoneyPrinterTurbo-style monoliths.
+**roughcut** graduated from “afternoon scaffold” to **credible 0.1.0 product skeleton**:
 
-It is **not yet production-shippable**: jobs are in-memory only, there are no integration/E2E tests (FFmpeg, APIs), docs are stale vs working tree, and R1 alignment work is **uncommitted**. The SPEC roadmap (R1–R8) is a multi-week product plan sitting on a one-day codebase — treat it as backlog, not current scope.
+- **R1 shipped** (committed): faster-whisper alignment, karaoke ASS, CosyVoice timing fix path  
+- **SOTA webapp** (uncommitted): React/Vite, 10 pages, Publish handoff for TikTok/Shorts/Reels  
+- **Publish API** (uncommitted): caption pack, Explorer reveal, platform deep links  
+- **64 tests green** (uncommitted +3 publish, +2 status/tools vs 59 at R1 commit)  
+- **R2 half-done** (Fable timeout): ducking in compose; beats module orphan  
 
-**Naming is settled:** product = **roughcut**; Python/MCP package = **videogen-mcp** (`videogen_*` tools, `VIDEOGEN_*` env). Do not rename the package unless Sandra explicitly asks.
+Still **not production-shippable**: in-memory jobs, no FFmpeg E2E test, no full render demo on disk, README comparison table still says “42 tests”, **20 `*.bak` files** on disk, **4 pyright errors** in `tts_edge.py` (pre-existing).
+
+**Verdict:** Strong momentum. Next win = **two commits** (webapp stack, then R2 finish) + **job persistence**. Not Screening Room.
 
 ---
 
 ## Naming (do not reopen)
 
-| Layer | Name | Notes |
-|-------|------|-------|
-| Product / brand | **roughcut** | README title, Tauri app, GitHub repo |
-| Python package | `videogen-mcp` / `videogen_mcp` | Fleet MCP convention |
-| MCP server id | `videogen-mcp` | Tool prefix `videogen_*` |
-| Env prefix | `VIDEOGEN_*` | Keep for fleet consistency |
-| Local folder | `videogen-mcp` | OK; rename optional |
-| Native crate | `roughcut-native` | Tauri sidecar |
-
-**Rule:** User-facing copy says *roughcut*. Code/API/MCP stays *videogen*.
+| Layer | Name |
+|-------|------|
+| Product | **roughcut** |
+| GitHub | `roughcut` |
+| Package / MCP | `videogen-mcp` / `videogen_*` |
+| Env | `VIDEOGEN_*` |
+| Tauri | `roughcut-native` |
 
 ---
 
 ## Reconciliation (claims vs verified state)
 
-Verified 2026-06-12 via source read + `uv run pytest` (59 passed).
+Verified 2026-06-12 rev 2: `git log`, source read, `uv run pytest` → **64 passed**.
 
-| Claim (README / SPEC) | Status | Evidence |
-|----------------------|--------|----------|
-| 42 tests | **Stale** | 59 tests pass; +17 from uncommitted `align` work |
-| Mid-length 3–15 min pipeline | **Implemented** | `planner.py`, `videographer.py`, `pipeline_extended.py` |
-| Plugin registry (7 providers) | **Implemented** | `providers/*.py`, `test_providers.py` |
-| CosyVoice word-level subs | **Partial** | R1 `align.py` wired in `pipeline.py`; **not committed** |
-| edge-tts word timestamps | **Implemented** | `tts_edge.py` + compose karaoke path |
-| Webapp UI | **Skeleton only** | Single static `webapp/dist/index.html`; no Vite/React source |
-| Tauri NSIS installer | **Scaffolded** | `native/` built; release artifacts in tree |
-| MCP at `/mcp` | **Implemented** | `server.py` mounts `mcp.http_app()` |
-| Job persistence | **Missing** | `_jobs: dict` in `pipeline.py` — lost on restart |
-| FFmpeg compose | **Implemented, untested E2E** | `compose.py` shells out; tests cover SRT helpers only |
-| CogVideoX / CosyVoice local | **HTTP stubs** | No CI/integration proof against real servers |
-| SPEC R2–R8 | **Not started** | Roadmap only |
-| `*.bak` agent backups | **Present on disk** | 16 files; gitignored but clutter agents |
+| Claim | Status | Notes |
+|-------|--------|-------|
+| 42 tests (README table vs MPT) | **Stale** | Marketing table; body says 59; actual **64** |
+| R1 forced alignment | **Done (committed)** | `9ed0a75`, `align.py`, `--extra align` |
+| Karaoke ASS subs | **Done (committed)** | `compose.py` `_build_ass_karaoke` |
+| CosyVoice word-level | **Fixed via align** | No native word boundaries; align post-pass |
+| R2 beat snap | **Partial (Fable WIP)** | `audio.py` untracked; not in pipeline |
+| R2 music ducking | **Partial (Fable WIP)** | `compose.py` sidechain; uncommitted |
+| SOTA webapp | **Done (uncommitted)** | `webapp/src/` — 10 pages, builds clean |
+| Publish / social handoff | **Done (uncommitted)** | `publish.py`, Publish page, `/publish-pack` |
+| Mid-length pipeline | **Implemented** | planner + videographer + extended pipeline |
+| Job persistence | **Missing** | `_jobs` dict |
+| FFmpeg E2E | **Missing** | Unit tests on SRT/align only |
+| mcp-central-docs | **Done** | `projects/roughcut/` + competition analysis |
+| `*.bak` clutter | **Worse (20 files)** | Delete before next agent session |
+| pyright clean | **No** | 4 errors `tts_edge.py` TypedDict (known pre-R1) |
+
+---
+
+## Uncommitted work (2026-06-12 evening)
+
+```
+M  ASSESSMENT-BY-CURSOR.md, README.md, SPEC.md, justfile
+M  src/videogen_mcp/server.py          # status, tools, publish-pack, reveal, SPA dist
+M  src/videogen_mcp/services/compose.py # R2 ducking (Fable)
+M  tests/test_server.py
+?? src/videogen_mcp/services/audio.py   # R2 beats (Fable)
+?? src/videogen_mcp/services/publish.py
+?? tests/test_publish.py
+?? webapp/                               # full React app + package-lock
+```
+
+**Suggested commits:**
+
+1. `feat: SOTA webapp + publish API + social handoff` — webapp, publish, server, justfile, tests, docs  
+2. `feat(R2): beat-aware cuts + music ducking` — Fable finishes audio wiring + pyproject beats extra + tests  
 
 ---
 
 ## P0 — Fix before new features
 
-### P0-1. Commit or revert the R1 alignment WIP
+### P0-1. Commit webapp + publish slice (Cursor)
 
-**Dirty files (2026-06-12):**
-
-```
-M  README.md, pyproject.toml, uv.lock
-M  config/settings.py, providers/base.py, providers/tts_edge.py
-M  services/compose.py, pipeline.py, pipeline_extended.py
-?? services/align.py, tests/test_align.py
-```
-
-`align.py` is good work (optional `faster-whisper`, honest `None` fallback, difflib canonical mapping). **Either:**
-
-1. **Commit as one coherent R1 slice** (`feat: R1 forced alignment + karaoke compose`), or  
-2. **Stash/revert** if another agent is redoing R1 differently.
-
-Do **not** leave two agents editing `pipeline.py` / `compose.py` in parallel without reading each other's diffs.
-
-### P0-2. Sync docs to implementation
-
-After P0-1 lands, update in the **same PR/commit**:
-
-| File | Fix |
-|------|-----|
-| `README.md` | Test count → 59; document `uv sync --extra align`; FFmpeg required on PATH |
-| `README-zh.md` | Same test count |
-| `SPEC.md` | Mark R1 partial/complete; note `videogen_align`, `videogen_sub_style` |
-| `pyproject.toml` | Description still says "short video" only — mention mid-length |
-
-### P0-3. Delete `*.bak` files from disk
-
-16 timestamped backups under `src/`, root. Already in `.gitignore`. **Delete them.** They cause agents to read stale code and re-introduce reverted logic.
-
----
-
-## P1 — High value, small scope
-
-### P1-1. Durable job store
-
-Replace in-memory `_jobs` with SQLite or JSON files under `videogen_output_dir`. Minimum: persist `job_id`, `status`, `progress`, `output_path`, `error`, `created_at`. Required before Tauri/desktop "actually ships" claim.
-
-### P1-2. One integration test (mocked FFmpeg)
-
-Add `tests/test_compose_integration.py` that mocks `subprocess.run` and asserts FFmpeg argv includes expected scale/subtitle filters. Proves compose wiring without requiring FFmpeg in CI (private repo = no GH Actions anyway; still valuable locally).
-
-### P1-3. Document hard dependencies
-
-Add to README **Requirements**:
-
-- FFmpeg on PATH (compose hard-fails without it)
-- Optional: `uv sync --extra align` for faster-whisper
-- API keys: `OPENAI_API_KEY`, `PEXELS_API_KEY` (defaults)
-
-### P1-4. Run `just check` before handoff
+Single commit; run before Fable R2 to reduce merge pain:
 
 ```powershell
 Set-Location D:\Dev\repos\videogen-mcp
-uv sync --extra dev --extra align
-just check
+uv sync --extra dev
+Set-Location webapp; npm run build; Set-Location ..
+uv run pytest -q
+# git add webapp/ publish.py test_publish.py server.py justfile README SPEC ASSESSMENT
 ```
 
-Fix any ruff/pyright regressions from R1 WIP before claiming done.
+### P0-2. Finish R2 (Fable resume)
+
+- Add `[project.optional-dependencies] beats = ["librosa>=0.10"]`  
+- Wire `detect_beats` + `snap_cut_durations` in `pipeline.py` when BGM present  
+- `tests/test_audio.py` for snap monotonicity + tolerance  
+- Env: `VIDEOGEN_BEAT_SNAP`, `VIDEOGEN_DUCK_DB` per SPEC  
+
+### P0-3. Sync README numbers
+
+| Location | Fix |
+|----------|-----|
+| README MPT table | “42 tests” → “64+ tests” |
+| README Dev section | “59 tests” → “64 tests” |
+| README-zh.md | Same |
+| pyproject description | Mention mid-length + MCP |
+
+### P0-4. Delete `*.bak` files (20 on disk)
+
+Gitignored but agents read them. PowerShell:
+
+```powershell
+Get-ChildItem -Path D:\Dev\repos\videogen-mcp -Recurse -Filter *.bak | Remove-Item -Force
+```
+
+### P0-5. Fix pyright in `tts_edge.py` (4 errors)
+
+TypedDict optional keys — use `.get()` or narrow type. Blocks `just check` green run.
 
 ---
 
-## P2 — Hygiene & drift
+## P1 — High value next
 
-- **`webapp/dist/`** is gitignored but a committed-looking `index.html` exists — clarify in SPEC: static placeholder until R6 React editor.
-- **`native/target/`** — ensure fully gitignored; don't commit Rust build artifacts.
-- **CORS `allow_origins=["*"]`** — fine for local MCP; document if desktop webview needs tighter origins later.
-- **No mcpb manifest yet** — deferred per SPEC; don't half-add unless Sandra wants fleet packaging now.
-- **No CI** — correct for private repo per fleet standards; local `just check` is the gate.
-
----
-
-## What is genuinely good (preserve)
-
-1. **Videographer rules engine** (`services/videographer.py`) — real differentiator vs short-form clones; well-tested.
-2. **One-file-per-provider registry** — clean extension point; adding DeepSeek LLM = ~40 lines in `providers/llm_deepseek.py`.
-3. **Mid-length planner** — chaptered storyboard is the product thesis; don't collapse back to single-script mode.
-4. **Honest optional deps** — `align.py` IMPLEMENTATION_HONESTY pattern; replicate for future features.
-5. **Dual surface** — REST + MCP on one FastAPI app matches fleet SOTA.
-6. **Tone / positioning** — roughcut brand vs MPT is clear; keep voice, fix facts.
+| ID | Item | Why |
+|----|------|-----|
+| P1-1 | **SQLite job store** | Restart-safe; Publish page useful after reboot |
+| P1-2 | **Mocked FFmpeg integration test** | Prove compose argv without real encode |
+| P1-3 | **One golden render** | Goliath: topic → mp4 → Publish page screenshot/GIF |
+| P1-4 | **YouTube Shorts upload (Tier 2)** | Best API ROI for automated publish |
 
 ---
 
-## What NOT to build next (agent trap list)
+## P2 — Hygiene
 
-| Temptation | Why skip now |
-|------------|--------------|
-| SPEC R3 Screening Room (VLM critique) | Needs working E2E render + job persistence first |
-| SPEC R4 arXiv grounding | Large scope; arxiv-mcp exists — integrate later |
-| SPEC R5 semantic footage matching | Premature without eval set + baseline renders |
-| SPEC R6 full React storyboard editor | Big UI project; backend scene cache doesn't exist yet |
-| Rename package to `roughcut-mcp` | Breaks tool names unless Sandra approves fleet-wide |
-| Add GitHub Actions | Private repo — fleet norm is no CI |
-| More README shitposting | Fine for marketing; fix stale numbers first |
-
-**Recommended next feature after P0/P1:** SPEC **R2** (beat-aware cuts + music ducking) *or* finish **R1** karaoke acceptance test with a real audio fixture — not R3+.
+- Commit `webapp/package-lock.json`; keep `webapp/dist/` gitignored (build locally or in Tauri pipeline)  
+- Apps Hub / Skill page — deferred (no skills provider yet); OK for 0.1.0  
+- mcpb packaging — deferred  
+- No GitHub Actions — correct for private repo  
 
 ---
 
-## Architecture map (for agents new to the tree)
+## Webapp inventory (uncommitted, SOTA-aligned)
+
+| Page | Purpose |
+|------|---------|
+| Dashboard | Health, providers, Ollama probe, recent jobs |
+| Short video | 30–60s generate, 9:16 default |
+| Mid-length | Plan preview + render |
+| Jobs | Poll progress → link to Publish |
+| **Publish** | Download, caption copy, Explorer reveal, platform URLs |
+| Tools | MCP catalog via `/api/v1/tools` |
+| Chat | REST quick generate/plan |
+| Status | JSON audit |
+| API Docs | Swagger/ReDoc iframe |
+| Help | Setup + publish tiers |
+
+Start: `webapp/start.ps1` or `just stack` · Dev :11055 · API :11054
+
+---
+
+## Publishing strategy (minimum fuss)
+
+| Tier | Status | Method |
+|------|--------|--------|
+| 1 | **Shipped (uncommitted)** | Publish page + `publish-pack` API |
+| 2 | Planned v0.2 | YouTube Data API resumable Shorts upload |
+| 3 | Future | TikTok Content Posting API (OAuth + review) |
+| 4 | Future | Postiz schedule-once → many platforms |
+
+Generate **9:16** for TikTok/Reels/Douyin; **16:9** for YouTube long / LinkedIn.
+
+---
+
+## Architecture map (current)
 
 ```
 src/videogen_mcp/
-  server.py              FastAPI + FastMCP tools + REST
-  config/settings.py     pydantic-settings (VIDEOGEN_*)
-  models/schema.py       short-form job/request types
-  models/storyboard.py   mid-length plan types
-  providers/             @register_llm|stock|tts plugins
+  server.py              FastAPI + MCP + webapp SPA + publish/status/tools API
   services/
-    pipeline.py          short jobs (in-memory _jobs)
-    pipeline_extended.py mid-length render
+    pipeline.py          short jobs (in-memory)
+    pipeline_extended.py mid-length
     planner.py           LLM storyboard
-    videographer.py      post-LLM editing rules  ← core IP
-    compose.py           FFmpeg concat + subs
-    align.py             R1 whisper alignment (WIP, uncommitted)
-    cache.py             footage cache
-native/                  Tauri roughcut-native + build.ps1
-webapp/dist/             static HTML placeholder UI
-tests/                   unit tests only (59)
+    videographer.py      editing rules ← core IP
+    compose.py           FFmpeg + karaoke ASS + ducking (R2 partial)
+    align.py             R1 whisper alignment ✅
+    audio.py             R2 beats ⚠️ untracked, unwired
+    publish.py           social handoff ⚠️ uncommitted
+    cache.py
+webapp/                  React SOTA ⚠️ uncommitted
+native/                  Tauri + NSIS
+tests/                   64 passed
 ```
-
-**Entry:** `uv run python -m videogen_mcp.server` → `http://127.0.0.1:11054/health`
 
 ---
 
-## Standards conformance (fleet)
+## Standards conformance
 
 | Standard | Status |
 |----------|--------|
 | FastMCP ≥3.2 | ✅ |
-| Port 11054 | ✅ |
-| 12-factor env (`VIDEOGEN_*`) | ✅ |
-| Portmanteau / tool count reasonable | ✅ (6 tools) |
-| ruff + pytest + pyright | ✅ (`just check`) |
-| Private repo — no GH Actions | ✅ (none present) |
-| mcp-central-docs alignment | ⚠️ not cross-linked yet |
-| mcpb packaging | ❌ deferred |
-| Implementation honesty (optional deps) | ✅ in align.py |
-| Git checkpoint before batch edits | ⚠️ R1 WIP uncommitted |
+| Ports 11054/11055 | ✅ registered in MCD |
+| WEBAPP_SOTA (React/Vite/Tailwind) | ✅ uncommitted |
+| ruff | ✅ |
+| pyright | ❌ 4 known errors |
+| pytest | ✅ 64 |
+| mcp-central-docs | ✅ |
+| Job persistence | ❌ |
+| mcpb | ❌ deferred |
 
 ---
 
-## Minimal spin-up (verified)
+## What NOT to build (unchanged)
 
-```powershell
-Set-Location D:\Dev\repos\videogen-mcp
-Copy-Item .env.example .env   # add OPENAI_API_KEY, PEXELS_API_KEY
-uv sync --extra dev
-uv sync --extra align         # optional, for R1 alignment
-just dev                      # or: uv run python -m videogen_mcp.server
-```
-
-Requires **FFmpeg** on PATH. Without API keys, LLM/stock steps fail at runtime (expected).
+R3 Screening Room, R4 arXiv grounding, R5 semantic match, R6 storyboard editor — all blocked on P1-1 + golden render.
 
 ---
 
-## Suggested work split (Fable 5 / DeepSeek v4)
+## Suggested agent split (post-timeout)
 
 | Agent | Own | Avoid |
 |-------|-----|-------|
-| **Whoever touched R1 last** | Finish P0-1, P0-2, P0-3; run `just check` | Starting R2/R3 in same session |
-| **Other agent** | P1-1 job persistence **or** P1-2 integration test | Editing same files as R1 commit |
-| **Either** | `providers/llm_deepseek.py` if Sandra wants DeepSeek | Renaming repo/package |
-
-**Merge rule:** One agent commits R1; second agent rebases on that before pipeline/compose edits.
+| **Cursor / Sandra** | Commit webapp + publish (P0-1), README sync | Rewriting R2 compose |
+| **Fable 5 (resume)** | Finish R2 wiring + tests (P0-2) | Rebuilding webapp |
+| **DeepSeek v4** | P1-1 job SQLite **after** above commits | Parallel pipeline edits |
 
 ---
 
@@ -240,12 +265,23 @@ Requires **FFmpeg** on PATH. Without API keys, LLM/stock steps fail at runtime (
 
 | Date | Agent | Action |
 |------|-------|--------|
-| 2026-06-12 | Cursor (Composer) | Initial assessment; 59 tests verified; R1 WIP noted uncommitted |
-
-*(Append rows when you close P0/P1 items.)*
+| 2026-06-12 | Cursor (Composer) | rev 1 assessment; 59 tests; R1 pre-commit |
+| 2026-06-12 | Fable 5 | R1 commit `9ed0a75`; R2 partial (audio.py, compose ducking); **5h timeout** |
+| 2026-06-12 | Cursor (Composer) | SOTA webapp + publish API (uncommitted); rev 2 assessment |
 
 ---
 
-## Verdict
+## Verdict (rev 2)
 
-**Keep the name roughcut.** Keep the package videogen-mcp. The codebase is a strong day-one foundation with a videographer rules engine that actually matters — but two LLMs sprinting on the same afternoon left backup files, stale README numbers, and uncommitted overlapping edits. **Next session = consolidate, not expand.** Ship R1 + job persistence before any "Screening Room" dreams.
+**roughcut is going great** — R1 landed, webapp + publish path exist, Fable left R2 on the 10-yard line. The repo's enemy is now **uncommitted sprawl** and **agent backup files**, not architecture.
+
+**Next 2 hours for a human or agent:** commit webapp → Fable finishes R2 → delete `.bak` → job SQLite → one demo video through Publish.
+
+---
+
+## MCD (canonical fleet mirror)
+
+| Doc | Path |
+|-----|------|
+| Project page | `mcp-central-docs/projects/roughcut/README.md` |
+| Competition | `mcp-central-docs/projects/roughcut/COMPETITIVE_ANALYSIS.md` |

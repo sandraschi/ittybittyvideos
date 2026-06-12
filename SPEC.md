@@ -2,7 +2,9 @@
 
 **Version**: 0.1.0
 **Port**: 11054 (backend, serves webapp dist) / 11055 (Vite dev server)
-**Status**: MVP — core pipeline + mid-length mode implemented; webapp skeleton only
+**Status**: MVP — core pipeline + mid-length mode; SOTA webapp (React/Vite, 10 pages)
+
+**Fleet docs:** [ASSESSMENT-BY-CURSOR.md](./ASSESSMENT-BY-CURSOR.md) · [MCD project page](../mcp-central-docs/projects/roughcut/README.md) · [Competition analysis](../mcp-central-docs/projects/roughcut/COMPETITIVE_ANALYSIS.md)
 
 ## Problem
 
@@ -88,7 +90,11 @@ timing for every provider.
 | `/api/v1/jobs/{id}` | GET |
 | `/api/v1/jobs/{id}/download` | GET |
 | `/api/v1/providers` | GET |
-| `/` + `/static` | webapp dist (if built) |
+| `/api/v1/jobs/{id}/publish-pack` | GET |
+| `/api/v1/jobs/{id}/reveal` | POST |
+| `/api/v1/status` | GET |
+| `/api/v1/tools` | GET |
+| `/` + `/assets` | webapp dist (after `just build-web`) |
 
 ## Config
 

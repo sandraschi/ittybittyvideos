@@ -41,7 +41,7 @@ You give it a topic. It gives you a video. With narration, stock footage, subtit
 
 | MoneyPrinterTurbo (86k stars) | roughcut |
 |------------------------------|----------|
-| Zero tests | 42 tests |
+| Zero tests | 64+ tests |
 | One 2000-line LLM router | Plugin registry (7 providers, one file each) |
 | Short-form only (60s max) | **3-15 minute mid-length videos** |
 | No scene planning | **Chaptered storyboard + videographer rules** |
@@ -116,12 +116,22 @@ Not just concatenation. Professional editing patterns, codified:
 
 ## Dev
 
-```bash
-just test      # 42 tests
+```powershell
+just test      # 64 tests
 just lint      # ruff
 just typecheck # pyright
 just check     # all three
 ```
+
+## Fleet docs
+
+| Doc | Location |
+|-----|----------|
+| Cross-agent assessment | [ASSESSMENT-BY-CURSOR.md](./ASSESSMENT-BY-CURSOR.md) |
+| MCD project page | [mcp-central-docs/projects/roughcut/README.md](../mcp-central-docs/projects/roughcut/README.md) |
+| Competition analysis | [mcp-central-docs/projects/roughcut/COMPETITIVE_ANALYSIS.md](../mcp-central-docs/projects/roughcut/COMPETITIVE_ANALYSIS.md) |
+| Webapp | `webapp/start.ps1` → http://127.0.0.1:11055 |
+| Architecture + roadmap | [SPEC.md](./SPEC.md) |
 
 ## License
 
