@@ -4,10 +4,20 @@ from videogen_mcp.services.intros import intro_prompt_block, list_intro_packs, l
 from videogen_mcp.services.prompt_director import enrich_for_short_script, load_trope
 
 
+def test_alpine_mariachi_contrast():
+    pack = load_intro_pack("alpine-mariachi-contrast")
+    assert pack is not None
+    assert "mariachi" in pack.audio.get("music", "").lower()
+    text = intro_prompt_block("alpine-mariachi-contrast", seed=2)
+    assert "alpine" in text.lower() or "Alps" in text
+    assert "mariachi" in text.lower()
+
+
 def test_list_intro_packs():
     packs = list_intro_packs()
     ids = {p["id"] for p in packs}
     assert "bluey-horror-contrast" in ids
+    assert "alpine-mariachi-contrast" in ids
     assert "documentary-gravitas" in ids
 
 

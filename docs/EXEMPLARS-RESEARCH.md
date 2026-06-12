@@ -167,6 +167,7 @@ Opens can be **serious** or **hilarious** — especially **visual × audio contr
 | Pack | Tone | Bit |
 |------|------|-----|
 | `intro:bluey-horror-contrast` | hilarious | Sunny cute visuals, wrong horror sound |
+| `intro:alpine-mariachi-contrast` | hilarious | Serene alpine B-roll, mariachi band slams in loud |
 | `intro:documentary-gravitas` | serious | Ken Burns, piano, thesis statement |
 | `intro:epic-trailer` | epic | BRAAAM, quick cuts, "In a world…" |
 | `intro:deadpan-corporate` | hilarious | HR muzak VO, visuals go feral |

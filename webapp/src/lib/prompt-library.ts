@@ -46,12 +46,26 @@ export const STRUCTURE_PRESETS: { id: string; label: string; note: string }[] = 
 export const INTRO_PRESETS: { id: string; label: string; note: string }[] = [
   { id: "", label: "(none)", note: "Jump straight to hook" },
   { id: "intro:bluey-horror-contrast", label: "Wholesome × horror sound", note: "Bluey-adjacent visuals, dread SFX" },
+  { id: "intro:alpine-mariachi-contrast", label: "Alpine calm × loud mariachi", note: "Serene village, band slides in" },
   { id: "intro:documentary-gravitas", label: "Serious documentary", note: "Cinematic gravitas, measured VO" },
   { id: "intro:epic-trailer", label: "Epic trailer", note: "BRAAAM, in a world…" },
   { id: "intro:deadpan-corporate", label: "Deadpan corporate × chaos", note: "HR voice, visuals unhinged" },
 ];
 
 export const BUILTIN_PROMPTS: SavedPrompt[] = [
+  {
+    id: "sample-alpine-mariachi",
+    title: "Alpine village (mariachi attack)",
+    topic: "Serene travelogue about a misty alpine hamlet — cowbells, chalets, then a mariachi band slides in at full volume",
+    kind: "short",
+    structure: "trope:contrast-intro-sequence",
+    intro: "intro:alpine-mariachi-contrast",
+    styleNotes: "Keep visuals peaceful through beat 1; mariachi is audio-only until optional hard cut",
+    visual_style: "cinematic",
+    visual_tone: "serene",
+    createdAt: "2026-06-12T00:00:00.000Z",
+    updatedAt: "2026-06-12T00:00:00.000Z",
+  },
   {
     id: "sample-bluey-horror-intro",
     title: "Puppy Valley (horror audio)",

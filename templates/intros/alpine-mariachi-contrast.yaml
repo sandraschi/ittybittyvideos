@@ -1,0 +1,34 @@
+id: alpine-mariachi-contrast
+label: Alpine serenity × loud mariachi
+tone: hilarious_contrast
+description: >
+  Opens like a travel film — misty peaks, wooden chalets, cowbells, gentle stream.
+  Then a full mariachi ensemble SLIDES in (literally or as audio): trumpets,
+  guitarrón, aggressive joy. Visuals stay serene; sound does not.
+duration_hint: 12
+visual:
+  style: serene alpine village, golden hour, snow peaks, church steeple, flower boxes, slow pan
+  avoid: mariachi on screen unless as absurd overlay at the cut — contrast is primarily AUDIO
+  shot_types: [wide, aerial, slow pan]
+  search_terms: [alpine village morning mist, swiss chalet peaceful, mountain valley serene]
+audio:
+  music: full mariachi band — trumpets, violins, guitarrón — LOUD, sudden entrance mid-phrase
+  sfx: cowbell fade under → horn stab → crowd cheer optional; slide-whistle optional for comedic entrance
+  contrast_line: "Picture Sound of Music opening. Sound: mariachi bus arrived at 110 decibels."
+  bgm_tags: [mariachi loud, mexican folk brass, comedic sting]
+  entrance: band slides in at 4-6s — no fade, hard attack
+narration:
+  mode: travel_documentary_deadpan
+  examples:
+    - "Nestled in the Alps, time moves gently…"
+    - "Where tradition meets tranquility… [MARIACHI EXPLOSION]"
+    - "The village wakes to birdsong and… trumpets?"
+structure:
+  - Establish alpine peace — wide valley, maybe cowbell (4s)
+  - Hold beauty shot — narrator waxes poetic (3s)
+  - Mariachi SLAMS in — same frame or hard cut, volume absurd (3s)
+  - Smash to main topic or pretend the band was always there
+post_intro: Mariachi can vanish, stay as running gag, or narrator never acknowledges it
+example_lines:
+  - "In this quiet hamlet, residents enjoy… ¡AYAYAY!"
+  - "The only thing louder than the waterfalls is… apparently this."
