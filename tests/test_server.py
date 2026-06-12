@@ -7,8 +7,6 @@ from videogen_mcp.server import rest
 @pytest.fixture
 def client():
     return TestClient(rest)
-
-
 def test_health(client):
     resp = client.get("/health")
     assert resp.status_code == 200
@@ -41,9 +39,11 @@ def test_status_endpoint(client):
 
 
 def test_tools_endpoint(client):
+    from videogen_mcp.mcp_registry import mcp_tool_count
+
     resp = client.get("/api/v1/tools")
     assert resp.status_code == 200
-    assert resp.json()["count"] == 7
+    assert resp.json()["count"] == mcp_tool_count()
 
 
 def test_providers_endpoint(client):

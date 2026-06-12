@@ -1,114 +1,119 @@
-# MCP tools & REST API — ittybitty
-
-Base URL (local): **http://127.0.0.1:11054**
-
-OpenAPI: `/docs` · MCP stream: `/mcp`
-
----
-
-## MCP tools
-
-| Tool | Description |
-|------|-------------|
-| `videogen_generate` | Short video (30–60 s) from topic or script |
-| `videogen_plan` | Mid-length storyboard only (no render) |
-| `videogen_plan_render` | Plan + render mid-length (3–15 min) |
-| `videogen_status` | Poll job by ID |
-| `videogen_list_jobs` | Recent jobs (limit 1–50) |
-| `videogen_providers` | List LLM / stock / TTS providers |
-
-Requires FastMCP installed (`pip install -e .` includes it). If FastMCP is missing, REST still works; `/mcp` is not mounted.
-
----
-
-## REST — generation
-
-### POST `/api/v1/generate`
-
-Short pipeline. Body (JSON):
-
-```json
-{
-  "topic": "Vienna coffee houses",
-  "mode": "deepseek",
-  "aspect": "9:16",
-  "duration": 45
-}
-```
-
-Or custom script:
-
-```json
-{
-  "script": "Your narration paragraphs...",
-  "mode": "script"
-}
-```
-
-Response: `{ "job_id": "...", "status": "queued" }`
-
-### GET `/api/v1/status/{job_id}`
-
-Progress, paths, errors.
-
-### POST `/api/v1/plan` / `/api/v1/plan-render`
-
-Mid-length planning and full render. See OpenAPI schemas.
-
----
-
-## REST — depot
-
-| Method | Path | Description |
-|--------|------|-------------|
-| GET | `/api/v1/depot` | List persisted jobs |
-| POST | `/api/v1/depot/scan` | Rescan `output/` into SQLite |
-| DELETE | `/api/v1/depot/{job_id}` | Remove DB row + optional files |
-| GET | `/api/v1/depot/{job_id}/poster` | Thumbnail JPEG |
-| GET | `/api/v1/download/{filename}` | Download MP4 (safe path resolve) |
-
----
-
-## REST — settings
-
-| Method | Path | Description |
-|--------|------|-------------|
-| GET | `/api/v1/settings` | Current config (keys masked) |
-| PUT | `/api/v1/settings` | Update and persist `.env` |
-| GET | `/api/v1/settings/health` | LLM + stock provider probes |
-
----
-
-## REST — publish
-
-Helpers for manual upload workflows (opens platform URLs, copy hashtags).
-
----
-
-## Job lifecycle
-
-```
-queued → scripting → fetching_footage → tts → composing → completed
-                                                      ↘ failed
-```
-
-State is stored in SQLite (`depot.db`) and mirrored in API responses. Completed jobs appear in **Depot** with file path, duration, and poster frame.
-
----
-
-## Example: curl smoke test
-
-```powershell
-Invoke-RestMethod -Uri http://127.0.0.1:11054/health
-```
-
-```powershell
-$body = @{ topic = "sunset"; mode = "script"; script = "The sun sets slowly." } | ConvertTo-Json
-Invoke-RestMethod -Method Post -Uri http://127.0.0.1:11054/api/v1/generate -Body $body -ContentType "application/json"
-```
-
----
-
-## Authentication
-
-Local dev: no auth on REST/MCP. Do not expose port 11054 to the public internet without adding a reverse proxy and auth layer.
+# MCP tools & REST API — ittybitty
+
+Base URL (local): **http://127.0.0.1:11054**
+
+OpenAPI: `/docs` · MCP stream: `/mcp` · Tool catalog: `/api/v1/tools`
+
+---
+
+## MCP tools (16)
+
+Canonical list lives in `videogen_mcp.mcp_registry.MCP_TOOL_CATALOG` — mirrored by `/api/v1/tools` and `/health` `tool_count`.
+
+| Tool | Kind | Description |
+|------|------|-------------|
+| `videogen_help` | catalog | **Start here** — tools, workflow hints, pack overview |
+| `videogen_generate` | pipeline | Short video (~15–50 s) from topic or script |
+| `videogen_status` | pipeline | Poll job by ID |
+| `videogen_list_jobs` | pipeline | Recent jobs (limit 1–50) |
+| `videogen_plan` | pipeline | Mid-length storyboard only (no render) |
+| `videogen_plan_render` | pipeline | Plan + render mid-length (3–15 min) |
+| `videogen_review` | pipeline | Screening Room VLM critique (`VIDEOGEN_VLM_*`) |
+| `videogen_providers` | catalog | LLM / stock / TTS / talker providers |
+| `videogen_structures` | catalog | R10 trope / structure YAML presets |
+| `videogen_intros` | catalog | Intro sequence packs |
+| `videogen_credits` | catalog | End-credits contributor packs |
+| `videogen_visual_look` | catalog | AI footage style / material / tone presets |
+| `videogen_intro_sample` | catalog | Sample intro prompt block (`intro:id` or bare id) |
+| `videogen_credits_sample` | catalog | Sample absurd credits roll |
+| `videogen_depot` | depot | List finished videos in depot |
+| `videogen_publish_pack` | depot | Publish helpers for a completed job |
+
+### Agent workflow
+
+```
+videogen_help()
+videogen_generate(topic=…, paragraph_count=3, structure= trope:…, intro= intro:…)
+  → videogen_status(job_id)
+  → videogen_depot / videogen_publish_pack / videogen_review
+```
+
+Mid-length: `videogen_plan` → `videogen_plan_render` → `videogen_status`.
+
+Generate/plan/plan_render accept `visual_style`, `visual_material`, `visual_tone` (see `videogen_visual_look`).
+
+Requires FastMCP (`pip install -e .`). If FastMCP is missing, REST still works; `/mcp` is not mounted and `tool_count` is 0.
+
+---
+
+## REST — generation
+
+### POST `/api/v1/generate`
+
+Short pipeline. Body matches `GenerateRequest` (topic, script, aspect, `paragraph_count`, `structure`, `intro`, visual look, …).
+
+Response: `{ "success": true, "job_id": "...", "status": "queued" }`
+
+### POST `/api/v1/plan` / `/api/v1/plan/render`
+
+Mid-length planning and full render. See OpenAPI schemas.
+
+---
+
+## REST — director packs
+
+| Method | Path | MCP equivalent |
+|--------|------|----------------|
+| GET | `/api/v1/structures` | `videogen_structures` |
+| GET | `/api/v1/intros/packs` | `videogen_intros` |
+| GET | `/api/v1/intros/sample` | `videogen_intro_sample` |
+| GET | `/api/v1/credits/packs` | `videogen_credits` |
+| GET | `/api/v1/credits/sample` | `videogen_credits_sample` |
+| GET | `/api/v1/visual-look/catalog` | `videogen_visual_look` |
+
+---
+
+## REST — depot
+
+| Method | Path | MCP equivalent |
+|--------|------|----------------|
+| GET | `/api/v1/depot` | `videogen_depot` |
+| GET | `/api/v1/jobs/{job_id}/publish-pack` | `videogen_publish_pack` |
+| POST | `/api/v1/depot/scan` | — |
+| DELETE | `/api/v1/depot/{job_id}` | — |
+
+---
+
+## REST — settings
+
+| Method | Path | Description |
+|--------|------|-------------|
+| GET | `/api/v1/settings` | Current config (keys masked) |
+| PUT | `/api/v1/settings` | Update and persist `.env` |
+| GET | `/api/v1/settings/stock` | Stock provider probes |
+
+Settings remain REST-only (no MCP write surface).
+
+---
+
+## Job lifecycle
+
+```
+queued → scripting → fetching_footage → tts → composing → completed
+                                                      ↘ failed
+```
+
+---
+
+## Example: curl smoke test
+
+```powershell
+Invoke-RestMethod -Uri http://127.0.0.1:11054/health
+Invoke-RestMethod -Uri http://127.0.0.1:11054/api/v1/tools
+```
+
+---
+
+## Authentication
+
+Local dev: no auth on REST/MCP. Do not expose port 11054 to the public internet without a reverse proxy and auth layer.

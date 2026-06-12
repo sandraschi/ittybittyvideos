@@ -23,6 +23,15 @@ def credits_dir() -> Path:
     return Path(__file__).resolve().parents[3] / "templates" / "credits"
 
 
+def normalize_credits_id(pack: str | None) -> str | None:
+    if not pack or not pack.strip():
+        return None
+    raw = pack.strip()
+    if raw.startswith("credits:"):
+        return raw[8:].strip() or None
+    return raw
+
+
 @lru_cache(maxsize=16)
 def load_credits_pack(pack_id: str) -> CreditsPack | None:
     path = credits_dir() / f"{pack_id}.yaml"

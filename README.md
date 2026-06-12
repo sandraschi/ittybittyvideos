@@ -76,9 +76,9 @@ For AI agents that should generate or plan videos over the Model Context Protoco
 1. Start the backend (Windows app running, or `.\start.bat -BackendOnly`, or `uv run python -m videogen_mcp.server`)
 2. Point your MCP client at **`http://127.0.0.1:11054/mcp`**
 
-Example prompts: *"Generate a 45-second video about Vienna coffee culture"* · *"Plan a 5-minute sourdough tutorial"*
+Example prompts: *"Generate a 45-second video about Vienna coffee culture"* · *"Plan a 5-minute sourdough tutorial"* · *"Call videogen_help first"*
 
-Tool list and REST API: [docs/TOOLS.md](docs/TOOLS.md) · Claude Desktop / MCPB: [INSTALL.md](INSTALL.md)
+Tool list and REST API: [docs/TOOLS.md](docs/TOOLS.md) (16 MCP tools; catalog at `/api/v1/tools`) · Claude Desktop / MCPB: [INSTALL.md](INSTALL.md)
 
 ---
 

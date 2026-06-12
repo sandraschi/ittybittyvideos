@@ -61,6 +61,23 @@ if FastMCP:
     mcp = FastMCP("videogen-mcp")
 
     @mcp.tool()
+    async def videogen_help() -> dict:
+        """List MCP tools, workflow hints, and director pack overview.
+
+        Call first when unsure which videogen_* tool to use.
+
+        ## Return Format
+        {"success": bool, "tools": [...], "workflow_hints": [...], "tool_count": int}
+
+        ## Examples
+        videogen_help()
+        """
+        from videogen_mcp import __version__
+        from videogen_mcp.mcp_registry import mcp_help_payload
+
+        return mcp_help_payload(mcp_enabled=True, version=__version__)
+
+    @mcp.tool()
     async def videogen_generate(
         topic: Annotated[str, Field(description="Topic or keyword for the video.")] = "",
         script: Annotated[str | None, Field(description="Custom script text (skips LLM).")] = None,
@@ -78,6 +95,11 @@ if FastMCP:
         intro: Annotated[
             str, Field(description="Intro pack, e.g. intro:bluey-horror-contrast.")
         ] = "",
+        visual_style: Annotated[
+            str, Field(description="AI footage style preset (see videogen_visual_look).")
+        ] = "",
+        visual_material: Annotated[str, Field(description="AI footage material preset.")] = "",
+        visual_tone: Annotated[str, Field(description="AI footage tone preset.")] = "",
     ) -> dict:
         """Generate a short video from a topic or script.
 
@@ -102,6 +124,9 @@ if FastMCP:
             structure=structure,
             style_notes=style_notes,
             intro=intro,
+            visual_style=visual_style,
+            visual_material=visual_material,
+            visual_tone=visual_tone,
         )
         job = await generate_video(req)
         return {
@@ -184,8 +209,59 @@ if FastMCP:
         return {"success": True, "structures": items, "count": len(items)}
 
     @mcp.tool()
+    async def videogen_intros() -> dict:
+        """List intro sequence packs (serious, contrast, trailer, …).
+
+        ## Return Format
+        {"success": bool, "packs": [{id, label, tone, ...}], "count": int}
+
+        ## Examples
+        videogen_intros()
+        """
+        from videogen_mcp.services.intros import list_intro_packs
+
+        packs = list_intro_packs()
+        return {"success": True, "packs": packs, "count": len(packs)}
+
+    @mcp.tool()
+    async def videogen_credits() -> dict:
+        """List end-credits contributor packs (e.g. absurd Pixar-style roll).
+
+        ## Return Format
+        {"success": bool, "packs": [{id, label, ...}], "count": int}
+
+        ## Examples
+        videogen_credits()
+        """
+        from videogen_mcp.services.credits import list_credits_packs
+
+        packs = list_credits_packs()
+        return {"success": True, "packs": packs, "count": len(packs)}
+
+    @mcp.tool()
+    async def videogen_visual_look() -> dict:
+        """List AI footage look presets for generative stock (LocalGen, Veo, Omni).
+
+        ## Return Format
+        {"success": bool, "ai_stock_providers": [...], "catalog": {style, material, tone}}
+
+        ## Examples
+        videogen_visual_look()
+        """
+        from videogen_mcp.models.visual_look import AI_STOCK_PROVIDERS, LOOK_CATALOG
+
+        return {
+            "success": True,
+            "ai_stock_providers": sorted(AI_STOCK_PROVIDERS),
+            "catalog": LOOK_CATALOG,
+        }
+
+    @mcp.tool()
     async def videogen_intro_sample(
-        pack: Annotated[str, Field(description="Intro pack id, e.g. bluey-horror-contrast.")] = "bluey-horror-contrast",
+        pack: Annotated[
+            str, Field(description="Intro pack id or intro:bluey-horror-contrast.")
+        ] = "bluey-horror-contrast",
+        seed: Annotated[int | None, Field(description="Optional RNG seed for variant lines.")] = None,
     ) -> dict:
         """Sample intro sequence guidance (serious or hilarious visual/audio contrast).
 
@@ -196,19 +272,23 @@ if FastMCP:
         videogen_intro_sample(pack="bluey-horror-contrast")
         videogen_intro_sample(pack="documentary-gravitas")
         """
-        from videogen_mcp.services.intros import intro_prompt_block, load_intro_pack
+        from videogen_mcp.services.intros import intro_prompt_block, load_intro_pack, normalize_intro_id
 
-        block = intro_prompt_block(pack)
-        meta = load_intro_pack(pack)
+        pack_id = normalize_intro_id(pack) or pack.strip()
+        block = intro_prompt_block(pack_id, seed=seed)
+        meta = load_intro_pack(pack_id)
         if not block or not meta:
             return {"success": False, "message": f"Intro pack {pack!r} not found"}
-        return {"success": True, "pack": pack, "tone": meta.tone, "text": block}
+        return {"success": True, "pack": pack_id, "tone": meta.tone, "text": block}
 
     @mcp.tool()
     async def videogen_credits_sample(
-        pack: Annotated[str, Field(description="Credits pack id, e.g. absurd-pixar.")] = "absurd-pixar",
+        pack: Annotated[
+            str, Field(description="Credits pack id or credits:absurd-pixar.")
+        ] = "absurd-pixar",
         lines: Annotated[int, Field(description="Sample lines to return.", ge=5, le=80)] = 24,
         post_credits: Annotated[bool, Field(description="Include post-credits stinger hint.")] = True,
+        seed: Annotated[int | None, Field(description="Optional RNG seed.")] = None,
     ) -> dict:
         """Sample absurd end-credits contributor lines (Pixar-style joke roll).
 
@@ -220,18 +300,19 @@ if FastMCP:
         """
         from videogen_mcp.services.credits import (
             build_contributor_roll,
-            format_roll_text,
             load_credits_pack,
+            normalize_credits_id,
             sample_credits_block,
         )
 
-        block = sample_credits_block(pack, line_count=lines, post_credits=post_credits)
-        roll = build_contributor_roll(pack, count=lines)
+        pack_id = normalize_credits_id(pack) or pack.strip()
+        block = sample_credits_block(pack_id, line_count=lines, post_credits=post_credits, seed=seed)
+        roll = build_contributor_roll(pack_id, count=lines, seed=seed)
         if not block:
             return {"success": False, "message": f"Credits pack {pack!r} not found"}
         return {
             "success": True,
-            "pack": pack,
+            "pack": pack_id,
             "text": block,
             "contributors": [{"name": e.name, "role": e.role} for e in roll[:lines]],
         }
@@ -250,6 +331,9 @@ if FastMCP:
         style_notes: Annotated[str, Field(description="Style guidance for the planner.")] = "",
         structure: Annotated[str, Field(description="R10 trope preset, e.g. trope:pet-food-duo-review.")] = "",
         intro: Annotated[str, Field(description="Intro pack, e.g. intro:bluey-horror-contrast.")] = "",
+        visual_style: Annotated[str, Field(description="AI footage style preset.")] = "",
+        visual_material: Annotated[str, Field(description="AI footage material preset.")] = "",
+        visual_tone: Annotated[str, Field(description="AI footage tone preset.")] = "",
     ) -> dict:
         """Plan an intermediate-length video storyboard with chapters and scenes.
 
@@ -276,6 +360,9 @@ if FastMCP:
             style_notes=style_notes,
             structure=structure,
             intro=intro,
+            visual_style=visual_style,
+            visual_material=visual_material,
+            visual_tone=visual_tone,
         )
         board = await plan_video(req)
         return {
@@ -299,6 +386,9 @@ if FastMCP:
         style_notes: Annotated[str, Field(description="Style guidance.")] = "",
         structure: Annotated[str, Field(description="R10 trope preset.")] = "",
         intro: Annotated[str, Field(description="Intro pack.")] = "",
+        visual_style: Annotated[str, Field(description="AI footage style preset.")] = "",
+        visual_material: Annotated[str, Field(description="AI footage material preset.")] = "",
+        visual_tone: Annotated[str, Field(description="AI footage tone preset.")] = "",
     ) -> dict:
         """Plan AND render an intermediate-length video (3-15 min).
 
@@ -325,6 +415,9 @@ if FastMCP:
             style_notes=style_notes,
             structure=structure,
             intro=intro,
+            visual_style=visual_style,
+            visual_material=visual_material,
+            visual_tone=visual_tone,
         )
         job = await generate_planned_video(req, aspect=VideoAspect(aspect), voice=voice)
         return {
@@ -394,6 +487,51 @@ if FastMCP:
             return {"success": False, "message": "VLM unreachable (set VIDEOGEN_VLM_URL / start Ollama)"}
         return {"success": True, "report": report.model_dump(mode="json")}
 
+    @mcp.tool()
+    async def videogen_depot(
+        limit: Annotated[int, Field(description="Max depot items to return.", ge=1, le=100)] = 20,
+    ) -> dict:
+        """List finished videos persisted in the depot.
+
+        ## Return Format
+        {"success": bool, "summary": {...}, "items": [...], "count": int}
+
+        ## Examples
+        videogen_depot(limit=10)
+        """
+        from videogen_mcp.services.depot import depot_summary, list_depot
+
+        items = list_depot(limit)
+        return {
+            "success": True,
+            "summary": depot_summary().model_dump(),
+            "items": [i.model_dump() for i in items],
+            "count": len(items),
+        }
+
+    @mcp.tool()
+    async def videogen_publish_pack(
+        job_id: Annotated[str, Field(description="Completed job id from generate or plan_render.")],
+    ) -> dict:
+        """Build publish helpers for a completed job (hashtags, platform URLs).
+
+        ## Return Format
+        {"success": bool, "platforms": [...], ...} — same shape as REST publish-pack.
+
+        ## Examples
+        videogen_publish_pack(job_id="abc123def456")
+        """
+        from videogen_mcp.services.job_store import get_job, resolve_output_path
+        from videogen_mcp.services.publish import build_publish_pack
+
+        job = get_job(job_id)
+        if not job:
+            return {"success": False, "message": f"Job {job_id} not found"}
+        path = resolve_output_path(job_id)
+        if path:
+            job = job.model_copy(update={"output_path": str(path)})
+        return build_publish_pack(job)
+
 
 _webapp_dir = webapp_dist_dir()
 
@@ -422,7 +560,15 @@ async def root():
 
 @rest.get("/health")
 async def health():
-    return {"status": "ok", "version": __version__, "service": "videogen-mcp"}
+    from videogen_mcp.mcp_registry import mcp_tool_count
+
+    return {
+        "status": "ok",
+        "version": __version__,
+        "service": "videogen-mcp",
+        "mcp": FastMCP is not None,
+        "tool_count": mcp_tool_count() if FastMCP else 0,
+    }
 
 
 @rest.post("/api/v1/generate")
@@ -642,6 +788,7 @@ async def api_providers():
 async def api_status():
     import shutil
 
+    from videogen_mcp.mcp_registry import mcp_tool_count
     from videogen_mcp.providers import list_providers
     from videogen_mcp.providers.llm_resolve import llm_topic_status
     from videogen_mcp.services.align import is_available
@@ -672,7 +819,8 @@ async def api_status():
         "jobs_complete": complete,
         "jobs_active": active,
         "publish_platforms": len(PLATFORMS),
-        "tool_count": 7 if FastMCP else 0,
+        "mcp_enabled": FastMCP is not None,
+        "tool_count": mcp_tool_count() if FastMCP else 0,
     }
 
 
@@ -712,32 +860,9 @@ async def api_save_settings(payload: SettingsUpdate):
 
 @rest.get("/api/v1/tools")
 async def api_tools():
-    tools = [
-        {
-            "name": "videogen_generate",
-            "description": "Generate a short video (30-60s) from a topic or custom script.",
-            "kind": "solo",
-        },
-        {
-            "name": "videogen_plan",
-            "description": "Plan a mid-length chaptered storyboard without rendering.",
-            "kind": "solo",
-        },
-        {
-            "name": "videogen_plan_render",
-            "description": "Plan and render a mid-length video (3-15 min).",
-            "kind": "solo",
-        },
-        {"name": "videogen_status", "description": "Poll job progress.", "kind": "solo"},
-        {"name": "videogen_list_jobs", "description": "List recent generation jobs.", "kind": "solo"},
-        {"name": "videogen_providers", "description": "List LLM, stock, and TTS providers.", "kind": "solo"},
-        {
-            "name": "videogen_review",
-            "description": "Screening Room: VLM critique of a finished video.",
-            "kind": "solo",
-        },
-    ]
-    return {"success": True, "tools": tools, "count": len(tools)}
+    from videogen_mcp.mcp_registry import mcp_tools_payload
+
+    return mcp_tools_payload()
 
 
 @rest.get("/api/v1/jobs/{job_id}/publish-pack")
