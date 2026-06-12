@@ -83,6 +83,24 @@ if (-not $SkipInstall) {
     Write-Step "Installing dependencies"
     uv sync --quiet
     Write-OK "All dependencies installed"
+
+    # ── 6b. Webapp dist (Help, Logs, Settings pages) ─────────────────
+    $distIndex = Join-Path $ScriptRoot "webapp\dist\index.html"
+    if (-not (Test-Path $distIndex)) {
+        Write-Step "Building webapp (webapp/dist missing)"
+        $node = Get-Command npm -ErrorAction SilentlyContinue
+        if (-not $node) {
+            Write-Warn "Node.js/npm not found — dashboard may be stale. Install Node or run: cd webapp; npm run build"
+        } else {
+            Push-Location (Join-Path $ScriptRoot "webapp")
+            npm install --silent 2>$null
+            npm run build
+            Pop-Location
+            Write-OK "webapp/dist built"
+        }
+    } else {
+        Write-OK "webapp/dist present"
+    }
 }
 
 # ── 7. Launch ─────────────────────────────────────────────────────────

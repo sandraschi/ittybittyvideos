@@ -281,6 +281,12 @@ export interface AppSettings {
   cogvideo_url: string;
   cogvideo_ready: boolean;
   cogvideo_error: string;
+  google_api_key_set: boolean;
+  google_api_key_hint: string;
+  google_cloud_project: string;
+  google_ai_mcp_url: string;
+  veo_ready: boolean;
+  omni_ready: boolean;
   stock_ready_for_renders: boolean;
   stock_hint: string;
   videogen_tts_provider: string;
@@ -309,6 +315,12 @@ export interface SettingsSavePayload {
   ollama_model?: string;
   pexels_api_key?: string;
   cogvideo_url?: string;
+  google_api_key?: string;
+  google_cloud_project?: string;
+  google_cloud_location?: string;
+  google_ai_mcp_url?: string;
+  google_veo_model?: string;
+  google_omni_model?: string;
   videogen_stock_provider?: string;
   videogen_tts_provider?: string;
   edge_tts_voice?: string;
@@ -338,6 +350,8 @@ export async function refreshStockStatus(): Promise<{
     cogvideo_url: string;
     cogvideo_ready: boolean;
     cogvideo_error: string;
+    veo_ready?: boolean;
+    omni_ready?: boolean;
     hint: string;
   };
 }> {
@@ -363,4 +377,76 @@ export async function saveSettings(body: SettingsSavePayload): Promise<{ success
     }
   }
   return res.json();
+}
+
+export interface LogEntry {
+  id: string;
+  timestamp: string;
+  level: string;
+  kind: string;
+  detail: string;
+  meta?: Record<string, unknown>;
+}
+
+export interface LogQueryResult {
+  entries: LogEntry[];
+  total: number;
+  limit: number;
+  offset: number;
+  max_entries: number;
+  sort: string;
+}
+
+export interface LogQueryParams {
+  limit?: number;
+  offset?: number;
+  level?: string;
+  kind?: string;
+  search?: string;
+  sort?: "asc" | "desc";
+  after_id?: string;
+}
+
+function logsQueryString(params: LogQueryParams): string {
+  const q = new URLSearchParams();
+  if (params.limit != null) q.set("limit", String(params.limit));
+  if (params.offset != null) q.set("offset", String(params.offset));
+  if (params.level) q.set("level", params.level);
+  if (params.kind) q.set("kind", params.kind);
+  if (params.search) q.set("search", params.search);
+  if (params.sort) q.set("sort", params.sort);
+  if (params.after_id) q.set("after_id", params.after_id);
+  const s = q.toString();
+  return s ? `?${s}` : "";
+}
+
+export async function queryLogs(params: LogQueryParams = {}): Promise<LogQueryResult> {
+  const res = await fetch(`/api/logs${logsQueryString(params)}`);
+  if (!res.ok) throw new Error(`Logs ${res.status}`);
+  return res.json();
+}
+
+export async function getLogStats(): Promise<Record<string, unknown>> {
+  const res = await fetch("/api/logs/stats");
+  if (!res.ok) throw new Error(`Log stats ${res.status}`);
+  return res.json();
+}
+
+export async function clearLogs(): Promise<void> {
+  const res = await fetch("/api/logs", { method: "DELETE" });
+  if (!res.ok) throw new Error(`Clear logs ${res.status}`);
+}
+
+export async function exportLogsJson(params: LogQueryParams = {}): Promise<void> {
+  const extra = logsQueryString(params);
+  const join = extra ? `${extra}&format=json` : "?format=json";
+  const res = await fetch(`/api/logs/export${join}`);
+  if (!res.ok) throw new Error(`Export logs ${res.status}`);
+  const blob = await res.blob();
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "roughcutvideos-logs.json";
+  a.click();
+  URL.revokeObjectURL(url);
 }

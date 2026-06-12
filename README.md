@@ -14,7 +14,7 @@
 
 - **Short pipeline** — 30–60 s vertical or landscape clips from a topic or custom script
 - **Mid-length pipeline** — 3–15 min chaptered videos with storyboard planning and videographer rules
-- **Stock footage** — Pexels (default) or all-AI clips via LocalGen (Wan 2.2 on RTX 4090-class GPUs)
+- **Stock footage** — Pexels (default), Google **Veo** / **Gemini Omni** (cloud), or LocalGen Wan 2.2 (local GPU)
 - **TTS & subtitles** — Edge TTS (default), CosyVoice optional; burned-in or sidecar SRT
 - **Depot** — SQLite-backed library of every render under `./output/` with posters and metadata
 - **Publish helpers** — Platform upload URLs and `#roughcutvideos` copy for YouTube, TikTok, Instagram

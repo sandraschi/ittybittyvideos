@@ -15,6 +15,7 @@ from videogen_mcp.config import get_settings
 from videogen_mcp.models.schema import GenerateRequest, JobStatus
 from videogen_mcp.models.storyboard import PlanRequest
 from videogen_mcp.services.config_store import SettingsUpdate
+from videogen_mcp.services.logs_api import build_logs_router
 
 try:
     from fastmcp import FastMCP
@@ -25,14 +26,19 @@ except ImportError:
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     from videogen_mcp.services.job_store import init_db, scan_output_directory
+    from videogen_mcp.services.logging_setup import install_activity_logging, log_api
 
+    install_activity_logging()
     init_db()
     imported = scan_output_directory()
     logger.info(f"videogen-mcp v{__version__} starting on port {get_settings().videogen_port}")
+    log_api("system", f"videogen-mcp v{__version__} started on port {get_settings().videogen_port}")
     if imported:
         logger.info(f"Depot: imported {imported} video(s) from output folder")
+        log_api("depot", f"Imported {imported} video(s) from output folder")
     yield
     logger.info("videogen-mcp shutting down")
+    log_api("system", "videogen-mcp shutting down")
 
 
 rest = FastAPI(
@@ -47,6 +53,8 @@ rest.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+rest.include_router(build_logs_router())
 
 
 if FastMCP:
@@ -264,6 +272,10 @@ async def api_generate(request: GenerateRequest):
             raise HTTPException(status_code=400, detail=str(e)) from e
 
     job = await generate_video(request)
+    from videogen_mcp.services.logging_setup import log_api
+
+    label = (request.topic or "custom script")[:80]
+    log_api("pipeline", f"Generate queued job {job.job_id}: {label}", job_id=job.job_id)
     return {"success": True, "job_id": job.job_id, "status": job.status.value}
 
 

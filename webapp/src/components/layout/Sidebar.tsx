@@ -8,6 +8,7 @@ import {
   ListVideo,
   MessageSquare,
   Radio,
+  ScrollText,
   Settings,
   Share2,
   Sparkles,
@@ -27,6 +28,7 @@ const links = [
   { to: "/chat", label: "Chat", icon: MessageSquare },
   { to: "/status", label: "Status", icon: Activity },
   { to: "/settings", label: "Settings", icon: Settings },
+  { to: "/logs", label: "Logs", icon: ScrollText },
   { to: "/api-docs", label: "API Docs", icon: Code2 },
   { to: "/help", label: "Help", icon: HelpCircle },
 ];

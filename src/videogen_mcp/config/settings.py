@@ -33,6 +33,13 @@ class Settings(BaseSettings):
     cogvideo_url: str = "http://localhost:8188"
     localgen_url: str = ""
 
+    google_api_key: str = ""
+    google_cloud_project: str = ""
+    google_cloud_location: str = "us-central1"
+    google_ai_mcp_url: str = ""
+    google_veo_model: str = "veo-3.1-preview-002"
+    google_omni_model: str = "gemini-omni-flash"
+
     edge_tts_voice: str = "en-US-AriaNeural"
 
     videogen_output_dir: Path = Path("./output")

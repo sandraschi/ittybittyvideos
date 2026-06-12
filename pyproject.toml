@@ -41,6 +41,10 @@ localgen = [
     "sentencepiece>=0.2.0",
     "ftfy>=6.2.0",
 ]
+google = [
+    "google-genai>=1.20.0",
+    "google-cloud-aiplatform>=1.127.0",
+]
 dev = [
     "pytest>=8.0",
     "pytest-asyncio>=0.24.0",

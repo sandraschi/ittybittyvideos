@@ -38,13 +38,25 @@ Health probes on Settings reflect whether each provider is reachable and keyed.
 | Variable | Default | Description |
 |----------|---------|-------------|
 | `PEXELS_API_KEY` | — | Required for **pexels** provider |
-| `VIDEOGEN_STOCK_PROVIDER` | `pexels` | `pexels` or `localgen` |
+| `VIDEOGEN_STOCK_PROVIDER` | `pexels` | `pexels`, `veo`, `omni`, `localgen`, or `cogvideo` |
 | `LOCALGEN_URL` | `http://127.0.0.1:8188` | LocalGen sidecar base URL |
 | `LOCALGEN_BACKEND` | `wan22-14b` | `wan22-14b`, `wan22-5b`, `cogvideo-2b` (legacy) |
+| `GOOGLE_AI_MCP_URL` | — | Bridge to fleet google-ai-mcp (e.g. `http://127.0.0.1:11014`) |
+| `GOOGLE_API_KEY` | — | Direct Gemini / AI Studio key |
+| `GOOGLE_CLOUD_PROJECT` | — | Direct Veo via Vertex AI |
+| `GOOGLE_CLOUD_LOCATION` | `us-central1` | Vertex region |
+| `GOOGLE_VEO_MODEL` | `veo-3.1-preview-002` | Veo model id |
+| `GOOGLE_OMNI_MODEL` | `gemini-omni-flash` | Omni model id |
 
 ### Pexels (recommended default)
 
 Free API key, no GPU. The pipeline asks the LLM for search terms, downloads matching clips, caches them under `output/`, and trims to scene length.
+
+### Google Veo / Gemini Omni (cloud AI)
+
+Set `VIDEOGEN_STOCK_PROVIDER=veo` or `omni`. **Recommended:** run [google-ai-mcp](https://github.com/sandraschi/google-ai-mcp) and set `GOOGLE_AI_MCP_URL`. Each scene prompt is sent to Veo (~5–8 s) or Omni (~10 s).
+
+**Direct mode:** `pip install -e ".[google]"` plus `GOOGLE_API_KEY` (Omni) and/or `GOOGLE_CLOUD_PROJECT` (Veo).
 
 ### LocalGen (optional GPU)
 
@@ -87,6 +99,14 @@ DEEPSEEK_API_KEY=your_deepseek_key
 VIDEOGEN_STOCK_PROVIDER=pexels
 VIDEOGEN_TTS_PROVIDER=edge-tts
 VIDEOGEN_ASPECT=9:16
+```
+
+For Google cloud AI footage:
+
+```env
+VIDEOGEN_STOCK_PROVIDER=veo
+GOOGLE_AI_MCP_URL=http://127.0.0.1:11014
+# Or direct: GOOGLE_API_KEY=... GOOGLE_CLOUD_PROJECT=...
 ```
 
 For all-local footage:

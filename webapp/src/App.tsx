@@ -5,6 +5,7 @@ import Chat from "@/pages/chat";
 import Dashboard from "@/pages/dashboard";
 import Generate from "@/pages/generate";
 import Help from "@/pages/help";
+import Logs from "@/pages/logs";
 import Jobs from "@/pages/jobs";
 import Depot from "@/pages/depot";
 import Plan from "@/pages/plan";
@@ -28,6 +29,7 @@ export default function App() {
         <Route path="/status" element={<StatusPage />} />
         <Route path="/settings" element={<SettingsPage />} />
         <Route path="/api-docs" element={<ApiDocs />} />
+        <Route path="/logs" element={<Logs />} />
         <Route path="/help" element={<Help />} />
       </Route>
     </Routes>

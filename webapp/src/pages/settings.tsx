@@ -86,6 +86,9 @@ export default function SettingsPage() {
   const [pexelsKey, setPexelsKey] = useState("");
   const [stockProvider, setStockProvider] = useState("pexels");
   const [cogvideoUrl, setCogvideoUrl] = useState("http://localhost:8188");
+  const [googleApiKey, setGoogleApiKey] = useState("");
+  const [googleProject, setGoogleProject] = useState("");
+  const [googleMcpUrl, setGoogleMcpUrl] = useState("http://127.0.0.1:11014");
   const [stockProbe, setStockProbe] = useState("");
   const [edgeVoice, setEdgeVoice] = useState("en-US-AriaNeural");
   const [scanMessage, setScanMessage] = useState("");
@@ -95,6 +98,9 @@ export default function SettingsPage() {
     setDefaultProvider(data.settings.videogen_llm_provider);
     setStockProvider(data.settings.videogen_stock_provider || "pexels");
     setCogvideoUrl(data.settings.cogvideo_url || "http://localhost:8188");
+    setGoogleProject(data.settings.google_cloud_project || "");
+    setGoogleMcpUrl(data.settings.google_ai_mcp_url || "http://127.0.0.1:11014");
+    setGoogleApiKey(data.settings.google_api_key_set ? SECRET_MASK : "");
     setEdgeVoice(data.settings.edge_tts_voice);
     setPexelsKey(data.settings.pexels_api_key_set ? SECRET_MASK : "");
     setDiscoveries(data.models);
@@ -150,11 +156,15 @@ export default function SettingsPage() {
     mutationFn: refreshStockStatus,
     onSuccess: (res) => {
       const s = res.stock;
-      setStockProbe(
-        s.cogvideo_ready
-          ? `CogVideoX reachable at ${s.cogvideo_url}`
-          : s.cogvideo_error || s.hint
-      );
+      const parts: string[] = [];
+      if (s.pexels_ready) parts.push("Pexels OK");
+      if (s.cogvideo_ready) parts.push(`LocalGen @ ${s.cogvideo_url}`);
+      if (s.veo_ready) parts.push("Veo ready");
+      if (s.omni_ready) parts.push("Omni ready");
+      if (!parts.length) {
+        parts.push(s.cogvideo_error || s.hint);
+      }
+      setStockProbe(parts.join(" · "));
     },
     onError: (e: Error) => setStockProbe(e.message),
   });
@@ -185,6 +195,8 @@ export default function SettingsPage() {
       videogen_tts_provider: "edge-tts",
       videogen_stock_provider: stockProvider,
       cogvideo_url: cogvideoUrl,
+      google_cloud_project: googleProject,
+      google_ai_mcp_url: googleMcpUrl,
       edge_tts_voice: edgeVoice,
       deepseek_base_url: providers.deepseek.base_url,
       deepseek_model: providers.deepseek.model,
@@ -204,6 +216,9 @@ export default function SettingsPage() {
     }
     if (pexelsKey && pexelsKey !== SECRET_MASK) {
       payload.pexels_api_key = pexelsKey;
+    }
+    if (googleApiKey && googleApiKey !== SECRET_MASK) {
+      payload.google_api_key = googleApiKey;
     }
     return payload;
   }
@@ -371,10 +386,24 @@ export default function SettingsPage() {
             onChange={(e) => setStockProvider(e.target.value)}
           >
             <option value="pexels">Pexels (cloud stock)</option>
+            <option value="veo">Google Veo 3.x (cloud AI)</option>
+            <option value="omni">Gemini Omni Flash (cloud AI)</option>
             <option value="localgen">LocalGen — Wan 2.2 (2026)</option>
             <option value="cogvideo">LocalGen (legacy id: cogvideo)</option>
           </select>
         </label>
+
+        <div className="flex flex-wrap items-center gap-2">
+          <button
+            type="button"
+            disabled={stockProbeMutation.isPending}
+            onClick={() => stockProbeMutation.mutate()}
+            className="px-3 py-1.5 text-xs rounded-md border border-zinc-700 hover:bg-zinc-800 disabled:opacity-40"
+          >
+            {stockProbeMutation.isPending ? "Probing…" : "Test footage providers"}
+          </button>
+          {stockProbe && <span className="text-xs text-zinc-500">{stockProbe}</span>}
+        </div>
 
         {stockProvider === "pexels" && (
           <label className="block text-sm">
@@ -389,6 +418,77 @@ export default function SettingsPage() {
               placeholder={data?.settings.pexels_api_key_set ? SECRET_MASK : "Pexels key"}
             />
           </label>
+        )}
+
+        {(stockProvider === "veo" || stockProvider === "omni") && (
+          <div className="space-y-3 rounded-md border border-zinc-800 bg-zinc-950/50 p-4">
+            <p className="text-xs text-zinc-400">
+              {stockProvider === "veo" ? (
+                <>
+                  <strong className="text-zinc-200">Google Veo 3.x</strong> — cinematic AI clips (~5–8 s).
+                  Recommended: run fleet <code className="text-zinc-500">google-ai-mcp</code> on :11014 and
+                  bridge below.
+                </>
+              ) : (
+                <>
+                  <strong className="text-zinc-200">Gemini Omni Flash</strong> — multimodal text→video (~10 s).
+                </>
+              )}
+            </p>
+            <label className="block text-sm max-w-lg">
+              <span className="text-zinc-500">google-ai-mcp URL (bridge)</span>
+              <input
+                className="mt-1 w-full rounded-md bg-zinc-950 border border-zinc-700 px-3 py-2 text-sm font-mono"
+                value={googleMcpUrl}
+                onChange={(e) => setGoogleMcpUrl(e.target.value)}
+                placeholder="http://127.0.0.1:11014"
+              />
+            </label>
+            <label className="block text-sm max-w-lg">
+              <span className="text-zinc-500">
+                Google API key (direct fallback){" "}
+                {data?.settings.google_api_key_hint ? `(current ${data.settings.google_api_key_hint})` : ""}
+              </span>
+              <SecretInput
+                inputClassName="w-full rounded-md bg-zinc-950 border border-zinc-700 px-3 py-2 pr-10 text-sm font-mono"
+                value={googleApiKey}
+                onChange={setGoogleApiKey}
+                placeholder={data?.settings.google_api_key_set ? SECRET_MASK : "AI Studio / Gemini key"}
+              />
+            </label>
+            <label className="block text-sm max-w-lg">
+              <span className="text-zinc-500">GCP project (Veo / Vertex direct)</span>
+              <input
+                className="mt-1 w-full rounded-md bg-zinc-950 border border-zinc-700 px-3 py-2 text-sm font-mono"
+                value={googleProject}
+                onChange={(e) => setGoogleProject(e.target.value)}
+                placeholder="my-gcp-project"
+              />
+            </label>
+            <p className="text-xs text-zinc-600">
+              Bridge: start google-ai-mcp · Direct:{" "}
+              <code className="text-zinc-400">pip install -e &quot;.[google]&quot;</code>
+            </p>
+            <span
+              className={`text-xs block ${
+                stockProvider === "veo"
+                  ? data?.settings.veo_ready
+                    ? "text-emerald-400"
+                    : "text-amber-400"
+                  : data?.settings.omni_ready
+                    ? "text-emerald-400"
+                    : "text-amber-400"
+              }`}
+            >
+              {stockProvider === "veo"
+                ? data?.settings.veo_ready
+                  ? "Veo layer ready"
+                  : "Veo not ready — check bridge or credentials"
+                : data?.settings.omni_ready
+                  ? "Omni layer ready"
+                  : "Omni not ready — check bridge or credentials"}
+            </span>
+          </div>
         )}
 
         {(stockProvider === "localgen" || stockProvider === "cogvideo") && (

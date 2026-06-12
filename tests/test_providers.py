@@ -29,6 +29,8 @@ def test_localgen_registered():
     providers = list_providers()
     assert "localgen" in providers["stock"]
     assert "cogvideo" in providers["stock"]
+    assert "veo" in providers["stock"]
+    assert "omni" in providers["stock"]
 
 
 def test_localgen_prompt_parse():

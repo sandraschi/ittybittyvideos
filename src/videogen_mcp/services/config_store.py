@@ -26,6 +26,13 @@ ENV_KEYS_ORDER = [
     "VIDEOGEN_STOCK_PROVIDER",
     "PEXELS_API_KEY",
     "COGVIDEO_URL",
+    "LOCALGEN_URL",
+    "GOOGLE_API_KEY",
+    "GOOGLE_CLOUD_PROJECT",
+    "GOOGLE_CLOUD_LOCATION",
+    "GOOGLE_AI_MCP_URL",
+    "GOOGLE_VEO_MODEL",
+    "GOOGLE_OMNI_MODEL",
     "VIDEOGEN_TTS_PROVIDER",
     "EDGE_TTS_VOICE",
     "VIDEOGEN_OUTPUT_DIR",
@@ -44,6 +51,7 @@ SECRET_KEYS = frozenset(
         "DEEPSEEK_API_KEY",
         "PEXELS_API_KEY",
         "LMSTUDIO_API_KEY",
+        "GOOGLE_API_KEY",
     }
 )
 
@@ -76,6 +84,12 @@ class SettingsPublic(BaseModel):
     cogvideo_url: str
     cogvideo_ready: bool
     cogvideo_error: str
+    google_api_key_set: bool = False
+    google_api_key_hint: str = ""
+    google_cloud_project: str = ""
+    google_ai_mcp_url: str = ""
+    veo_ready: bool = False
+    omni_ready: bool = False
     stock_ready_for_renders: bool
     stock_hint: str
     videogen_tts_provider: str
@@ -97,6 +111,12 @@ class SettingsUpdate(BaseModel):
     ollama_model: str | None = None
     pexels_api_key: str | None = None
     cogvideo_url: str | None = None
+    google_api_key: str | None = None
+    google_cloud_project: str | None = None
+    google_cloud_location: str | None = None
+    google_ai_mcp_url: str | None = None
+    google_veo_model: str | None = None
+    google_omni_model: str | None = None
     videogen_stock_provider: str | None = None
     videogen_tts_provider: str | None = None
     edge_tts_voice: str | None = None
@@ -180,6 +200,12 @@ def settings_update_to_env(payload: SettingsUpdate) -> dict[str, str | None]:
         "ollama_model": "OLLAMA_MODEL",
         "pexels_api_key": "PEXELS_API_KEY",
         "cogvideo_url": "COGVIDEO_URL",
+        "google_api_key": "GOOGLE_API_KEY",
+        "google_cloud_project": "GOOGLE_CLOUD_PROJECT",
+        "google_cloud_location": "GOOGLE_CLOUD_LOCATION",
+        "google_ai_mcp_url": "GOOGLE_AI_MCP_URL",
+        "google_veo_model": "GOOGLE_VEO_MODEL",
+        "google_omni_model": "GOOGLE_OMNI_MODEL",
         "videogen_stock_provider": "VIDEOGEN_STOCK_PROVIDER",
         "videogen_tts_provider": "VIDEOGEN_TTS_PROVIDER",
         "edge_tts_voice": "EDGE_TTS_VOICE",

@@ -235,6 +235,20 @@ function TabContent({ tab }: { tab: HelpTab }) {
             Best general choice: fast, predictable, good for documentary-style B-roll.
           </p>
         </Panel>
+        <Panel title="Google Veo 3.x (cloud)">
+          <p>
+            Stock provider <Code>veo</Code> generates cinematic AI clips (~5–8 s) via Google&apos;s Veo API.
+            Recommended path: run fleet <Code>google-ai-mcp</Code> on port <Code>11014</Code> and set{" "}
+            <Code>GOOGLE_AI_MCP_URL</Code> in Settings. Direct mode needs{" "}
+            <Code>GOOGLE_CLOUD_PROJECT</Code> and <Code>pip install -e &quot;.[google]&quot;</Code>.
+          </p>
+        </Panel>
+        <Panel title="Gemini Omni Flash (cloud)">
+          <p>
+            Stock provider <Code>omni</Code> uses multimodal Gemini Omni for text→video (~10 s). Same
+            bridge as Veo; useful when you want any-to-any inputs later (image/audio conditioning).
+          </p>
+        </Panel>
         <Panel title="LocalGen — Wan 2.2 (optional)">
           <p>
             Stock provider <Code>localgen</Code> sends scene prompts to a sidecar on port{" "}
