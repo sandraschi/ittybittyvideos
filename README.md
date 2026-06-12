@@ -55,7 +55,9 @@ cd D:\Dev\repos\videogen-mcp
 .\start.bat
 ```
 
-Open **http://127.0.0.1:11054** → **Generate** → enter a topic → wait for the job → **Depot** to download.
+Open **http://127.0.0.1:11055** (Vite dev UI; `start.bat` starts backend + frontend). API and MCP stay on **11054**.
+
+For a single-port build (Tauri / release): `just build-web`, then open **http://127.0.0.1:11054/**.
 
 ### Local AI footage (optional)
 
@@ -106,6 +108,7 @@ Most settings can be edited in the webapp **Settings** page (writes `.env`). Ful
 | [docs/TOOLS.md](docs/TOOLS.md) | MCP tools and REST API |
 | [docs/TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md) | Fixes for common issues |
 | [SPEC.md](SPEC.md) | Architecture and roadmap |
+| [CHANGELOG.md](CHANGELOG.md) | Version history |
 | [AGENTS.md](AGENTS.md) | Notes for coding agents |
 | In-app **Help** | Tabbed guide at `/help` in the dashboard |
 
@@ -143,6 +146,15 @@ npm run dev
 ```
 
 Details: [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md).
+
+**CI:** `.github/workflows/ci.yml` — one Windows job (`ruff`, `pytest`, webapp build). The **roughcut** GitHub repo is private; fleet policy disables Actions on private repos ([GITHUB_ACTIONS_NO_PRIVATE_CI.md](../mcp-central-docs/standards/GITHUB_ACTIONS_NO_PRIVATE_CI.md)). Run the same checks locally:
+
+```powershell
+uv sync --extra dev
+uv run ruff check src tests
+uv run pytest -q
+cd webapp; npm ci; npm run build
+```
 
 ---
 

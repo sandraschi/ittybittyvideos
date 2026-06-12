@@ -3,7 +3,7 @@ from __future__ import annotations
 import subprocess
 from pathlib import Path
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel
 
 from videogen_mcp.config import get_settings
 from videogen_mcp.models.schema import JobStatus

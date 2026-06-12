@@ -5,7 +5,7 @@ from openai import AsyncOpenAI
 
 from videogen_mcp.config import get_settings
 from videogen_mcp.providers import register_llm
-from videogen_mcp.providers.llm_openai import OpenAILLMProvider, SYSTEM_PROMPT, _parse_script_json
+from videogen_mcp.providers.llm_openai import SYSTEM_PROMPT, OpenAILLMProvider, _parse_script_json
 
 
 @register_llm("lmstudio")
@@ -24,9 +24,7 @@ class LMStudioLLMProvider(OpenAILLMProvider):
         models = await client.models.list()
         if models.data:
             return models.data[0].id
-        raise ValueError(
-            "LM Studio has no model loaded. Open LM Studio, load a model, and enable the local server."
-        )
+        raise ValueError("LM Studio has no model loaded. Open LM Studio, load a model, and enable the local server.")
 
     async def generate_script(self, topic: str, paragraph_count: int, language: str = "en") -> dict:
         client = await self._client()

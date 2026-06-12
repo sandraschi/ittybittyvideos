@@ -96,14 +96,15 @@ function TabContent({ tab }: { tab: HelpTab }) {
               <Code>pip install -e .</Code>
             </li>
             <li>
-              Run <Code>start.bat</Code> (or <Code>py -m videogen_mcp.server</Code>)
+              Run <Code>start.bat</Code> — starts API on <Code>11054</Code> and Vite on{" "}
+              <Code>11055</Code>
             </li>
             <li>
-              Open <Code>http://127.0.0.1:11054</Code> — production build is served by the backend
+              Open <Code>http://127.0.0.1:11055</Code> for the dev dashboard (hot reload)
             </li>
             <li>
-              Dev UI with hot reload: <Code>cd webapp; npm run dev</Code> →{" "}
-              <Code>http://127.0.0.1:11055</Code> (API still on 11054)
+              Single-port UI on <Code>11054</Code> only after <Code>just build-web</Code> (Tauri /
+              release)
             </li>
           </ol>
         </Panel>
@@ -233,6 +234,22 @@ function TabContent({ tab }: { tab: HelpTab }) {
           </p>
           <p className="text-zinc-500 text-xs">
             Best general choice: fast, predictable, good for documentary-style B-roll.
+          </p>
+        </Panel>
+        <Panel title="Jellyfin — your library">
+          <p>
+            Stock provider <Code>jellyfin</Code> searches your Jellyfin server (vacation videos, dog
+            cam, phone uploads) and cuts ~5 s segments with ffmpeg. Set{" "}
+            <Code>JELLYFIN_SERVER_URL</Code> + <Code>JELLYFIN_API_KEY</Code> — same as{" "}
+            <Code>jellyfin-mcp</Code>. Uses direct file paths when the server is local; otherwise
+            streams via the Jellyfin API.
+          </p>
+        </Panel>
+        <Panel title="Plex — your library">
+          <p>
+            Stock provider <Code>plex</Code> works the same way against Plex: search by scene keywords,
+            pick in-points deterministically, extract clips. Configure <Code>PLEX_URL</Code> and{" "}
+            <Code>PLEX_TOKEN</Code> like <Code>plex-mcp</Code>.
           </p>
         </Panel>
         <Panel title="Google Veo 3.x (cloud)">
@@ -437,8 +454,8 @@ function TabContent({ tab }: { tab: HelpTab }) {
     <div className="space-y-4">
       <Panel title="Dashboard blank">
         <p>
-          Build the webapp: <Code>cd webapp; npm run build</Code>, or use a release that includes{" "}
-          <Code>webapp/dist</Code>.
+          Use <Code>http://127.0.0.1:11055</Code> after <Code>start.bat</Code>. If you need the UI
+          on <Code>11054</Code>, run <Code>just build-web</Code> then restart the backend.
         </p>
       </Panel>
       <Panel title="Generation errors">

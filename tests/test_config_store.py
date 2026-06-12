@@ -1,5 +1,3 @@
-import pytest
-
 from videogen_mcp.services.config_store import (
     SECRET_MASK,
     read_env_map,

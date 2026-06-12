@@ -1,14 +1,18 @@
 set shell := ["pwsh", "-NoProfile", "-Command"]
 
-# One command to rule them all. Double-click start.bat or run this.
+# One command: dev stack (Vite :11055 + API :11054)
 go:
     & "{{justfile_directory()}}\start.ps1"
+
+# Backend only (MCP / headless; no Node required)
+backend:
+    & "{{justfile_directory()}}\start.ps1" -BackendOnly
 
 # Bootstrap only (no launch)
 bootstrap:
     uv sync --extra dev
 
-# Run dev server
+# Run backend only (same as backend recipe)
 dev:
     uv run python -m videogen_mcp.server
 
@@ -22,9 +26,9 @@ build-web:
     Set-Location "{{justfile_directory()}}\webapp"
     if (Get-Command bun -ErrorAction SilentlyContinue) { bun install; bun run build } else { npm install; npm run build }
 
-# Full stack dev (backend + webapp)
+# Full stack dev (backend + Vite) — same as start.bat / just go
 stack:
-    & "{{justfile_directory()}}\webapp\start.ps1"
+    & "{{justfile_directory()}}\start.ps1"
 
 # Run with MCP transport
 serve:
@@ -51,11 +55,14 @@ test:
 # Full check (lint + typecheck + test)
 check: lint typecheck test
 
-# Build Tauri native desktop app (release)
+# Build Tauri NSIS installer → dist/roughcutvideos-{version}-x64-setup.exe
 build-native:
-    Set-Location "{{justfile_directory()}}\native"
-    $env:Path = "$env:USERPROFILE\.cargo\bin;$env:Path"
-    & ".\build.ps1"
+    pwsh -NoLogo -File "{{justfile_directory()}}\native\build.ps1"
+
+# Local GitHub release upload (NSIS + wheel)
+publish-release tag="":
+    $tag = if ("{{tag}}") { "{{tag}}" } else { "v$((Select-String -Path pyproject.toml -Pattern '^version = \"(.+)\"').Matches.Groups[1].Value)" }
+    pwsh -NoLogo -File "{{justfile_directory()}}\scripts\publish-release-local.ps1" -Tag $tag
 
 # Build Tauri native app (debug, skip PyInstaller)
 build-native-debug:

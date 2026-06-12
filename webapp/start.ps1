@@ -1,7 +1,8 @@
 param(
     [switch]$BackendOnly,
     [switch]$FrontendOnly,
-    [switch]$NoBrowser
+    [switch]$NoBrowser,
+    [switch]$SkipInstall
 )
 
 $ErrorActionPreference = "Stop"
@@ -24,10 +25,12 @@ foreach ($port in @($BackendPort, $FrontendPort)) {
 }
 
 if (-not $FrontendOnly) {
-    Write-Host "Syncing Python deps..." -ForegroundColor Cyan
-    Push-Location $ProjectRoot
-    uv sync --extra dev
-    Pop-Location
+    if (-not $SkipInstall) {
+        Write-Host "Syncing Python deps..." -ForegroundColor Cyan
+        Push-Location $ProjectRoot
+        uv sync --extra dev
+        Pop-Location
+    }
 
     $ensureFfmpeg = Join-Path $ProjectRoot "scripts\ensure_ffmpeg_path.ps1"
     $backendCmd = ". '$ensureFfmpeg'; Set-Location '$ProjectRoot'; uv run python -m videogen_mcp.server"

@@ -44,14 +44,19 @@ async def test_stock_status_veo_without_config(monkeypatch):
 
 
 @pytest.mark.asyncio
-async def test_google_bridge_ready(monkeypatch, httpx_mock):
+async def test_google_bridge_ready(monkeypatch):
     monkeypatch.setenv("GOOGLE_AI_MCP_URL", "http://127.0.0.1:11014")
     from videogen_mcp.config.settings import get_settings
 
     get_settings.cache_clear()
-    httpx_mock.add_response(url="http://127.0.0.1:11014/api/health", json={"status": "ok"})
 
+    from videogen_mcp.services import google_video
     from videogen_mcp.services.google_video import google_backend_status
+
+    async def fake_probe() -> tuple[bool, str]:
+        return True, "ok"
+
+    monkeypatch.setattr(google_video, "probe_google_bridge", fake_probe)
 
     status = await google_backend_status("veo")
     assert status["ready"] is True

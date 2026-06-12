@@ -40,8 +40,9 @@ Optional extras:
 py -m videogen_mcp.server
 ```
 
-Or `.\start.bat` (builds/serves webapp if dist present).
+Or `.\start.bat` (Vite **11055** + API **11054** — fleet dev stack).
 
+- Dev UI: http://127.0.0.1:11055/
 - API docs: http://127.0.0.1:11054/docs  
 - MCP: http://127.0.0.1:11054/mcp  
 - Health: http://127.0.0.1:11054/health  
@@ -50,22 +51,25 @@ Or `.\start.bat` (builds/serves webapp if dist present).
 
 ## Webapp dev
 
-```powershell
-cd webapp
-npm install
-npm run dev
-```
+**Default:** `start.bat` or `just go` — starts backend + Vite together.
 
-Vite listens on **11055** and proxies API calls to **11054**. Run the Python server in a second terminal.
-
-Production build:
+**Manual split:**
 
 ```powershell
-cd webapp
-npm run build
+just backend          # API only :11054
+just web              # Vite only :11055 (backend must already run)
 ```
 
-Output goes to `webapp/dist/` — served by FastAPI at `/`.
+Vite on **11055** proxies `/api`, `/health`, `/mcp`, etc. to **11054**.
+
+**Release / single-port** (Tauri, PyInstaller):
+
+```powershell
+just build-web
+just backend
+```
+
+Output goes to `webapp/dist/` — served by FastAPI at `/` on **11054**.
 
 ---
 
@@ -89,6 +93,31 @@ py -m pytest tests/test_localgen_server.py -v
 ```
 
 No GPU required for default test suite (LocalGen tests may mock HTTP).
+
+---
+
+## Continuous integration
+
+Workflow: [`.github/workflows/ci.yml`](../.github/workflows/ci.yml) — **one job** on `windows-latest`:
+
+1. `uv sync --extra dev`
+2. `uv run ruff check src tests`
+3. `uv run pytest -q`
+4. `npm ci` + `npm run build` in `webapp/`
+
+**Private repo note:** `sandraschi/roughcut` is private. Per [mcp-central-docs/standards/GITHUB_ACTIONS_NO_PRIVATE_CI.md](../../mcp-central-docs/standards/GITHUB_ACTIONS_NO_PRIVATE_CI.md), GitHub Actions are **disabled** on private fleet repos to avoid billing. The workflow file is kept in git so CI runs automatically if the repo is made **public** or Actions are explicitly re-enabled.
+
+Local equivalent (run before push):
+
+```powershell
+uv sync --extra dev
+uv run ruff check src tests
+uv run pytest -q
+Push-Location webapp
+npm ci
+npm run build
+Pop-Location
+```
 
 ---
 
@@ -118,7 +147,7 @@ py -m ruff format src tests
 - **MCPB:** fleet script or manual bundle per mcp-central-docs packaging guides.
 - **Tauri:** see `native/` and [tauri-fleet-expert skill](../../.cursor/skills/tauri-fleet-expert/SKILL.md) for NSIS installer patterns.
 
-Private repos: no GitHub Actions CI (fleet policy). Build installers locally.
+Private repos: GitHub Actions disabled by fleet policy — see [Continuous integration](#continuous-integration) above and `CHANGELOG.md`. Build installers locally.
 
 ---
 

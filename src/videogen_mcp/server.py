@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 from contextlib import asynccontextmanager
-from pathlib import Path
 from typing import Annotated
 
 from fastapi import FastAPI
@@ -16,6 +15,7 @@ from videogen_mcp.models.schema import GenerateRequest, JobStatus
 from videogen_mcp.models.storyboard import PlanRequest
 from videogen_mcp.services.config_store import SettingsUpdate
 from videogen_mcp.services.logs_api import build_logs_router
+from videogen_mcp.webapp_static import webapp_dist_dir
 
 try:
     from fastmcp import FastMCP
@@ -247,7 +247,29 @@ if FastMCP:
         }
 
 
-_webapp_dir = Path(__file__).resolve().parent.parent.parent / "webapp" / "dist"
+_webapp_dir = webapp_dist_dir()
+
+
+@rest.get("/")
+async def root():
+    if _webapp_dir:
+        return FileResponse(_webapp_dir / "index.html")
+    from fastapi.responses import HTMLResponse
+
+    return HTMLResponse(
+        """<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><title>roughcutvideos</title></head>
+<body style="font-family:system-ui;max-width:42rem;margin:3rem auto;padding:0 1rem;color:#111">
+<h1>roughcutvideos</h1>
+<p>API and MCP are running on this port (<strong>11054</strong>).</p>
+<ul>
+<li><strong>Dev dashboard</strong> — <a href="http://127.0.0.1:11055/">http://127.0.0.1:11055/</a>
+(run <code>start.bat</code> or <code>just stack</code>)</li>
+<li><strong>Single-port UI here</strong> — <code>just build-web</code> then restart the backend</li>
+<li><a href="/docs">OpenAPI /docs</a> · <a href="/health">/health</a> · <a href="/mcp">/mcp</a></li>
+</ul>
+</body></html>"""
+    )
 
 
 @rest.get("/health")
@@ -525,17 +547,13 @@ async def api_reveal_job(job_id: str):
     }
 
 
-if _webapp_dir.exists():
+if _webapp_dir:
     from fastapi.responses import JSONResponse
     from fastapi.staticfiles import StaticFiles
 
     assets_dir = _webapp_dir / "assets"
     if assets_dir.is_dir():
         rest.mount("/assets", StaticFiles(directory=str(assets_dir)), name="assets")
-
-    @rest.get("/")
-    async def serve_index():
-        return FileResponse(_webapp_dir / "index.html")
 
     @rest.get("/{spa_path:path}")
     async def spa_fallback(spa_path: str):

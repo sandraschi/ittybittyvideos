@@ -5,7 +5,7 @@ from openai import AsyncOpenAI
 
 from videogen_mcp.config import get_settings
 from videogen_mcp.providers import register_llm
-from videogen_mcp.providers.llm_openai import OpenAILLMProvider, SYSTEM_PROMPT, _parse_script_json
+from videogen_mcp.providers.llm_openai import SYSTEM_PROMPT, OpenAILLMProvider, _parse_script_json
 
 
 @register_llm("ollama")

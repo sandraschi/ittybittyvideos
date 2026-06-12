@@ -14,7 +14,6 @@ from typing import Any, Literal
 from urllib.parse import parse_qs, quote, unquote, urlparse
 
 import httpx
-from loguru import logger
 
 from videogen_mcp.config import get_settings
 
@@ -67,9 +66,7 @@ def google_clip_url(backend: GoogleBackend, query: str, aspect: str) -> str:
 def google_credentials_configured() -> bool:
     settings = get_settings()
     return bool(
-        settings.google_ai_mcp_url.strip()
-        or settings.google_api_key.strip()
-        or settings.google_cloud_project.strip()
+        settings.google_ai_mcp_url.strip() or settings.google_api_key.strip() or settings.google_cloud_project.strip()
     )
 
 
@@ -106,14 +103,14 @@ async def google_backend_status(backend: GoogleBackend) -> dict[str, Any]:
     elif creds and backend == "omni":
         ready = _omni_direct_available()
         hint = (
-            "Direct Gemini Omni (google-genai). Install: pip install -e \".[google]\"."
+            'Direct Gemini Omni (google-genai). Install: pip install -e ".[google]".'
             if not ready
             else "Direct Gemini Omni ready."
         )
     elif creds and backend == "veo":
         ready = _veo_direct_available()
         hint = (
-            "Direct Veo needs GOOGLE_CLOUD_PROJECT + pip install -e \".[google]\"."
+            'Direct Veo needs GOOGLE_CLOUD_PROJECT + pip install -e ".[google]".'
             if not ready
             else "Direct Veo (Vertex) ready."
         )
@@ -214,8 +211,7 @@ async def _generate_via_bridge(
 
     if data.get("mock_mode"):
         raise RuntimeError(
-            "google-ai-mcp returned mock output — set GOOGLE_API_KEY or GOOGLE_CLOUD_PROJECT "
-            "in google-ai-mcp settings."
+            "google-ai-mcp returned mock output — set GOOGLE_API_KEY or GOOGLE_CLOUD_PROJECT in google-ai-mcp settings."
         )
 
     return _copy_result_to_dest(data, backend, dest)
@@ -260,12 +256,8 @@ async def _generate_veo_direct(prompt: str, aspect_ratio: str, duration: int, de
     def _execute():
         vertexai.init(project=settings.google_cloud_project, location=location)
         aiplatform.init(project=settings.google_cloud_project, location=location)
-        endpoint = (
-            f"projects/{settings.google_cloud_project}/locations/{location}/publishers/google/models/{model}"
-        )
-        client = PredictionServiceClient(
-            client_options={"api_endpoint": f"{location}-aiplatform.googleapis.com"}
-        )
+        endpoint = f"projects/{settings.google_cloud_project}/locations/{location}/publishers/google/models/{model}"
+        client = PredictionServiceClient(client_options={"api_endpoint": f"{location}-aiplatform.googleapis.com"})
         request_payload = {
             "instances": [{"prompt": prompt}],
             "parameters": {
@@ -278,10 +270,7 @@ async def _generate_veo_direct(prompt: str, aspect_ratio: str, duration: int, de
         }
         return client.predict(
             endpoint=endpoint,
-            instances=[
-                json_format.ParseDict(inst, aiplatform.types.Value())
-                for inst in request_payload["instances"]
-            ],
+            instances=[json_format.ParseDict(inst, aiplatform.types.Value()) for inst in request_payload["instances"]],
             parameters=json_format.ParseDict(request_payload["parameters"], aiplatform.types.Value()),
         )
 

@@ -89,6 +89,10 @@ export default function SettingsPage() {
   const [googleApiKey, setGoogleApiKey] = useState("");
   const [googleProject, setGoogleProject] = useState("");
   const [googleMcpUrl, setGoogleMcpUrl] = useState("http://127.0.0.1:11014");
+  const [jellyfinUrl, setJellyfinUrl] = useState("http://127.0.0.1:8096");
+  const [jellyfinKey, setJellyfinKey] = useState("");
+  const [plexUrl, setPlexUrl] = useState("http://127.0.0.1:32400");
+  const [plexToken, setPlexToken] = useState("");
   const [stockProbe, setStockProbe] = useState("");
   const [edgeVoice, setEdgeVoice] = useState("en-US-AriaNeural");
   const [scanMessage, setScanMessage] = useState("");
@@ -100,6 +104,10 @@ export default function SettingsPage() {
     setCogvideoUrl(data.settings.cogvideo_url || "http://localhost:8188");
     setGoogleProject(data.settings.google_cloud_project || "");
     setGoogleMcpUrl(data.settings.google_ai_mcp_url || "http://127.0.0.1:11014");
+    setJellyfinUrl(data.settings.jellyfin_server_url || "http://127.0.0.1:8096");
+    setJellyfinKey(data.settings.jellyfin_api_key_set ? SECRET_MASK : "");
+    setPlexUrl(data.settings.plex_url || "http://127.0.0.1:32400");
+    setPlexToken(data.settings.plex_token_set ? SECRET_MASK : "");
     setGoogleApiKey(data.settings.google_api_key_set ? SECRET_MASK : "");
     setEdgeVoice(data.settings.edge_tts_voice);
     setPexelsKey(data.settings.pexels_api_key_set ? SECRET_MASK : "");
@@ -161,6 +169,8 @@ export default function SettingsPage() {
       if (s.cogvideo_ready) parts.push(`LocalGen @ ${s.cogvideo_url}`);
       if (s.veo_ready) parts.push("Veo ready");
       if (s.omni_ready) parts.push("Omni ready");
+      if (s.jellyfin_ready) parts.push("Jellyfin ready");
+      if (s.plex_ready) parts.push("Plex ready");
       if (!parts.length) {
         parts.push(s.cogvideo_error || s.hint);
       }
@@ -220,6 +230,10 @@ export default function SettingsPage() {
     if (googleApiKey && googleApiKey !== SECRET_MASK) {
       payload.google_api_key = googleApiKey;
     }
+    if (jellyfinUrl) payload.jellyfin_server_url = jellyfinUrl;
+    if (jellyfinKey && jellyfinKey !== SECRET_MASK) payload.jellyfin_api_key = jellyfinKey;
+    if (plexUrl) payload.plex_url = plexUrl;
+    if (plexToken && plexToken !== SECRET_MASK) payload.plex_token = plexToken;
     return payload;
   }
 
@@ -390,6 +404,8 @@ export default function SettingsPage() {
             <option value="omni">Gemini Omni Flash (cloud AI)</option>
             <option value="localgen">LocalGen — Wan 2.2 (2026)</option>
             <option value="cogvideo">LocalGen (legacy id: cogvideo)</option>
+            <option value="jellyfin">Jellyfin — your library</option>
+            <option value="plex">Plex — your library</option>
           </select>
         </label>
 
@@ -531,6 +547,66 @@ export default function SettingsPage() {
               <code className="text-zinc-400">py -m pip install -e &quot;.[localgen]&quot;</code>
             </p>
             {stockProbe && <p className="text-xs text-zinc-500">{stockProbe}</p>}
+          </div>
+        )}
+
+        {stockProvider === "jellyfin" && (
+          <div className="space-y-3 rounded-md border border-zinc-800 bg-zinc-950/50 p-4">
+            <p className="text-xs text-zinc-400">
+              Search your Jellyfin libraries (vacation, dog cam, home videos) and ffmpeg-cut ~5 s B-roll
+              segments. Same credentials as fleet <code className="text-zinc-500">jellyfin-mcp</code>.
+            </p>
+            <label className="block text-sm max-w-lg">
+              <span className="text-zinc-500">Jellyfin server URL</span>
+              <input
+                className="mt-1 w-full rounded-md bg-zinc-950 border border-zinc-700 px-3 py-2 text-sm font-mono"
+                value={jellyfinUrl}
+                onChange={(e) => setJellyfinUrl(e.target.value)}
+                placeholder="http://127.0.0.1:8096"
+              />
+            </label>
+            <label className="block text-sm max-w-lg">
+              <span className="text-zinc-500">
+                API key{" "}
+                {data?.settings.jellyfin_api_key_hint
+                  ? `(current ${data.settings.jellyfin_api_key_hint})`
+                  : ""}
+              </span>
+              <SecretInput
+                value={jellyfinKey}
+                onChange={setJellyfinKey}
+                placeholder={data?.settings.jellyfin_api_key_set ? SECRET_MASK : "Jellyfin API key"}
+              />
+            </label>
+          </div>
+        )}
+
+        {stockProvider === "plex" && (
+          <div className="space-y-3 rounded-md border border-zinc-800 bg-zinc-950/50 p-4">
+            <p className="text-xs text-zinc-400">
+              Search Plex and cut clips from your own libraries. Same <code className="text-zinc-500">PLEX_URL</code>{" "}
+              + <code className="text-zinc-500">PLEX_TOKEN</code> as <code className="text-zinc-500">plex-mcp</code>.
+            </p>
+            <label className="block text-sm max-w-lg">
+              <span className="text-zinc-500">Plex server URL</span>
+              <input
+                className="mt-1 w-full rounded-md bg-zinc-950 border border-zinc-700 px-3 py-2 text-sm font-mono"
+                value={plexUrl}
+                onChange={(e) => setPlexUrl(e.target.value)}
+                placeholder="http://127.0.0.1:32400"
+              />
+            </label>
+            <label className="block text-sm max-w-lg">
+              <span className="text-zinc-500">
+                Token{" "}
+                {data?.settings.plex_token_hint ? `(current ${data.settings.plex_token_hint})` : ""}
+              </span>
+              <SecretInput
+                value={plexToken}
+                onChange={setPlexToken}
+                placeholder={data?.settings.plex_token_set ? SECRET_MASK : "X-Plex-Token"}
+              />
+            </label>
           </div>
         )}
       </section>

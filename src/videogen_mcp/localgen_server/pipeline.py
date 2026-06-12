@@ -8,8 +8,6 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
-from loguru import logger
-
 from videogen_mcp.localgen_server.backends import BACKENDS, DEFAULT_BACKEND
 from videogen_mcp.localgen_server.backends.loader import (
     backend_meta,

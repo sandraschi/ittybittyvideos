@@ -46,5 +46,5 @@
 
 ## Docs map
 
-- User: [README.md](README.md), [INSTALL.md](INSTALL.md), `docs/*.md`, in-app `/help`
+- User: [README.md](README.md), [INSTALL.md](INSTALL.md), [CHANGELOG.md](CHANGELOG.md), `docs/*.md`, in-app `/help` and `/logs`
 - Fleet: `mcp-central-docs/projects/roughcutvideos/`

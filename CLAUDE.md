@@ -12,7 +12,7 @@ pip install -e .
 .\start.bat
 ```
 
-Dashboard: http://127.0.0.1:11054 · MCP: http://127.0.0.1:11054/mcp
+Dashboard: http://127.0.0.1:11055 (dev) · API/MCP: http://127.0.0.1:11054
 
 **Docs:** [README.md](README.md) · [INSTALL.md](INSTALL.md) · [docs/TOOLS.md](docs/TOOLS.md) · [SPEC.md](SPEC.md)
 

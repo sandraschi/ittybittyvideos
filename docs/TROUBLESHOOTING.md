@@ -4,19 +4,20 @@
 
 ## Dashboard & server
 
-### Blank page or "Webapp not built"
+### Blank page or missing Help / Logs
 
-**Cause:** `webapp/dist` missing.
+**Cause:** Opening **11054** without a built `webapp/dist`, or an old dist left over from a prior build.
 
-**Fix:**
+**Fix (dev):** Use **http://127.0.0.1:11055** — run `start.bat` or `just stack`.
+
+**Fix (single-port / release):**
 
 ```powershell
-cd webapp
-npm install
-npm run build
+just build-web
+just backend
 ```
 
-Or use `start.bat` after a release that includes a built dist.
+Then open **http://127.0.0.1:11054/**.
 
 ### Port 11054 already in use
 

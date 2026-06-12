@@ -1,7 +1,8 @@
 param(
     [switch]$Headless,
     [switch]$NoBrowser,
-    [switch]$SkipInstall
+    [switch]$SkipInstall,
+    [switch]$BackendOnly
 )
 $ErrorActionPreference = "Stop"
 $ScriptRoot = Split-Path -Parent $PSCommandPath
@@ -14,15 +15,16 @@ function Write-Step($msg) { Write-Host "`n==> $msg" -ForegroundColor Cyan }
 function Write-OK($msg)   { Write-Host "    OK: $msg" -ForegroundColor Green }
 function Write-Warn($msg) { Write-Host "    WARN: $msg" -ForegroundColor Yellow }
 
-# ── 1. Kill port zombies ─────────────────────────────────────────────
-Write-Step "Clearing port $BackendPort"
-Get-NetTCPConnection -LocalPort $BackendPort -ErrorAction SilentlyContinue |
-    ForEach-Object {
-        $targetPid = $_.OwningProcess
-        Stop-Process -Id $targetPid -Force -ErrorAction SilentlyContinue
-    }
-
 if (-not $SkipInstall) {
+
+    # ── 1. Kill port zombies (backend only; stack clears both) ───────
+    if ($BackendOnly -or $Headless) {
+        Write-Step "Clearing port $BackendPort"
+        Get-NetTCPConnection -LocalPort $BackendPort -ErrorAction SilentlyContinue |
+            ForEach-Object {
+                Stop-Process -Id $_.OwningProcess -Force -ErrorAction SilentlyContinue
+            }
+    }
 
     # ── 2. Python ─────────────────────────────────────────────────────
     Write-Step "Checking Python"
@@ -83,35 +85,20 @@ if (-not $SkipInstall) {
     Write-Step "Installing dependencies"
     uv sync --quiet
     Write-OK "All dependencies installed"
-
-    # ── 6b. Webapp dist (Help, Logs, Settings pages) ─────────────────
-    $distIndex = Join-Path $ScriptRoot "webapp\dist\index.html"
-    if (-not (Test-Path $distIndex)) {
-        Write-Step "Building webapp (webapp/dist missing)"
-        $node = Get-Command npm -ErrorAction SilentlyContinue
-        if (-not $node) {
-            Write-Warn "Node.js/npm not found — dashboard may be stale. Install Node or run: cd webapp; npm run build"
-        } else {
-            Push-Location (Join-Path $ScriptRoot "webapp")
-            npm install --silent 2>$null
-            npm run build
-            Pop-Location
-            Write-OK "webapp/dist built"
-        }
-    } else {
-        Write-OK "webapp/dist present"
-    }
 }
 
-# ── 7. Launch ─────────────────────────────────────────────────────────
-Write-Step "Starting roughcutvideos on http://127.0.0.1:$BackendPort"
-Write-Host ""
-Write-Host "    API docs:  http://127.0.0.1:$BackendPort/docs" -ForegroundColor White
-Write-Host "    Health:    http://127.0.0.1:$BackendPort/health" -ForegroundColor White
-Write-Host ""
-
-if (-not $NoBrowser -and -not $Headless) {
-    Start-Process "http://127.0.0.1:$BackendPort/docs"
+if ($BackendOnly -or $Headless) {
+    Write-Step "Starting roughcutvideos backend on http://127.0.0.1:$BackendPort"
+    Write-Host "    Dev UI:  http://127.0.0.1:11055/  (run start.bat without -BackendOnly)" -ForegroundColor White
+    Write-Host "    API docs: http://127.0.0.1:$BackendPort/docs" -ForegroundColor White
+    Write-Host ""
+    uv run python -m videogen_mcp.server
+    exit $LASTEXITCODE
 }
 
-uv run python -m videogen_mcp.server
+# Fleet dev stack: Vite :11055 + API :11054 (no webapp/dist required)
+$stackScript = Join-Path $ScriptRoot "webapp\start.ps1"
+$stackArgs = @()
+if ($NoBrowser) { $stackArgs += "-NoBrowser" }
+if ($SkipInstall) { $stackArgs += "-SkipInstall" }
+& $stackScript @stackArgs

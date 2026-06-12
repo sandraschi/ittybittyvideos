@@ -1,4 +1,5 @@
 """Entry point for PyInstaller-bundled server."""
+import _strptime  # noqa: F401 — PyInstaller must bundle this eagerly
 import sys
 
 sys.path.insert(0, ".")

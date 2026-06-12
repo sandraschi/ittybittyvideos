@@ -1,6 +1,8 @@
+#![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
+
 mod backend;
 use backend::{BackendProcess, spawn_backend};
-use tauri::Manager;
+use tauri::{Emitter, Manager};
 
 #[tauri::command]
 async fn start_backend(
@@ -19,23 +21,20 @@ fn main() {
         .invoke_handler(tauri::generate_handler![start_backend])
         .setup(|app| {
             let handle = app.handle().clone();
-            tauri::async_runtime::spawn(async move {
-                if let Err(e) =
-                    start_backend(handle.clone(), handle.state::<BackendProcess>()).await
-                {
-                    eprintln!("Backend start failed: {e}");
-                }
-            });
+            if let Err(e) = spawn_backend(handle.clone(), app.state::<BackendProcess>().inner()) {
+                eprintln!("Backend start failed: {e}");
+                let _ = handle.emit("backend-status", format!("error: {e}"));
+            }
             Ok(())
         })
         .build(tauri::generate_context!())
         .expect("error building tauri application")
         .run(|app, event| {
-            if let tauri::RunEvent::Exit = event {
-                if let Some(mut child) =
-                    app.state::<BackendProcess>().0.lock().unwrap().take()
+            if matches!(event, tauri::RunEvent::Exit | tauri::RunEvent::ExitRequested { .. }) {
+                if let Some(mut child) = app.state::<BackendProcess>().0.lock().unwrap().take()
                 {
                     let _ = child.kill();
+                    let _ = child.wait();
                 }
             }
         });

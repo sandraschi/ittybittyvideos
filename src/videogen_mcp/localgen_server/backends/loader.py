@@ -71,9 +71,7 @@ def load_pipeline(model_id: str | None = None) -> tuple[Any, dict[str, str]]:
     try:
         from diffusers import AutoencoderKLWan, WanPipeline
     except ImportError as e:
-        raise RuntimeError(
-            'Wan 2.2 needs diffusers main branch. Install: py -m pip install -e ".[localgen]"'
-        ) from e
+        raise RuntimeError('Wan 2.2 needs diffusers main branch. Install: py -m pip install -e ".[localgen]"') from e
 
     logger.info(f"Loading Wan pipeline: {model_id}")
     vae = AutoencoderKLWan.from_pretrained(model_id, subfolder="vae", torch_dtype=torch.float32)
@@ -120,10 +118,7 @@ def generate_sync(
         gen.manual_seed(int(os.environ["LOCALGEN_SEED"]))
 
     backend = meta.get("backend", "")
-    logger.info(
-        f"LocalGen [{meta.get('label')}]: {prompt[:60]!r} {width}x{height} "
-        f"frames={frames} steps={steps}"
-    )
+    logger.info(f"LocalGen [{meta.get('label')}]: {prompt[:60]!r} {width}x{height} frames={frames} steps={steps}")
 
     if backend.startswith("cogvideo") or "CogVideoX" in meta.get("model_id", ""):
         result = pipe(

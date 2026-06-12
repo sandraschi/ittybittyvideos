@@ -1,9 +1,11 @@
-"""Stock footage provider readiness (Pexels, LocalGen, Google Veo/Omni)."""
+"""Stock footage provider readiness (Pexels, LocalGen, Google, Jellyfin, Plex)."""
 
 from __future__ import annotations
 
 from videogen_mcp.config import get_settings
 from videogen_mcp.services.google_video import google_backend_status
+from videogen_mcp.services.jellyfin_library import jellyfin_configured, probe_jellyfin
+from videogen_mcp.services.plex_library import plex_configured, probe_plex
 
 
 async def stock_footage_status() -> dict:
@@ -37,11 +39,18 @@ async def stock_footage_status() -> dict:
 
     veo_status = await google_backend_status("veo")
     omni_status = await google_backend_status("omni")
+    jellyfin_ok, jellyfin_msg = await probe_jellyfin()
+    plex_ok, plex_msg = await probe_plex()
 
     active = settings.videogen_stock_provider
-    ready_for_renders = (active == "pexels" and pexels_ready) or (
-        active in ("localgen", "cogvideo") and cogvideo_ready
-    ) or (active == "veo" and veo_status["ready"]) or (active == "omni" and omni_status["ready"])
+    ready_for_renders = (
+        (active == "pexels" and pexels_ready)
+        or (active in ("localgen", "cogvideo") and cogvideo_ready)
+        or (active == "veo" and veo_status["ready"])
+        or (active == "omni" and omni_status["ready"])
+        or (active == "jellyfin" and jellyfin_ok)
+        or (active == "plex" and plex_ok)
+    )
 
     hint = "Pexels API key required for stock footage."
     if active in ("localgen", "cogvideo"):
@@ -58,6 +67,15 @@ async def stock_footage_status() -> dict:
         hint = str(veo_status["hint"])
     elif active == "omni":
         hint = str(omni_status["hint"])
+    elif active == "jellyfin":
+        hint = jellyfin_msg if jellyfin_configured() else "Set JELLYFIN_SERVER_URL + JELLYFIN_API_KEY."
+        if jellyfin_ok:
+            dur = settings.videogen_clip_duration
+            hint = f"{jellyfin_msg} — searches libraries and ffmpeg-cuts ~{dur}s clips."
+    elif active == "plex":
+        hint = plex_msg if plex_configured() else "Set PLEX_URL + PLEX_TOKEN."
+        if plex_ok:
+            hint = f"{plex_msg} — vacation/dog/home videos from your Plex libraries."
 
     return {
         "active_provider": active,
@@ -77,5 +95,11 @@ async def stock_footage_status() -> dict:
         "omni_bridge_ok": omni_status["bridge_ok"],
         "google_ai_mcp_url": settings.google_ai_mcp_url,
         "google_configured": veo_status["credentials_configured"],
+        "jellyfin_ready": jellyfin_ok,
+        "jellyfin_hint": jellyfin_msg,
+        "jellyfin_configured": jellyfin_configured(),
+        "plex_ready": plex_ok,
+        "plex_hint": plex_msg,
+        "plex_configured": plex_configured(),
         "hint": hint,
     }

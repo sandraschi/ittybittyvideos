@@ -33,6 +33,10 @@ ENV_KEYS_ORDER = [
     "GOOGLE_AI_MCP_URL",
     "GOOGLE_VEO_MODEL",
     "GOOGLE_OMNI_MODEL",
+    "JELLYFIN_SERVER_URL",
+    "JELLYFIN_API_KEY",
+    "PLEX_URL",
+    "PLEX_TOKEN",
     "VIDEOGEN_TTS_PROVIDER",
     "EDGE_TTS_VOICE",
     "VIDEOGEN_OUTPUT_DIR",
@@ -52,6 +56,8 @@ SECRET_KEYS = frozenset(
         "PEXELS_API_KEY",
         "LMSTUDIO_API_KEY",
         "GOOGLE_API_KEY",
+        "JELLYFIN_API_KEY",
+        "PLEX_TOKEN",
     }
 )
 
@@ -90,6 +96,12 @@ class SettingsPublic(BaseModel):
     google_ai_mcp_url: str = ""
     veo_ready: bool = False
     omni_ready: bool = False
+    jellyfin_server_url: str = ""
+    jellyfin_api_key_set: bool = False
+    jellyfin_api_key_hint: str = ""
+    plex_url: str = ""
+    plex_token_set: bool = False
+    plex_token_hint: str = ""
     stock_ready_for_renders: bool
     stock_hint: str
     videogen_tts_provider: str
@@ -117,6 +129,10 @@ class SettingsUpdate(BaseModel):
     google_ai_mcp_url: str | None = None
     google_veo_model: str | None = None
     google_omni_model: str | None = None
+    jellyfin_server_url: str | None = None
+    jellyfin_api_key: str | None = None
+    plex_url: str | None = None
+    plex_token: str | None = None
     videogen_stock_provider: str | None = None
     videogen_tts_provider: str | None = None
     edge_tts_voice: str | None = None
@@ -206,6 +222,10 @@ def settings_update_to_env(payload: SettingsUpdate) -> dict[str, str | None]:
         "google_ai_mcp_url": "GOOGLE_AI_MCP_URL",
         "google_veo_model": "GOOGLE_VEO_MODEL",
         "google_omni_model": "GOOGLE_OMNI_MODEL",
+        "jellyfin_server_url": "JELLYFIN_SERVER_URL",
+        "jellyfin_api_key": "JELLYFIN_API_KEY",
+        "plex_url": "PLEX_URL",
+        "plex_token": "PLEX_TOKEN",
         "videogen_stock_provider": "VIDEOGEN_STOCK_PROVIDER",
         "videogen_tts_provider": "VIDEOGEN_TTS_PROVIDER",
         "edge_tts_voice": "EDGE_TTS_VOICE",

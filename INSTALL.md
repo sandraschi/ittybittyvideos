@@ -10,7 +10,7 @@ Topic-or-script → rendered MP4 with optional MCP and a built-in dashboard. Rep
 |------|-------------|---------|-------|
 | **Python 3.10+** | Options C, D, desktop | [python.org](https://www.python.org/downloads/) or `winget install Python.Python.3.12` | |
 | **FFmpeg** | All renders | `winget install Gyan.FFmpeg` | Must be on `PATH` |
-| **Node.js 18+** | Webapp dev only | `winget install OpenJS.NodeJS` | Not needed for `start.bat` if `webapp/dist` exists |
+| **Node.js 18+** | Dev dashboard (`start.bat`) | `winget install OpenJS.NodeJS` | Vite on **11055**; not needed for `-BackendOnly` / MCP-only |
 | **uv** | Optional faster installs | `winget install astral-sh.uv` | |
 | **CUDA GPU ~24 GB** | LocalGen (Wan 2.2) only | — | Pexels workflow needs no GPU |
 
@@ -25,7 +25,16 @@ After winget installs, **close and reopen PowerShell** so PATH updates apply.
 
 ## Option A — Desktop launcher (fastest)
 
-No Claude required. Full dashboard at port 11054.
+### NSIS installer (recommended)
+
+Download **`roughcutvideos-0.2.0-x64-setup.exe`** from [Releases](https://github.com/sandraschi/roughcut/releases) and run it. Single-file NSIS, current-user install, bundles the dashboard + Python backend sidecar.
+
+Build locally: `just build-native` → `dist/roughcutvideos-{version}-x64-setup.exe`  
+Upload release: `just publish-release` or `scripts/publish-release-local.ps1 -SkipBuild`
+
+### From source (dev stack)
+
+No Claude required. Dev dashboard on **11055** (API **11054**).
 
 ```powershell
 git clone https://github.com/sandraschi/roughcut.git videogen-mcp
@@ -34,7 +43,9 @@ pip install -e .
 .\start.bat
 ```
 
-Open **http://127.0.0.1:11054**. Configure keys in **Settings** (writes `.env`).
+Open **http://127.0.0.1:11055**. Configure keys in **Settings** (writes `.env`).
+
+Single-port UI on **11054** only after `just build-web` (Tauri / release builds).
 
 **Pass criteria:** Dashboard loads; **Generate** accepts a topic; job appears under **Jobs** / **Depot**.
 
@@ -129,10 +140,28 @@ In Claude, try:
 
 | Symptom | Fix |
 |---------|-----|
-| Blank dashboard | Run `cd webapp; npm run build` or use a release with `webapp/dist` |
+| Blank / stale dashboard | Use **http://127.0.0.1:11055** after `start.bat`; do not rely on old `webapp/dist` on :11054 |
 | FFmpeg not found | Install FFmpeg; reopen terminal |
 | Pexels errors | Set `PEXELS_API_KEY` in Settings |
 | LocalGen OOM | Use `wan22-5b` backend or stay on Pexels |
 | Port in use | Change `VIDEOGEN_PORT` in `.env` |
 
 Full guide: [docs/TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md).
+
+---
+
+## CI (local)
+
+Same checks as [`.github/workflows/ci.yml`](.github/workflows/ci.yml):
+
+```powershell
+uv sync --extra dev
+uv run ruff check src tests
+uv run pytest -q
+Push-Location webapp
+npm ci
+npm run build
+Pop-Location
+```
+
+GitHub Actions are **disabled on private repos** per fleet policy — see [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md#continuous-integration).

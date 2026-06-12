@@ -12,12 +12,8 @@ LLM_SETUP_HINT = (
 
 _OPENAI_HINT = "Set OPENAI_API_KEY in .env and restart the backend."
 _DEEPSEEK_HINT = "Set DEEPSEEK_API_KEY in .env and restart the backend."
-_OLLAMA_HINT = (
-    "Start Ollama on http://localhost:11434 and pull a model (e.g. ollama pull llama3.2:3b)."
-)
-_LMSTUDIO_HINT = (
-    "Start LM Studio, load a model, and enable the local server on http://localhost:1234."
-)
+_OLLAMA_HINT = "Start Ollama on http://localhost:11434 and pull a model (e.g. ollama pull llama3.2:3b)."
+_LMSTUDIO_HINT = "Start LM Studio, load a model, and enable the local server on http://localhost:1234."
 
 
 def _normalize_provider(name: str | None) -> str | None:

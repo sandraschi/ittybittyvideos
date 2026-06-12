@@ -40,6 +40,13 @@ class Settings(BaseSettings):
     google_veo_model: str = "veo-3.1-preview-002"
     google_omni_model: str = "gemini-omni-flash"
 
+    jellyfin_server_url: str = ""
+    jellyfin_url: str = ""
+    jellyfin_api_key: str = ""
+    plex_url: str = ""
+    plex_server_url: str = ""
+    plex_token: str = ""
+
     edge_tts_voice: str = "en-US-AriaNeural"
 
     videogen_output_dir: Path = Path("./output")

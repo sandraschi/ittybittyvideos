@@ -52,6 +52,7 @@ def get_llm(name: str | None = None) -> LLMProvider:
 
 def get_stock(name: str | None = None) -> StockProvider:
     import videogen_mcp.providers.stock_google  # noqa: F401
+    import videogen_mcp.providers.stock_library  # noqa: F401
     import videogen_mcp.providers.stock_localgen  # noqa: F401
     import videogen_mcp.providers.stock_pexels  # noqa: F401
     from videogen_mcp.config import get_settings
@@ -83,6 +84,7 @@ def list_providers() -> dict[str, list[str]]:
     import videogen_mcp.providers.llm_openai  # noqa: F401
     import videogen_mcp.providers.llm_qwen  # noqa: F401
     import videogen_mcp.providers.stock_google  # noqa: F401
+    import videogen_mcp.providers.stock_library  # noqa: F401
     import videogen_mcp.providers.stock_localgen  # noqa: F401
     import videogen_mcp.providers.stock_pexels  # noqa: F401
     import videogen_mcp.providers.tts_cosyvoice  # noqa: F401

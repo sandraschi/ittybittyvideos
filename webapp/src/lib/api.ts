@@ -287,6 +287,12 @@ export interface AppSettings {
   google_ai_mcp_url: string;
   veo_ready: boolean;
   omni_ready: boolean;
+  jellyfin_server_url?: string;
+  jellyfin_api_key_set?: boolean;
+  jellyfin_api_key_hint?: string;
+  plex_url?: string;
+  plex_token_set?: boolean;
+  plex_token_hint?: string;
   stock_ready_for_renders: boolean;
   stock_hint: string;
   videogen_tts_provider: string;
@@ -321,6 +327,10 @@ export interface SettingsSavePayload {
   google_ai_mcp_url?: string;
   google_veo_model?: string;
   google_omni_model?: string;
+  jellyfin_server_url?: string;
+  jellyfin_api_key?: string;
+  plex_url?: string;
+  plex_token?: string;
   videogen_stock_provider?: string;
   videogen_tts_provider?: string;
   edge_tts_voice?: string;
@@ -352,6 +362,8 @@ export async function refreshStockStatus(): Promise<{
     cogvideo_error: string;
     veo_ready?: boolean;
     omni_ready?: boolean;
+    jellyfin_ready?: boolean;
+    plex_ready?: boolean;
     hint: string;
   };
 }> {

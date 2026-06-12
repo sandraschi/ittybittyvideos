@@ -25,9 +25,7 @@ class OpenAILLMProvider(LLMProvider):
     async def generate_script(self, topic: str, paragraph_count: int, language: str = "en") -> dict:
         settings = get_settings()
         if not settings.openai_api_key.strip():
-            raise ValueError(
-                "OPENAI_API_KEY is not set. Add it to .env, use Ollama, or pass a custom script."
-            )
+            raise ValueError("OPENAI_API_KEY is not set. Add it to .env, use Ollama, or pass a custom script.")
         client = AsyncOpenAI(api_key=settings.openai_api_key, base_url=settings.openai_base_url)
         resp = await client.chat.completions.create(
             model=settings.openai_model,
