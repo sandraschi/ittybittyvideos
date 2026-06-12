@@ -24,7 +24,8 @@ You give it a topic. It gives you a video. With narration, stock footage, subtit
    Stock footage fetched + cached (or AI-generated via CogVideoX)
         |
         v
-   Edge TTS / CosyVoice narration with word-level timestamps
+   Edge TTS narration with word-level timestamps
+   (or CosyVoice — sentence-level today, word-level on the roadmap)
         |
         v
    Videographer rules: hook -> pacing -> B-roll -> transitions -> outro
