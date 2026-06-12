@@ -118,6 +118,7 @@ async def plan_video(request: PlanRequest) -> Storyboard:
     raw = re.sub(r"<think>.*?</think>", "", raw, flags=re.DOTALL).strip()
     raw = re.sub(r"^```(?:json)?\s*", "", raw)
     raw = re.sub(r"\s*```$", "", raw)
+    raw = re.sub(r",\s*([}\]])", r"\1", raw)  # DeepSeek et al. emit trailing commas; json.loads is strict
     data = json.loads(raw)
 
     chapters = []

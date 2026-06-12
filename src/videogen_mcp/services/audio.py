@@ -43,7 +43,14 @@ def detect_beats(audio_path: Path) -> list[float] | None:
         tempo, beat_frames = librosa.beat.beat_track(y=y, sr=sr, units="frames")
         beat_times = librosa.frames_to_time(beat_frames, sr=sr)
         beats = [float(t) for t in beat_times]
-        logger.debug(f"beats: {len(beats)} beats @ ~{float(tempo):.0f} BPM in {audio_path.name}")
+        # librosa >=0.10 returns tempo as a 0-d/1-element ndarray under numpy 2.x
+        try:
+            import numpy as np
+
+            bpm = float(np.asarray(tempo).reshape(-1)[0])
+        except Exception:
+            bpm = 0.0
+        logger.debug(f"beats: {len(beats)} beats @ ~{bpm:.0f} BPM in {audio_path.name}")
         return beats or None
     except Exception as e:
         logger.warning(f"beats: analysis failed ({e}); cuts stay on the fixed grid")

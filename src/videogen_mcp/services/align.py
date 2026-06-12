@@ -43,14 +43,13 @@ def is_available() -> bool:
         return False
 
 
-@lru_cache(maxsize=1)
-def _get_model():
-    """Lazily load the whisper model once. Raises on failure (caught by align_words)."""
+@lru_cache(maxsize=2)
+def _get_model(device: str):
+    """Lazily load the whisper model once per device. Raises on failure (caught by align_words)."""
     from faster_whisper import WhisperModel  # type: ignore[import-not-found]
 
     settings = get_settings()
     model_name = settings.videogen_whisper_model
-    device = settings.videogen_whisper_device
     compute = "float16" if device == "cuda" else "auto"
     logger.info(f"Loading faster-whisper model '{model_name}' (device={device})")
     return WhisperModel(model_name, device=device, compute_type=compute)
@@ -70,23 +69,34 @@ def align_words(audio_path: Path, text: str, language: str | None = None) -> lis
         logger.warning(f"align: audio file missing: {audio_path}")
         return None
 
-    try:
-        model = _get_model()
-        segments, _info = model.transcribe(
-            str(audio_path),
-            language=language,
-            word_timestamps=True,
-            vad_filter=True,
-            beam_size=5,
-        )
-        whisper_words: list[SubtitleEntry] = []
-        for seg in segments:
-            for w in seg.words or []:
-                token = w.word.strip()
-                if token:
-                    whisper_words.append(SubtitleEntry(start=float(w.start), end=float(w.end), text=token))
-    except Exception as e:
-        logger.warning(f"align: transcription failed ({e}); falling back to provider subs")
+    last_error: Exception | None = None
+    whisper_words: list[SubtitleEntry] = []
+    for device in _device_attempts():
+        try:
+            model = _get_model(device)
+            segments, _info = model.transcribe(
+                str(audio_path),
+                language=language,
+                word_timestamps=True,
+                vad_filter=True,
+                beam_size=5,
+            )
+            whisper_words = []
+            for seg in segments:
+                for w in seg.words or []:
+                    token = w.word.strip()
+                    if token:
+                        whisper_words.append(SubtitleEntry(start=float(w.start), end=float(w.end), text=token))
+            last_error = None
+            break
+        except Exception as e:
+            last_error = e
+            if _is_cuda_problem(e):
+                logger.warning(f"align: CUDA backend unavailable ({e}); retrying on CPU")
+                continue
+            break
+    if last_error is not None:
+        logger.warning(f"align: transcription failed ({last_error}); falling back to provider subs")
         return None
 
     if not whisper_words:
@@ -100,6 +110,20 @@ def align_words(audio_path: Path, text: str, language: str | None = None) -> lis
 
 def _normalize(token: str) -> str:
     return re.sub(r"[^\w]", "", token, flags=re.UNICODE).lower()
+
+
+def _device_attempts() -> list[str]:
+    device = get_settings().videogen_whisper_device
+    if device == "auto":
+        return ["auto", "cpu"]
+    if device == "cuda":
+        return ["cuda", "cpu"]
+    return [device]
+
+
+def _is_cuda_problem(e: Exception) -> bool:
+    msg = str(e).lower()
+    return any(s in msg for s in ("cublas", "cudnn", "cuda", "libcu"))
 
 
 def _map_to_canonical(whisper_words: list[SubtitleEntry], text: str) -> list[SubtitleEntry]:
