@@ -39,7 +39,7 @@ class EdgeTTSProvider(TTSProvider):
         sentence_subs = _merge_word_to_sentence(subs, text)
 
         logger.debug(f"TTS: {len(text)} chars -> {duration:.1f}s audio, {len(sentence_subs)} subtitle entries")
-        return TTSResult(audio_path=output_path, duration=duration, subtitles=sentence_subs)
+        return TTSResult(audio_path=output_path, duration=duration, subtitles=sentence_subs, words=subs or None)
 
     async def list_voices(self) -> list[str]:
         voices = await edge_tts.list_voices()

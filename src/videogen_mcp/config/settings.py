@@ -32,6 +32,12 @@ class Settings(BaseSettings):
     videogen_clip_duration: float = 5.0
     videogen_paragraph_count: int = 3
 
+    # R1: subtitle alignment + styling
+    videogen_align: bool = True  # run faster-whisper alignment when provider lacks word timestamps
+    videogen_sub_style: str = "sentence"  # sentence | karaoke
+    videogen_whisper_model: str = "small"
+    videogen_whisper_device: str = "auto"  # auto | cuda | cpu
+
 
 @lru_cache
 def get_settings() -> Settings:

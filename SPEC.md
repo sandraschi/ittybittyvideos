@@ -59,9 +59,11 @@ Fully local operation on GPU, no cloud keys required:
 | `cosyvoice` | CosyVoice 2 | CosyVoice server (port 9880) | DashScope |
 | `cogvideo` | CogVideoX | ComfyUI / inference server (port 8188) | ZhipuAI |
 
-**Known limitation**: CosyVoice subtitles are sentence-level with *estimated*
-timestamps (duration heuristic: CJK chars × 0.35s + latin words × 0.4s).
-Word-level timestamps only via edge-tts.
+**Known limitation (resolved by R1)**: without the `align` extra installed,
+CosyVoice subtitles fall back to sentence-level estimated timestamps
+(duration heuristic: CJK chars × 0.35s + latin words × 0.4s). With
+`uv sync --extra align`, faster-whisper alignment provides word-level
+timing for every provider.
 
 ## MCP Tools (implemented)
 
@@ -121,7 +123,7 @@ Sequenced by leverage-per-effort. AI-assisted timelines.
 
 ### Phase 1 — Audio honesty (v0.2, ~2 days)
 
-**R1. Forced alignment for word-level subtitles (all TTS providers)**
+**R1. Forced alignment for word-level subtitles (all TTS providers) — DONE 2026-06-12**
 Run faster-whisper alignment on the *generated* narration audio, regardless
 of provider. Replaces CosyVoice's duration heuristic and any provider-specific
 timestamp plumbing with one universal post-pass.

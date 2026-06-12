@@ -12,6 +12,7 @@ from videogen_mcp.models.schema import JobInfo, JobStatus, VideoAspect
 from videogen_mcp.models.storyboard import PlanRequest, Scene
 from videogen_mcp.providers import get_stock, get_tts
 from videogen_mcp.providers.base import SubtitleEntry
+from videogen_mcp.services.align import align_words, words_to_sentences
 from videogen_mcp.services.cache import cache_path, is_cached
 from videogen_mcp.services.compose import compose_video
 from videogen_mcp.services.pipeline import _jobs
@@ -49,6 +50,7 @@ async def _run_planned_pipeline(
         scene_footage: list[Path] = []
         scene_audio: list[Path] = []
         scene_subs: list[list[SubtitleEntry]] = []
+        scene_words: list[list[SubtitleEntry]] = []
         audio_offset = 0.0
 
         for i, scene in enumerate(all_scenes):
@@ -66,23 +68,27 @@ async def _run_planned_pipeline(
                     work_dir / f"voice_{i:03d}.mp3",
                 )
                 scene_audio.append(tts_result.audio_path)
-                offset_subs = [
-                    SubtitleEntry(
-                        start=s.start + audio_offset,
-                        end=s.end + audio_offset,
-                        text=s.text,
-                    )
-                    for s in tts_result.subtitles
-                ]
-                scene_subs.append(offset_subs)
+
+                # R1: word-level timing per scene; whisper-align when provider has none
+                words = tts_result.words
+                sentences = tts_result.subtitles
+                if words is None and settings.videogen_align:
+                    words = await asyncio.to_thread(align_words, tts_result.audio_path, scene.narration)
+                    if words:
+                        sentences = words_to_sentences(words)
+
+                scene_subs.append([_offset(s, audio_offset) for s in sentences])
+                scene_words.append([_offset(w, audio_offset) for w in (words or [])])
                 audio_offset += tts_result.duration
             else:
                 scene_subs.append([])
+                scene_words.append([])
 
         job.update(JobStatus.COMPOSING, 90.0)
 
         merged_audio = await _merge_audio(scene_audio, work_dir / "narration_full.mp3")
         all_subs = [s for subs in scene_subs for s in subs]
+        all_words = [w for ws in scene_words for w in ws]
 
         output_path = settings.videogen_output_dir / f"{job.job_id}.mp4"
         await asyncio.to_thread(
@@ -94,6 +100,8 @@ async def _run_planned_pipeline(
             aspect=aspect,
             fps=settings.videogen_default_fps,
             clip_duration=max(s.duration_target for s in all_scenes),
+            word_subtitles=all_words or None,
+            sub_style=settings.videogen_sub_style,
         )
 
         job.output_path = str(output_path)
@@ -104,6 +112,10 @@ async def _run_planned_pipeline(
         logger.error(f"[{job.job_id}] Planned pipeline failed: {e}")
         job.error = str(e)
         job.update(JobStatus.FAILED, 0.0)
+
+
+def _offset(entry: SubtitleEntry, by: float) -> SubtitleEntry:
+    return SubtitleEntry(start=entry.start + by, end=entry.end + by, text=entry.text)
 
 
 async def _fetch_scene_footage(scene: Scene, aspect: VideoAspect, dest: Path) -> Path:

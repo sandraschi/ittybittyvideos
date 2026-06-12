@@ -14,6 +14,7 @@ from videogen_mcp.models.schema import (
     VideoScript,
 )
 from videogen_mcp.providers import get_llm, get_stock, get_tts
+from videogen_mcp.services.align import align_words, words_to_sentences
 from videogen_mcp.services.cache import cache_path, is_cached
 from videogen_mcp.services.compose import compose_video
 
@@ -61,6 +62,14 @@ async def _run_pipeline(job: JobInfo, request: GenerateRequest) -> None:
         )
         logger.info(f"[{job.job_id}] Voice: {tts_result.duration:.1f}s, {len(tts_result.subtitles)} subs")
 
+        # R1: ensure word-level timing; whisper-align when the provider has none
+        words = tts_result.words
+        subtitles = tts_result.subtitles
+        if words is None and settings.videogen_align:
+            words = await asyncio.to_thread(align_words, tts_result.audio_path, full_narration)
+            if words:
+                subtitles = words_to_sentences(words)  # real audio timing replaces provider estimate
+
         job.update(JobStatus.COMPOSING, 70.0)
         output_path = output_dir / f"{job.job_id}.mp4"
         bgm = Path(request.bgm_url) if request.bgm_url else None
@@ -69,12 +78,14 @@ async def _run_pipeline(job: JobInfo, request: GenerateRequest) -> None:
             compose_video,
             footage_paths=footage_paths,
             audio_path=tts_result.audio_path,
-            subtitles=tts_result.subtitles,
+            subtitles=subtitles,
             output_path=output_path,
             aspect=request.aspect,
             fps=settings.videogen_default_fps,
             clip_duration=request.clip_duration,
             bgm_path=bgm,
+            word_subtitles=words,
+            sub_style=settings.videogen_sub_style,
         )
 
         job.output_path = str(output_path)

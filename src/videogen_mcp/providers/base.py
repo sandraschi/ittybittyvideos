@@ -19,6 +19,10 @@ class TTSResult:
     audio_path: Path
     duration: float
     subtitles: list[SubtitleEntry]
+    # Word-level entries when the provider emits them natively (e.g. edge-tts
+    # WordBoundary events). None means "unknown" -- the alignment service
+    # (services/align.py) can recover words from the audio post-hoc.
+    words: list[SubtitleEntry] | None = None
 
 
 @dataclass
