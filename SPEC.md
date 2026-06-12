@@ -142,10 +142,15 @@ timestamp plumbing with one universal post-pass.
 - Acceptance: CosyVoice job produces word-level .ass; sub timing within ±150ms
   of audio on test fixture. Removes the README roadmap caveat.
 
-**R2. Beat-aware cuts + music ducking — PARTIAL**
-- `services/audio.py`: librosa beat-grid (`detect_beats`, `snap_cut_durations`) — **module exists, not wired in pipeline**
-- `compose.py`: FFmpeg `sidechaincompress` ducking — **implemented**
-- TODO: `[project.optional-dependencies] beats`, pipeline integration, tests — see [TODO.md](./TODO.md)
+**R2. Beat-aware cuts + music ducking — DONE 2026-06-12**
+- `services/audio.py`: librosa beat-grid (`detect_beats`, `snap_cut_durations`) — wired into short pipeline
+- `compose.py`: FFmpeg `sidechaincompress` ducking (asplit sidechain, post-duck amix)
+- Dep: `uv sync --extra beats` (librosa). Env: `VIDEOGEN_BEAT_SNAP=true`,
+  `VIDEOGEN_BEAT_TOLERANCE=0.4`, `VIDEOGEN_DUCK=true`, `VIDEOGEN_DUCK_RATIO=8`,
+  `VIDEOGEN_BGM_VOLUME=0.3`. (Original spec said DUCK_DB — sidechaincompress
+  has no dB target knob, so the compression ratio is exposed instead.)
+- Not yet: mid-length pipeline has no BGM input, so nothing to snap there;
+  RMS-delta validation needs a real render (pending, like R1 model run).
 
 ### Phase 2 — The star-makers (v0.3, ~4-5 days)
 
@@ -218,9 +223,33 @@ Thin glue: `scripts/morning_briefing.py` + scheduled task; aiwatcher's
 
 ### Deferred
 
-- LLM providers: gemini, deepseek (40-line plugin each, on demand)
-- Stock: pixabay, veo bridge; TTS: speech-mcp bridge
-- mcpb packaging; VRM avatar presenter overlay (vroidstudio-mcp, stretch)
+- LLM providers: gemini (40-line plugin, on demand)
+- Stock: pixabay; TTS: speech-mcp bridge
+- mcpb packaging; VRM avatar live capture (vroidstudio-mcp, stretch — static
+  VRoid renders already work as R9 talker sources)
+
+### Phase 4.5 — Presenter
+
+**R9. Talking-head overlay — plumbing DONE 2026-06-12, needs external backend**
+Audio-driven talking head from one source image, composited as corner PiP.
+Source can be a photo (you), an anime character render (VRoid screenshot),
+or a pet photo — LivePortrait's animals mode handles dogs, so Benny is a
+valid presenter. FOSS backends only (SadTalker / EchoMimic / Hallo2 /
+LivePortrait) running as an external HTTP service; models are never
+bundled (LLM_AND_INSTALL_TIERS).
+- `providers/base.py` TalkerProvider ABC + `talker_sadtalker.py` HTTP client
+  (contract: `POST {TALKER_URL}/generate` multipart audio+image → mp4)
+- `services/overlay.py`: scale2ref PiP compositing, 4 corners, height-relative
+  scaling; overlay failure never kills a finished render — video ships plain
+- Env: `VIDEOGEN_TALKER_PROVIDER` (empty = off | sadtalker), `TALKER_URL`
+  (:11100), `VIDEOGEN_TALKER_SOURCE` (face image path),
+  `VIDEOGEN_TALKER_CORNER`, `VIDEOGEN_TALKER_SCALE` (0.28)
+- Not yet: the backend wrapper service itself (thin FastAPI around SadTalker
+  or LivePortrait on Goliath), webapp Settings surface, ethics note in docs
+  for likeness use — generating well-known actors' likenesses stays out of
+  shipped docs/examples; private experimentation is the user's own call.
+- Acceptance: mocked-backend test green (done); real validation = one render
+  with a local SadTalker wrapper + visual check of corner/scale.
 
 ## Testing
 

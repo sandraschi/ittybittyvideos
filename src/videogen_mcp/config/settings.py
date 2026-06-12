@@ -66,6 +66,20 @@ class Settings(BaseSettings):
     videogen_whisper_model: str = "small"
     videogen_whisper_device: str = "auto"  # auto | cuda | cpu
 
+    # R2: beat-aware cuts + music ducking
+    videogen_beat_snap: bool = True  # snap scene cuts to bgm beats (needs `beats` extra)
+    videogen_beat_tolerance: float = 0.4  # max seconds a cut may move to reach a beat
+    videogen_duck: bool = True  # sidechain-compress bgm under narration
+    videogen_duck_ratio: float = 8.0  # sidechaincompress ratio (NOT dB; ffmpeg has no dB knob)
+    videogen_bgm_volume: float = 0.3  # bgm pre-duck gain
+
+    # R9: talking-head overlay (FOSS backends via HTTP, e.g. SadTalker/EchoMimic wrapper)
+    videogen_talker_provider: str = ""  # empty = off | sadtalker
+    talker_url: str = "http://localhost:11100"
+    videogen_talker_source: str = ""  # path to source face image (photo, anime girl render, or one good Benny pic)
+    videogen_talker_corner: str = "bottom-right"  # bottom-right | bottom-left | top-right | top-left
+    videogen_talker_scale: float = 0.28  # head height as fraction of video height
+
 
 @lru_cache
 def get_settings() -> Settings:

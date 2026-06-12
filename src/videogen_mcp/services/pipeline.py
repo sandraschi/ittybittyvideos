@@ -17,8 +17,10 @@ from videogen_mcp.providers import get_stock, get_tts
 from videogen_mcp.providers.llm_resolve import resolve_llm_for_topic
 from videogen_mcp.services import job_store
 from videogen_mcp.services.align import align_words, words_to_sentences
+from videogen_mcp.services.audio import detect_beats, snap_cut_durations
 from videogen_mcp.services.cache import cache_path, is_cached
 from videogen_mcp.services.compose import compose_video
+from videogen_mcp.services.overlay import overlay_talking_head
 
 
 def get_job(job_id: str) -> JobInfo | None:
@@ -81,6 +83,19 @@ async def _run_pipeline(job: JobInfo, request: GenerateRequest) -> None:
         output_path = output_dir / f"{job.job_id}.mp4"
         bgm = Path(request.bgm_url) if request.bgm_url else None
 
+        # R2: snap cuts to bgm beats (no-op without bgm or librosa)
+        clip_durations = None
+        if bgm and bgm.exists() and settings.videogen_beat_snap:
+            beats = await asyncio.to_thread(detect_beats, bgm)
+            if beats:
+                clip_durations = snap_cut_durations(
+                    len(footage_paths),
+                    request.clip_duration,
+                    beats,
+                    tolerance=settings.videogen_beat_tolerance,
+                )
+                logger.info(f"[{job.job_id}] Beat snap: {len(beats)} beats, cuts adjusted")
+
         await asyncio.to_thread(
             compose_video,
             footage_paths=footage_paths,
@@ -93,7 +108,17 @@ async def _run_pipeline(job: JobInfo, request: GenerateRequest) -> None:
             bgm_path=bgm,
             word_subtitles=words,
             sub_style=settings.videogen_sub_style,
+            clip_durations=clip_durations,
+            duck=settings.videogen_duck,
+            duck_ratio=settings.videogen_duck_ratio,
+            bgm_volume=settings.videogen_bgm_volume,
         )
+
+        # R9: optional talking-head overlay (separate pass; failure leaves base video intact)
+        if settings.videogen_talker_provider and settings.videogen_talker_source:
+            job.update(JobStatus.COMPOSING, 90.0)
+            _save(job)
+            output_path = await _apply_talking_head(job.job_id, output_path, tts_result.audio_path)
 
         job.output_path = str(output_path)
         job.update(JobStatus.COMPLETE, 100.0)
@@ -105,6 +130,34 @@ async def _run_pipeline(job: JobInfo, request: GenerateRequest) -> None:
         job.error = str(e)
         job.update(JobStatus.FAILED, 0.0)
         _save(job)
+
+
+async def _apply_talking_head(job_id: str, video_path: Path, narration_path: Path) -> Path:
+    """R9: render a talking head from the narration and overlay it as PiP.
+
+    Any failure logs a warning and returns the un-overlaid video -- a missing
+    avatar must never kill a finished render.
+    """
+    from videogen_mcp.providers import get_talker
+
+    settings = get_settings()
+    try:
+        talker = get_talker()
+        head_path = video_path.parent / f"{job_id}_head.mp4"
+        await talker.synthesize_head(narration_path, Path(settings.videogen_talker_source), head_path)
+        final = video_path.parent / f"{job_id}_final.mp4"
+        await asyncio.to_thread(
+            overlay_talking_head,
+            video_path,
+            head_path,
+            final,
+            corner=settings.videogen_talker_corner,
+            scale=settings.videogen_talker_scale,
+        )
+        return final
+    except Exception as e:
+        logger.warning(f"[{job_id}] Talking head skipped: {e}")
+        return video_path
 
 
 async def _get_script(request: GenerateRequest) -> VideoScript:

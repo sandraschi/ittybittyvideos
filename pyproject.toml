@@ -23,6 +23,9 @@ dependencies = [
 align = [
     "faster-whisper>=1.1.0",
 ]
+beats = [
+    "librosa>=0.10",
+]
 cogvideo = [
     "torch>=2.4.0",
     "diffusers>=0.30.0",

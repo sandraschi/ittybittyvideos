@@ -64,3 +64,19 @@ class TTSProvider(abc.ABC):
 
     @abc.abstractmethod
     async def health_check(self) -> bool: ...
+
+
+class TalkerProvider(abc.ABC):
+    """R9: audio-driven talking-head generation from a single source image.
+
+    Source image can be a photo (LivePortrait/SadTalker-style backends),
+    an anime character render (VRoid screenshot), or an animal photo
+    (LivePortrait animals mode). The backend runs as an external FOSS
+    service; we never bundle models (LLM_AND_INSTALL_TIERS)."""
+
+    @abc.abstractmethod
+    async def synthesize_head(self, audio_path: Path, source_image: Path, output_path: Path) -> Path:
+        """Render a talking-head video lip-synced to audio_path."""
+
+    @abc.abstractmethod
+    async def health_check(self) -> bool: ...

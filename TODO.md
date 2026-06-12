@@ -9,7 +9,7 @@
 
 | Priority | Item | Status |
 |----------|------|--------|
-| P0 | Wire R2 beat snap (`audio.py` → pipeline) | ⬜ |
+| P0 | Wire R2 beat snap (`audio.py` → pipeline) | ✅ 2026-06-12 (Fable) |
 | P0 | Rebuild NSIS installer post-rebrand (`ittybitty-*` binaries) | ⬜ |
 | P0 | GSD puppy demo (poster in README; MP4 via release or gitignored) | ⬜ |
 | P1 | YouTube Shorts upload API (Publish Tier 2) | ⬜ |
@@ -22,13 +22,21 @@
 
 ## P0 — Next sessions
 
-### R2 beat-aware cuts (finish Fable slice)
+### R2 beat-aware cuts — DONE 2026-06-12 (Fable)
 
-- [ ] Add `beats = ["librosa>=0.10"]` to `pyproject.toml`
-- [ ] Import `detect_beats` / `snap_cut_durations` from `services/audio.py` in `pipeline.py` / `pipeline_extended.py` when BGM present
-- [ ] Env: `VIDEOGEN_BEAT_SNAP`, `VIDEOGEN_DUCK_DB` (see SPEC)
-- [ ] Add `tests/test_audio.py`
-- [ ] Commit: `feat(R2): beat snap + music ducking wiring`
+- [x] `beats = ["librosa>=0.10"]` in `pyproject.toml`
+- [x] `detect_beats` / `snap_cut_durations` wired in `pipeline.py` (extended pipeline has no BGM input yet — nothing to wire)
+- [x] Env: `VIDEOGEN_BEAT_SNAP`, `VIDEOGEN_DUCK_RATIO` (DUCK_DB was wrong — no dB knob in sidechaincompress; SPEC corrected)
+- [x] `tests/test_audio.py` (18 tests, also covers R9)
+- [x] Committed
+
+### R9 talking-head overlay — plumbing DONE 2026-06-12 (Fable)
+
+- [x] TalkerProvider ABC + sadtalker HTTP provider + registry
+- [x] `services/overlay.py` scale2ref PiP + pipeline post-pass (failure-safe)
+- [ ] Backend wrapper service (FastAPI around SadTalker/LivePortrait on Goliath, port 11100)
+- [ ] Webapp Settings: talker section
+- [ ] Real render validation (Benny pic + LivePortrait animals mode = demo gold)
 
 ### Demo asset (GSD puppy)
 
