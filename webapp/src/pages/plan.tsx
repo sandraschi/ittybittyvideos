@@ -1,10 +1,15 @@
 import { useEffect, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import VisualLookSelectors from "@/components/VisualLookSelectors";
+import DirectorOptions, {
+  directorStateFromNav,
+  emptyVisualLook,
+  type DirectorState,
+} from "@/components/DirectorOptions";
+import { directorSummary, matchRecipeId } from "@/lib/director-recipes";
 import { getSettings, planRender, planVideo } from "@/lib/api";
 import type { PromptNavState } from "@/lib/prompt-library";
-import { emptyVisualLook, isAiStockProvider, visualLookSummary } from "@/lib/visual-look";
+import { isAiStockProvider } from "@/lib/visual-look";
 import { useJobsStore } from "@/store/jobs";
 
 export default function Plan() {
@@ -16,11 +21,13 @@ export default function Plan() {
   const [videoType, setVideoType] = useState("explainer");
   const [duration, setDuration] = useState(300);
   const [preview, setPreview] = useState<string>("");
-  const [structureNote, setStructureNote] = useState<string | null>(null);
-  const [structure, setStructure] = useState("");
-  const [intro, setIntro] = useState("");
-  const [styleNotes, setStyleNotes] = useState("");
-  const [visualLook, setVisualLook] = useState(emptyVisualLook);
+  const [fromLibrary, setFromLibrary] = useState(false);
+  const [director, setDirector] = useState<DirectorState>({
+    structure: "",
+    intro: "",
+    styleNotes: "",
+    visualLook: emptyVisualLook(),
+  });
 
   const { data: settings } = useQuery({ queryKey: ["settings"], queryFn: getSettings });
   const stockProvider = settings?.settings.videogen_stock_provider ?? "pexels";
@@ -30,22 +37,17 @@ export default function Plan() {
     if (!s?.topic) return;
     setTopic(s.topic);
     if (s.videoType) setVideoType(s.videoType);
-    setStructure(s.structure ?? "");
-    setIntro(s.intro ?? "");
-    setStyleNotes(s.styleNotes ?? "");
-    setVisualLook({
-      visual_style: s.visual_style ?? "",
-      visual_material: s.visual_material ?? "",
-      visual_tone: s.visual_tone ?? "",
-    });
-    const notes = [s.structure, s.intro, s.styleNotes, visualLookSummary({
-      visual_style: s.visual_style ?? "",
-      visual_material: s.visual_material ?? "",
-      visual_tone: s.visual_tone ?? "",
-    })].filter(Boolean).join(" · ");
-    setStructureNote(notes || null);
+    setDirector(directorStateFromNav(s));
+    setFromLibrary(true);
     navigate(location.pathname, { replace: true, state: null });
   }, [location.pathname, location.state, navigate]);
+
+  const recipeLabel = directorSummary(
+    director.structure,
+    director.intro,
+    director.styleNotes,
+    matchRecipeId(director.structure, director.intro),
+  );
 
   const previewMut = useMutation({
     mutationFn: () =>
@@ -54,15 +56,15 @@ export default function Plan() {
         video_type: videoType,
         target_duration: duration,
         chapters: 4,
-        structure: structure || undefined,
-        style_notes: styleNotes || undefined,
-        intro: intro || undefined,
-        ...visualLook,
+        structure: director.structure || undefined,
+        style_notes: director.styleNotes || undefined,
+        intro: director.intro || undefined,
+        ...director.visualLook,
       }),
     onSuccess: (data) => {
       const b = data.storyboard;
       setPreview(
-        `${b.title}\n${b.total_scenes} scenes · ${Math.round(b.planned_duration)}s planned · ${b.chapters.length} chapters`,
+        `${b.title}\n${b.total_scenes} scenes · ${Math.round(b.planned_duration)}s · ${b.chapters.length} chapters`,
       );
     },
   });
@@ -75,10 +77,10 @@ export default function Plan() {
         target_duration: duration,
         aspect: "16:9",
         chapters: 4,
-        structure: structure || undefined,
-        style_notes: styleNotes || undefined,
-        intro: intro || undefined,
-        ...visualLook,
+        structure: director.structure || undefined,
+        style_notes: director.styleNotes || undefined,
+        intro: director.intro || undefined,
+        ...director.visualLook,
       }),
     onSuccess: (data) => {
       setActiveJobId(data.job_id);
@@ -92,13 +94,13 @@ export default function Plan() {
       <div>
         <h1 className="text-2xl font-bold">Mid-length video</h1>
         <p className="text-sm text-zinc-500 mt-1">
-          3–15 min · chaptered storyboard + videographer rules ·{" "}
+          Topic → plan → render. Director recipes optional.{" "}
           <Link to="/prompts" className="text-blue-500 hover:underline">
-            Prompt library
+            Samples
           </Link>
         </p>
-        {structureNote && (
-          <p className="text-xs text-violet-400/90 mt-1">From library: {structureNote}</p>
+        {fromLibrary && recipeLabel && (
+          <p className="text-xs text-emerald-500/90 mt-1">From library · {recipeLabel}</p>
         )}
       </div>
 
@@ -129,7 +131,7 @@ export default function Plan() {
             </select>
           </label>
           <label className="block text-sm">
-            <span className="text-zinc-400">Target (seconds)</span>
+            <span className="text-zinc-400">Length (sec)</span>
             <input
               type="number"
               min={30}
@@ -141,9 +143,9 @@ export default function Plan() {
           </label>
         </div>
 
-        <VisualLookSelectors
-          value={visualLook}
-          onChange={setVisualLook}
+        <DirectorOptions
+          value={director}
+          onChange={setDirector}
           aiFootageActive={isAiStockProvider(stockProvider)}
         />
 

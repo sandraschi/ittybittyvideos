@@ -2,8 +2,6 @@ import { useMemo, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import {
   BUILTIN_PROMPTS,
-  STRUCTURE_PRESETS,
-  INTRO_PRESETS,
   createPrompt,
   deletePrompt,
   duplicatePrompt,
@@ -13,8 +11,9 @@ import {
   type PromptKind,
   type SavedPrompt,
 } from "@/lib/prompt-library";
-import VisualLookSelectors from "@/components/VisualLookSelectors";
-import { emptyVisualLook, visualLookSummary } from "@/lib/visual-look";
+import DirectorOptions, { type DirectorState } from "@/components/DirectorOptions";
+import { directorSummary, matchRecipeId } from "@/lib/director-recipes";
+import { visualLookSummary } from "@/lib/visual-look";
 
 const emptyForm = (): Omit<SavedPrompt, "id" | "createdAt" | "updatedAt"> => ({
   title: "",
@@ -129,13 +128,36 @@ export default function PromptsPage() {
     navigate(target === "generate" ? "/generate" : "/plan", { state });
   };
 
+  const directorFromForm = (): DirectorState => ({
+    structure: form.structure ?? "",
+    intro: form.intro ?? "",
+    styleNotes: form.styleNotes ?? "",
+    visualLook: {
+      visual_style: form.visual_style ?? "",
+      visual_material: form.visual_material ?? "",
+      visual_tone: form.visual_tone ?? "",
+    },
+  });
+
+  const setDirectorForm = (d: DirectorState) => {
+    setForm({
+      ...form,
+      structure: d.structure,
+      intro: d.intro,
+      styleNotes: d.styleNotes,
+      visual_style: d.visualLook.visual_style,
+      visual_material: d.visualLook.visual_material,
+      visual_tone: d.visualLook.visual_tone,
+    });
+  };
+
   return (
     <div className="max-w-3xl space-y-6">
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-bold">Prompt library</h1>
+          <h1 className="text-2xl font-bold">Samples</h1>
           <p className="text-sm text-zinc-500 mt-1">
-            Sample topics + your saved prompts (browser storage). Structure presets wire to the backend R10 prompt director.
+            One-click starters. Plain generate is the default — recipes hide dozens of YAML packs.
           </p>
         </div>
         <button
@@ -147,16 +169,9 @@ export default function PromptsPage() {
         </button>
       </div>
 
-      <p className="text-xs text-amber-300/90 rounded-md border border-amber-800/40 bg-amber-950/25 px-3 py-2">
-        Alpha stub: {BUILTIN_PROMPTS.length} built-in samples; edits to samples save as copies. Mermaid + trope YAML spec:{" "}
-        <a
-          className="underline text-amber-200"
-          href="https://github.com/sandraschi/ittybittyvideos/blob/main/docs/PROMPT-DIRECTOR.md"
-          target="_blank"
-          rel="noreferrer"
-        >
-          docs/PROMPT-DIRECTOR.md
-        </a>
+      <p className="text-xs text-zinc-600 rounded-md border border-zinc-800 bg-zinc-950/50 px-3 py-2">
+        {BUILTIN_PROMPTS.length} built-in samples · Use loads topic + recipe · Director on Generate has 8 curated recipes;
+        full trope/intro lists stay behind “Show all packs”.
       </p>
 
       {editingId && (
@@ -211,50 +226,9 @@ export default function PromptsPage() {
               </label>
             )}
           </div>
-          <label className="block text-sm">
-            <span className="text-zinc-400">Structure preset (R10)</span>
-            <select
-              className="mt-1 w-full rounded-md bg-zinc-950 border border-zinc-700 px-3 py-2 text-sm"
-              value={form.structure ?? ""}
-              onChange={(e) => setForm({ ...form, structure: e.target.value })}
-            >
-              {STRUCTURE_PRESETS.map((s) => (
-                <option key={s.id || "none"} value={s.id}>
-                  {s.label}
-                </option>
-              ))}
-            </select>
-          </label>
-          <label className="block text-sm">
-            <span className="text-zinc-400">Intro preset</span>
-            <select
-              className="mt-1 w-full rounded-md bg-zinc-950 border border-zinc-700 px-3 py-2 text-sm"
-              value={form.intro ?? ""}
-              onChange={(e) => setForm({ ...form, intro: e.target.value })}
-            >
-              {INTRO_PRESETS.map((s) => (
-                <option key={s.id || "none"} value={s.id}>
-                  {s.label}
-                </option>
-              ))}
-            </select>
-          </label>
-          <label className="block text-sm">
-            <span className="text-zinc-400">Style notes (optional)</span>
-            <input
-              className="mt-1 w-full rounded-md bg-zinc-950 border border-zinc-700 px-3 py-2 text-sm"
-              value={form.styleNotes ?? ""}
-              onChange={(e) => setForm({ ...form, styleNotes: e.target.value })}
-              placeholder="Warm tone, fast pacing…"
-            />
-          </label>
-          <VisualLookSelectors
-            value={{
-              visual_style: form.visual_style ?? "",
-              visual_material: form.visual_material ?? "",
-              visual_tone: form.visual_tone ?? "",
-            }}
-            onChange={(v) => setForm({ ...form, ...v })}
+          <DirectorOptions
+            value={directorFromForm()}
+            onChange={setDirectorForm}
             aiFootageActive
           />
           <div className="flex gap-2">
@@ -292,12 +266,17 @@ export default function PromptsPage() {
                 {isBuiltin(p.id) && (
                   <span className="text-[10px] text-blue-400/80">sample</span>
                 )}
-                {p.structure && (
-                  <span className="text-[10px] text-violet-400/90">{p.structure}</span>
-                )}
-                {p.intro && (
-                  <span className="text-[10px] text-amber-400/90">{p.intro}</span>
-                )}
+                {(() => {
+                  const label = directorSummary(
+                    p.structure ?? "",
+                    p.intro ?? "",
+                    p.styleNotes ?? "",
+                    matchRecipeId(p.structure ?? "", p.intro ?? ""),
+                  );
+                  return label ? (
+                    <span className="text-[10px] text-violet-400/90">{label}</span>
+                  ) : null;
+                })()}
               </div>
               <p className="text-sm text-zinc-400 mt-1 line-clamp-2">{p.topic}</p>
               {p.styleNotes && (
