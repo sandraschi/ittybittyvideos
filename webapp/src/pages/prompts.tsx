@@ -12,6 +12,8 @@ import {
   type PromptKind,
   type SavedPrompt,
 } from "@/lib/prompt-library";
+import VisualLookSelectors from "@/components/VisualLookSelectors";
+import { emptyVisualLook, visualLookSummary } from "@/lib/visual-look";
 
 const emptyForm = (): Omit<SavedPrompt, "id" | "createdAt" | "updatedAt"> => ({
   title: "",
@@ -20,6 +22,9 @@ const emptyForm = (): Omit<SavedPrompt, "id" | "createdAt" | "updatedAt"> => ({
   videoType: "explainer",
   structure: "",
   styleNotes: "",
+  visual_style: "",
+  visual_material: "",
+  visual_tone: "",
 });
 
 export default function PromptsPage() {
@@ -47,6 +52,9 @@ export default function PromptsPage() {
         videoType: p.videoType ?? "explainer",
         structure: p.structure ?? "",
         styleNotes: p.styleNotes ?? "",
+        visual_style: p.visual_style ?? "",
+        visual_material: p.visual_material ?? "",
+        visual_tone: p.visual_tone ?? "",
       });
       return;
     }
@@ -58,6 +66,9 @@ export default function PromptsPage() {
       videoType: p.videoType ?? "explainer",
       structure: p.structure ?? "",
       styleNotes: p.styleNotes ?? "",
+      visual_style: p.visual_style ?? "",
+      visual_material: p.visual_material ?? "",
+      visual_tone: p.visual_tone ?? "",
     });
   };
 
@@ -76,6 +87,9 @@ export default function PromptsPage() {
         videoType: form.kind === "mid" ? form.videoType : undefined,
         structure: form.structure || undefined,
         styleNotes: form.styleNotes?.trim() || undefined,
+        visual_style: form.visual_style || undefined,
+        visual_material: form.visual_material || undefined,
+        visual_tone: form.visual_tone || undefined,
       });
     } else if (editingId) {
       updatePrompt(editingId, {
@@ -85,6 +99,9 @@ export default function PromptsPage() {
         videoType: form.kind === "mid" ? form.videoType : undefined,
         structure: form.structure || undefined,
         styleNotes: form.styleNotes?.trim() || undefined,
+        visual_style: form.visual_style || undefined,
+        visual_material: form.visual_material || undefined,
+        visual_tone: form.visual_tone || undefined,
       });
     }
     cancelEdit();
@@ -98,6 +115,9 @@ export default function PromptsPage() {
       videoType: p.videoType,
       structure: p.structure,
       styleNotes: p.styleNotes,
+      visual_style: p.visual_style ?? "",
+      visual_material: p.visual_material ?? "",
+      visual_tone: p.visual_tone ?? "",
     };
     navigate(target === "generate" ? "/generate" : "/plan", { state });
   };
@@ -207,6 +227,15 @@ export default function PromptsPage() {
               placeholder="Warm tone, fast pacing…"
             />
           </label>
+          <VisualLookSelectors
+            value={{
+              visual_style: form.visual_style ?? "",
+              visual_material: form.visual_material ?? "",
+              visual_tone: form.visual_tone ?? "",
+            }}
+            onChange={(v) => setForm({ ...form, ...v })}
+            aiFootageActive
+          />
           <div className="flex gap-2">
             <button
               type="button"
@@ -249,6 +278,16 @@ export default function PromptsPage() {
               <p className="text-sm text-zinc-400 mt-1 line-clamp-2">{p.topic}</p>
               {p.styleNotes && (
                 <p className="text-xs text-zinc-600 mt-1">Notes: {p.styleNotes}</p>
+              )}
+              {(p.visual_style || p.visual_material || p.visual_tone) && (
+                <p className="text-xs text-violet-500/80 mt-1">
+                  Look:{" "}
+                  {visualLookSummary({
+                    visual_style: p.visual_style ?? "",
+                    visual_material: p.visual_material ?? "",
+                    visual_tone: p.visual_tone ?? "",
+                  })}
+                </p>
               )}
             </div>
             <div className="flex flex-wrap gap-2 shrink-0">

@@ -1,4 +1,4 @@
-/** Saved topics / prompt presets — browser localStorage until R10 backend templates. */
+import type { VisualLookValues } from "@/lib/visual-look";
 
 export type PromptKind = "short" | "mid";
 
@@ -11,6 +11,9 @@ export type SavedPrompt = {
   /** R10 placeholder — e.g. trope:tutorial */
   structure?: string;
   styleNotes?: string;
+  visual_style?: string;
+  visual_material?: string;
+  visual_tone?: string;
   createdAt: string;
   updatedAt: string;
 };
@@ -62,6 +65,8 @@ export const BUILTIN_PROMPTS: SavedPrompt[] = [
     title: "Cats are amazing",
     topic: "Three surprising facts about house cats that make them perfect apartment pets",
     kind: "short",
+    visual_material: "origami",
+    visual_tone: "hilarious",
     createdAt: "2026-06-12T00:00:00.000Z",
     updatedAt: "2026-06-12T00:00:00.000Z",
   },
@@ -142,6 +147,9 @@ export function duplicatePrompt(source: SavedPrompt): SavedPrompt {
     videoType: source.videoType,
     structure: source.structure,
     styleNotes: source.styleNotes,
+    visual_style: source.visual_style,
+    visual_material: source.visual_material,
+    visual_tone: source.visual_tone,
   });
 }
 
@@ -151,4 +159,4 @@ export type PromptNavState = {
   videoType?: string;
   structure?: string;
   styleNotes?: string;
-};
+} & VisualLookValues;

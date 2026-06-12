@@ -10,6 +10,7 @@ from loguru import logger
 from videogen_mcp.config import get_settings
 from videogen_mcp.models.schema import JobInfo, JobStatus, VideoAspect
 from videogen_mcp.models.storyboard import PlanRequest, Scene
+from videogen_mcp.models.visual_look import VisualLook, apply_visual_look_to_query
 from videogen_mcp.providers import get_stock, get_tts
 from videogen_mcp.providers.base import SubtitleEntry
 from videogen_mcp.services import job_store
@@ -64,7 +65,9 @@ async def _run_planned_pipeline(
             job.update(JobStatus.FETCHING_FOOTAGE, progress)
             _save(job)
 
-            footage = await _fetch_scene_footage(scene, aspect, work_dir / f"footage_{i:03d}.mp4")
+            footage = await _fetch_scene_footage(
+                scene, aspect, work_dir / f"footage_{i:03d}.mp4", visual_look=request.visual_look()
+            )
             scene_footage.append(footage)
 
             if scene.narration.strip():
@@ -138,6 +141,7 @@ async def _run_planned_pipeline(
                         work_dir / f"footage_{idx:03d}_p{pass_n}.mp4",
                         query_override=query,
                         exclude={scene_footage[idx]},
+                        visual_look=request.visual_look(),
                     )
                     replaced += 1
                 except RuntimeError as e:
@@ -168,12 +172,16 @@ async def _fetch_scene_footage(
     dest: Path,
     query_override: str | None = None,
     exclude: set[Path] | None = None,
+    visual_look: VisualLook | None = None,
 ) -> Path:
     if not scene.search_terms:
         scene.search_terms = ["abstract", "cinematic"]
 
     stock = get_stock()
-    query = query_override or " ".join(scene.search_terms[:2])
+    stock_name = get_settings().videogen_stock_provider
+    raw_query = query_override or " ".join(scene.search_terms[:2])
+    look = visual_look or VisualLook()
+    query = apply_visual_look_to_query(raw_query, look, stock_name)
     clips = await stock.search(query, count=3, aspect=aspect.value)
     excluded = exclude or set()
 

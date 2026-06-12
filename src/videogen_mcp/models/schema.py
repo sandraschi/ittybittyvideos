@@ -7,6 +7,8 @@ from typing import Annotated
 
 from pydantic import BaseModel, Field
 
+from videogen_mcp.models.visual_look import VisualLook
+
 
 class VideoAspect(str, enum.Enum):
     PORTRAIT = "9:16"
@@ -57,6 +59,16 @@ class GenerateRequest(BaseModel):
         str,
         Field(description="Topic scripting LLM: deepseek | openai | lmstudio | ollama (ignored when script is set)."),
     ] = ""
+    visual_style: Annotated[str, Field(description="AI footage style preset (localgen/veo/omni).")] = ""
+    visual_material: Annotated[str, Field(description="AI footage material preset.")] = ""
+    visual_tone: Annotated[str, Field(description="AI footage tone preset.")] = ""
+
+    def visual_look(self) -> VisualLook:
+        return VisualLook(
+            visual_style=self.visual_style,
+            visual_material=self.visual_material,
+            visual_tone=self.visual_tone,
+        )
 
 
 class JobInfo(BaseModel):

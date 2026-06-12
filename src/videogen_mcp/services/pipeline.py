@@ -6,6 +6,7 @@ from pathlib import Path
 from loguru import logger
 
 from videogen_mcp.config import get_settings
+from videogen_mcp.models.visual_look import apply_visual_look_to_query
 from videogen_mcp.models.schema import (
     GenerateRequest,
     JobInfo,
@@ -173,11 +174,13 @@ async def _get_script(request: GenerateRequest) -> VideoScript:
 
 async def _fetch_footage(job_id: str, script: VideoScript, request: GenerateRequest) -> list[Path]:
     stock = get_stock()
+    stock_name = get_settings().videogen_stock_provider
+    look = request.visual_look()
     all_paths: list[Path] = []
     seen_sources: set[str] = set()
 
     for segment in script.segments:
-        query = " ".join(segment.search_terms[:2])
+        query = apply_visual_look_to_query(" ".join(segment.search_terms[:2]), look, stock_name)
         clips = await stock.search(query, count=3, aspect=request.aspect.value)
 
         for clip in clips:

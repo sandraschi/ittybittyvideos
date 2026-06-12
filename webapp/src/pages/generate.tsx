@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { generateVideo, getStatus } from "@/lib/api";
+import VisualLookSelectors from "@/components/VisualLookSelectors";
+import { generateVideo, getSettings, getStatus } from "@/lib/api";
 import type { PromptNavState } from "@/lib/prompt-library";
+import { emptyVisualLook, isAiStockProvider } from "@/lib/visual-look";
 import { useJobsStore } from "@/store/jobs";
 
 type GenerateMode = "deepseek" | "openai" | "lmstudio" | "ollama" | "script";
@@ -48,12 +50,21 @@ export default function Generate() {
   const [aspect, setAspect] = useState("9:16");
   const [paragraphs, setParagraphs] = useState(3);
   const [fromLibrary, setFromLibrary] = useState<string | null>(null);
+  const [visualLook, setVisualLook] = useState(emptyVisualLook);
+
+  const { data: settings } = useQuery({ queryKey: ["settings"], queryFn: getSettings });
+  const stockProvider = settings?.settings.videogen_stock_provider ?? "pexels";
 
   useEffect(() => {
     const s = location.state as PromptNavState | null;
     if (!s?.topic) return;
     setTopic(s.topic);
     setFromLibrary(s.topic.slice(0, 48));
+    setVisualLook({
+      visual_style: s.visual_style ?? "",
+      visual_material: s.visual_material ?? "",
+      visual_tone: s.visual_tone ?? "",
+    });
     navigate(location.pathname, { replace: true, state: null });
   }, [location.pathname, location.state, navigate]);
 
@@ -86,6 +97,7 @@ export default function Generate() {
         aspect,
         paragraph_count: paragraphs,
         clip_duration: 5,
+        ...visualLook,
       });
     },
     onSuccess: (data) => {
@@ -229,6 +241,12 @@ export default function Generate() {
             />
           </label>
         </div>
+
+        <VisualLookSelectors
+          value={visualLook}
+          onChange={setVisualLook}
+          aiFootageActive={isAiStockProvider(stockProvider)}
+        />
 
         <button
           type="submit"

@@ -62,6 +62,22 @@ Rules:
 - Match narration language to the requested language"""
 
 
+def _planner_endpoint(settings) -> tuple[str, str, str]:
+    """Resolve (api_key, base_url, model) from the configured LLM provider.
+
+    The planner needs raw chat completions (storyboard JSON), not the
+    LLMProvider.generate_script interface, so it routes by provider name
+    to the matching OpenAI-compatible endpoint instead of hardcoding OpenAI."""
+    p = settings.videogen_llm_provider
+    if p == "deepseek":
+        return settings.deepseek_api_key, settings.deepseek_base_url, settings.deepseek_model
+    if p == "lmstudio":
+        return settings.lmstudio_api_key, settings.lmstudio_base_url, settings.lmstudio_model
+    if p == "ollama":
+        return "ollama", settings.ollama_base_url, settings.ollama_model
+    return settings.openai_api_key, settings.openai_base_url, settings.openai_model
+
+
 async def plan_video(request: PlanRequest) -> Storyboard:
     prompt = (
         f"Topic: {request.topic}\n"
@@ -72,15 +88,20 @@ async def plan_video(request: PlanRequest) -> Storyboard:
     )
     if request.style_notes:
         prompt += f"Style notes: {request.style_notes}\n"
+    hint = request.visual_look().planner_hint()
+    if hint:
+        prompt += f"{hint}\n"
 
     from openai import AsyncOpenAI
 
     from videogen_mcp.config import get_settings
 
     settings = get_settings()
-    client = AsyncOpenAI(api_key=settings.openai_api_key, base_url=settings.openai_base_url)
+    api_key, base_url, model = _planner_endpoint(settings)
+    logger.debug(f"planner: using {settings.videogen_llm_provider} ({base_url}, {model})")
+    client = AsyncOpenAI(api_key=api_key, base_url=base_url)
     resp = await client.chat.completions.create(
-        model=settings.openai_model,
+        model=model,
         messages=[
             {"role": "system", "content": PLANNER_SYSTEM},
             {"role": "user", "content": prompt},

@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { planRender, planVideo } from "@/lib/api";
+import VisualLookSelectors from "@/components/VisualLookSelectors";
+import { getSettings, planRender, planVideo } from "@/lib/api";
 import type { PromptNavState } from "@/lib/prompt-library";
+import { emptyVisualLook, isAiStockProvider, visualLookSummary } from "@/lib/visual-look";
 import { useJobsStore } from "@/store/jobs";
 
 export default function Plan() {
@@ -15,13 +17,26 @@ export default function Plan() {
   const [duration, setDuration] = useState(300);
   const [preview, setPreview] = useState<string>("");
   const [structureNote, setStructureNote] = useState<string | null>(null);
+  const [visualLook, setVisualLook] = useState(emptyVisualLook);
+
+  const { data: settings } = useQuery({ queryKey: ["settings"], queryFn: getSettings });
+  const stockProvider = settings?.settings.videogen_stock_provider ?? "pexels";
 
   useEffect(() => {
     const s = location.state as PromptNavState | null;
     if (!s?.topic) return;
     setTopic(s.topic);
     if (s.videoType) setVideoType(s.videoType);
-    const notes = [s.structure, s.styleNotes].filter(Boolean).join(" · ");
+    setVisualLook({
+      visual_style: s.visual_style ?? "",
+      visual_material: s.visual_material ?? "",
+      visual_tone: s.visual_tone ?? "",
+    });
+    const notes = [s.structure, s.styleNotes, visualLookSummary({
+      visual_style: s.visual_style ?? "",
+      visual_material: s.visual_material ?? "",
+      visual_tone: s.visual_tone ?? "",
+    })].filter(Boolean).join(" · ");
     setStructureNote(notes || null);
     navigate(location.pathname, { replace: true, state: null });
   }, [location.pathname, location.state, navigate]);
@@ -33,6 +48,7 @@ export default function Plan() {
         video_type: videoType,
         target_duration: duration,
         chapters: 4,
+        ...visualLook,
       }),
     onSuccess: (data) => {
       const b = data.storyboard;
@@ -50,6 +66,7 @@ export default function Plan() {
         target_duration: duration,
         aspect: "16:9",
         chapters: 4,
+        ...visualLook,
       }),
     onSuccess: (data) => {
       setActiveJobId(data.job_id);
@@ -69,9 +86,7 @@ export default function Plan() {
           </Link>
         </p>
         {structureNote && (
-          <p className="text-xs text-violet-400/90 mt-1">
-            From library (R10 structure not sent to API yet): {structureNote}
-          </p>
+          <p className="text-xs text-violet-400/90 mt-1">From library: {structureNote}</p>
         )}
       </div>
 
@@ -113,6 +128,12 @@ export default function Plan() {
             />
           </label>
         </div>
+
+        <VisualLookSelectors
+          value={visualLook}
+          onChange={setVisualLook}
+          aiFootageActive={isAiStockProvider(stockProvider)}
+        />
 
         {preview && (
           <pre className="text-xs bg-zinc-950 border border-zinc-800 rounded p-3 text-emerald-400 whitespace-pre-wrap">

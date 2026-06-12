@@ -443,6 +443,13 @@ async def api_plan(request: PlanRequest):
     return {"success": True, "storyboard": board.model_dump(mode="json")}
 
 
+@rest.get("/api/v1/visual-look/catalog")
+async def api_visual_look_catalog():
+    from videogen_mcp.models.visual_look import AI_STOCK_PROVIDERS, LOOK_CATALOG
+
+    return {"success": True, "ai_stock_providers": sorted(AI_STOCK_PROVIDERS), "catalog": LOOK_CATALOG}
+
+
 @rest.post("/api/v1/plan/render")
 async def api_plan_render(
     topic: str,
@@ -452,6 +459,10 @@ async def api_plan_render(
     language: str = "en",
     voice: str = "",
     chapters: int = 4,
+    style_notes: str = "",
+    visual_style: str = "",
+    visual_material: str = "",
+    visual_tone: str = "",
 ):
     from videogen_mcp.models.schema import VideoAspect
     from videogen_mcp.models.storyboard import VideoType
@@ -463,6 +474,10 @@ async def api_plan_render(
         target_duration=target_duration,
         language=language,
         chapters=chapters,
+        style_notes=style_notes,
+        visual_style=visual_style,
+        visual_material=visual_material,
+        visual_tone=visual_tone,
     )
     job = await generate_planned_video(req, aspect=VideoAspect(aspect), voice=voice)
     return {"success": True, "job_id": job.job_id, "status": job.status.value}

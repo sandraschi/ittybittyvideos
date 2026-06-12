@@ -4,7 +4,7 @@ Optional narrative structure layer **before** LLM script/storyboard calls. Plann
 
 **Today:** thin system prompts in `providers/llm_openai.py` (shorts) and `services/planner.py` (mid-length). **R10** injects trope/genre beat outlines from a curated offline corpus — not live [TV Tropes](https://tvtropes.org/) scraping.
 
-**Webapp today:** [Prompt library](/prompts) (browser localStorage CRUD + sample topics). Backend `structure` param lands with R10.
+- **Webapp today:** [Prompt library](/prompts) (browser localStorage CRUD + sample topics). **AI footage look** selectors (style / material / tone) on Generate, Plan, and Prompt library — wired to backend for LocalGen, Veo, Omni.
 
 ---
 

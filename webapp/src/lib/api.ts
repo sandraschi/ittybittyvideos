@@ -117,6 +117,9 @@ export async function generateVideo(body: {
   voice?: string;
   clip_duration?: number;
   paragraph_count?: number;
+  visual_style?: string;
+  visual_material?: string;
+  visual_tone?: string;
 }): Promise<{ job_id: string; status: string }> {
   const res = await fetch(`${BASE}/generate`, {
     method: "POST",
@@ -143,6 +146,9 @@ export async function planVideo(body: {
   language?: string;
   chapters?: number;
   style_notes?: string;
+  visual_style?: string;
+  visual_material?: string;
+  visual_tone?: string;
 }): Promise<{ storyboard: Storyboard }> {
   const res = await fetch(`${BASE}/plan`, {
     method: "POST",
@@ -161,6 +167,10 @@ export async function planRender(body: {
   language?: string;
   voice?: string;
   chapters?: number;
+  style_notes?: string;
+  visual_style?: string;
+  visual_material?: string;
+  visual_tone?: string;
 }): Promise<{ job_id: string; status: string }> {
   const params = new URLSearchParams();
   Object.entries(body).forEach(([k, v]) => {

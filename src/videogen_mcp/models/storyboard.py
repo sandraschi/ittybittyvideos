@@ -5,6 +5,8 @@ from typing import Annotated
 
 from pydantic import BaseModel, Field
 
+from videogen_mcp.models.visual_look import VisualLook
+
 
 class VideoType(str, enum.Enum):
     TUTORIAL = "tutorial"
@@ -88,3 +90,13 @@ class PlanRequest(BaseModel):
     language: str = "en"
     chapters: Annotated[int, Field(description="Number of chapters/sections.", ge=1, le=12)] = 4
     style_notes: str = ""
+    visual_style: str = ""
+    visual_material: str = ""
+    visual_tone: str = ""
+
+    def visual_look(self) -> VisualLook:
+        return VisualLook(
+            visual_style=self.visual_style,
+            visual_material=self.visual_material,
+            visual_tone=self.visual_tone,
+        )

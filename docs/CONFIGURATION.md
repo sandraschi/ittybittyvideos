@@ -2,6 +2,8 @@
 
 Settings persist in **`.env`** at the repo root. The webapp **Settings** page reads and writes the same file.
 
+Provider homepages and repos: [EXTERNAL-REFERENCES.md](./EXTERNAL-REFERENCES.md).
+
 ---
 
 ## Core server
@@ -74,6 +76,59 @@ The registry alias **`cogvideo`** still resolves to the same LocalGen client for
 | `COSYVOICE_URL` | `http://127.0.0.1:9880` | If using CosyVoice |
 
 Edge TTS is free and needs no key. Subtitles are generated from TTS timing (word-level when align extra is installed).
+
+---
+
+## R1 — alignment and subtitles
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `VIDEOGEN_ALIGN` | `true` | Run faster-whisper when TTS lacks word timestamps |
+| `VIDEOGEN_SUB_STYLE` | `sentence` | `sentence` or `karaoke` (ASS highlight) |
+| `VIDEOGEN_WHISPER_MODEL` | `small` | faster-whisper model size |
+| `VIDEOGEN_WHISPER_DEVICE` | `auto` | `auto`, `cuda`, or `cpu` |
+
+Install: `pip install -e ".[align]"`.
+
+---
+
+## R2 — beat snap and music ducking
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `VIDEOGEN_BEAT_SNAP` | `true` | Snap scene cuts to BGM beats (short pipeline + `bgm_url`) |
+| `VIDEOGEN_BEAT_TOLERANCE` | `0.4` | Max seconds a cut may shift |
+| `VIDEOGEN_DUCK` | `true` | Sidechain-compress BGM under narration |
+| `VIDEOGEN_DUCK_RATIO` | `8.0` | FFmpeg sidechaincompress ratio |
+| `VIDEOGEN_BGM_VOLUME` | `0.3` | Pre-duck BGM gain |
+
+Install: `pip install -e ".[beats]"`.
+
+---
+
+## R3 — Screening Room (VLM critique)
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `VIDEOGEN_SCREENING_PASSES` | `1` | Passes after mid-length render; `0` = off |
+| `VIDEOGEN_VLM_URL` | `http://localhost:11434/v1` | OpenAI-compatible vision endpoint |
+| `VIDEOGEN_VLM_MODEL` | `qwen3.5-vl` | Model with image input support |
+
+Skipped with a warning when the VLM is unreachable. Critique JSON: `{job_work_dir}/critique_pass_*.json`.
+
+---
+
+## R9 — talking-head PiP overlay
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `VIDEOGEN_TALKER_PROVIDER` | *(empty)* | Set to `sadtalker` to enable |
+| `TALKER_URL` | `http://localhost:11100` | External `POST /generate` service |
+| `VIDEOGEN_TALKER_SOURCE` | — | Path to face/source image (PNG/JPG) |
+| `VIDEOGEN_TALKER_CORNER` | `bottom-right` | PiP corner |
+| `VIDEOGEN_TALKER_SCALE` | `0.28` | Head height as fraction of frame |
+
+See [PROVIDERS-AND-MODELS.md](./PROVIDERS-AND-MODELS.md) for the HTTP contract.
 
 ---
 
