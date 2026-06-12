@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from contextlib import asynccontextmanager
+from pathlib import Path
 from typing import Annotated
 
 from fastapi import FastAPI
@@ -225,6 +226,17 @@ if FastMCP:
             "status": job.status.value,
             "message": f"Planned video generation started for: {topic} ({target_duration / 60:.0f} min)",
         }
+
+
+_webapp_dir = Path(__file__).resolve().parent.parent.parent / "webapp" / "dist"
+if _webapp_dir.exists():
+    from fastapi.staticfiles import StaticFiles
+
+    @rest.get("/")
+    async def serve_index():
+        return FileResponse(_webapp_dir / "index.html")
+
+    rest.mount("/static", StaticFiles(directory=str(_webapp_dir)), name="static")
 
 
 @rest.get("/health")

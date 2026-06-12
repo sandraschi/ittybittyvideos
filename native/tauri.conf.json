@@ -1,0 +1,44 @@
+{
+  "productName": "roughcut",
+  "version": "0.1.0",
+  "identifier": "ai.fleet.roughcut",
+  "build": {
+    "frontendDist": "../webapp/dist",
+    "devUrl": "http://localhost:11054"
+  },
+  "app": {
+    "windows": [
+      {
+        "label": "main",
+        "title": "roughcut",
+        "width": 800,
+        "height": 700,
+        "minWidth": 600,
+        "minHeight": 500,
+        "center": true
+      }
+    ],
+    "security": {
+      "csp": null
+    }
+  },
+  "bundle": {
+    "active": true,
+    "targets": ["nsis"],
+    "icon": ["icons/icon.ico", "icons/icon.png"],
+    "resources": [
+      "resources/roughcut-backend.exe"
+    ],
+    "windows": {
+      "webviewInstallMode": {
+        "type": "skip"
+      },
+      "nsis": {
+        "installMode": "currentUser",
+        "createDesktopShortcut": true,
+        "createStartMenuShortcut": true,
+        "installerHooks": "./windows/hooks.nsh"
+      }
+    }
+  }
+}

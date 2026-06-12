@@ -1,8 +1,12 @@
 set shell := ["pwsh", "-NoProfile", "-Command"]
 
-# Bootstrap: install deps
+# One command to rule them all. Double-click start.bat or run this.
+go:
+    & "{{justfile_directory()}}\start.ps1"
+
+# Bootstrap only (no launch)
 bootstrap:
-    uv sync
+    uv sync --extra dev
 
 # Run dev server
 dev:
@@ -32,3 +36,15 @@ test:
 
 # Full check (lint + typecheck + test)
 check: lint typecheck test
+
+# Build Tauri native desktop app (release)
+build-native:
+    Set-Location "{{justfile_directory()}}\native"
+    $env:Path = "$env:USERPROFILE\.cargo\bin;$env:Path"
+    & ".\build.ps1"
+
+# Build Tauri native app (debug, skip PyInstaller)
+build-native-debug:
+    Set-Location "{{justfile_directory()}}\native"
+    $env:Path = "$env:USERPROFILE\.cargo\bin;$env:Path"
+    npx @tauri-apps/cli build --debug
