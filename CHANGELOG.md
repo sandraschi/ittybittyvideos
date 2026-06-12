@@ -13,10 +13,24 @@ Versioning tracks the Python package in `pyproject.toml`.
 
 - Alpha release path: README badge + warning, marketing site banner, [docs/ALPHA-RELEASE-CHECKLIST.md](docs/ALPHA-RELEASE-CHECKLIST.md), GitHub Pages static site in `docs/` (`index.html`, `.nojekyll`).
 - R10 planning: [docs/PROMPT-DIRECTOR.md](docs/PROMPT-DIRECTOR.md) (mermaid), webapp **Prompt library** (`/prompts`) with sample topics + localStorage CRUD.
+- **Webapp Director UX:** collapsed **Director (optional)** panel with 8 curated recipes; full trope/intro pack lists behind “Show all packs”; **Length** presets (~15–50 s) on the default Generate path (`director-recipes.ts`, `DirectorOptions.tsx`, `short-length.ts`).
+- **MCP catalog:** `videogen_mcp.mcp_registry.MCP_TOOL_CATALOG` (16 tools) — single source for `/api/v1/tools`, `/health`, `/api/v1/status`.
+- **MCP tools:** `videogen_help`, `videogen_intros`, `videogen_credits`, `videogen_visual_look`, `videogen_depot`, `videogen_publish_pack`; `visual_style` / `visual_material` / `visual_tone` on generate and plan tools.
+- **MCP tests:** `tests/test_mcp.py`; shared `client` fixture in `tests/conftest.py`.
+- **Validation harness:** `scripts/validate_fable.py` for live pipeline checks.
 
 ### Changed
 
 - **Rebrand:** product name **ittybitty** (was roughcutvideos); native binaries `ittybitty-native.exe` / `ittybitty-backend.exe`; Tauri identifier `ai.fleet.ittybitty`; GitHub repo `sandraschi/ittybitty`.
+- **MCP docs:** [docs/TOOLS.md](docs/TOOLS.md) lists all 16 tools; README points agents to `videogen_help` first.
+- Intro/credits MCP samples accept `intro:` / `credits:` prefixes and optional `seed`.
+
+### Fixed
+
+- **`/health` / status `tool_count`:** was stuck at 7; now reflects the full MCP catalog (16 when FastMCP is loaded).
+- **Whisper align:** CUDA → CPU fallback when `cublas64_12` (or GPU libs) are missing.
+- **Beat snap (`librosa` 0.11 / NumPy 2.4):** tempo ndarray handling in `snap_cut_durations`.
+- **Planner JSON:** tolerant parse for DeepSeek trailing commas in storyboard responses.
 
 ---
 
