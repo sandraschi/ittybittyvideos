@@ -68,6 +68,7 @@ export default function PromptsPage() {
       kind: p.kind,
       videoType: p.videoType ?? "explainer",
       structure: p.structure ?? "",
+      intro: p.intro ?? "",
       styleNotes: p.styleNotes ?? "",
       visual_style: p.visual_style ?? "",
       visual_material: p.visual_material ?? "",
