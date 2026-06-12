@@ -1,0 +1,27 @@
+id: epic-trailer
+label: Blockbuster trailer intro
+tone: epic
+description: >
+  In a world… bass hits, quick cuts, stakes maximized. Serious or self-parody
+  depending on topic.
+duration_hint: 8
+visual:
+  style: high-contrast trailer cuts, lens flare, slow-mo hero shots
+  shot_types: [wide, close, aerial]
+  search_terms: [epic cinematic trailer, dramatic sky, hero silhouette]
+audio:
+  music: orchestral hit, BRAAAM, rising percussion
+  sfx: whoosh transitions, impact hits on cut
+  bgm_tags: [trailer epic, orchestral hit, cinematic action]
+narration:
+  mode: trailer_voice
+  examples:
+    - "In a world…"
+    - "One dog. One treat. No mercy."
+structure:
+  - Black + title slam or whisper (1s)
+  - Montage flashes — 3 cuts max (4s)
+  - Title card or stakes line (3s)
+post_intro: Drop trailer energy or sustain for comedy contrast
+example_lines:
+  - "This summer… breakfast gets personal."

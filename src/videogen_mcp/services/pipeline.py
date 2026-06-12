@@ -173,6 +173,7 @@ async def _get_script(request: GenerateRequest) -> VideoScript:
         request.paragraph_count,
         structure=request.structure,
         style_notes=request.style_notes,
+        intro=request.intro,
     )
     return VideoScript.model_validate(raw)
 

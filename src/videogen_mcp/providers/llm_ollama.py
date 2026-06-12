@@ -18,6 +18,7 @@ class OllamaLLMProvider(OpenAILLMProvider):
         *,
         structure: str = "",
         style_notes: str = "",
+        intro: str = "",
     ) -> dict:
         settings = get_settings()
         client = AsyncOpenAI(api_key="ollama", base_url=settings.ollama_base_url)
@@ -25,7 +26,12 @@ class OllamaLLMProvider(OpenAILLMProvider):
         resp = await client.chat.completions.create(
             model=model,
             messages=build_short_script_messages(
-                topic, paragraph_count, language, structure=structure, style_notes=style_notes
+                topic,
+                paragraph_count,
+                language,
+                structure=structure,
+                style_notes=style_notes,
+                intro=intro,
             ),
             temperature=0.8,
             max_tokens=2000,

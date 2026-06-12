@@ -1,0 +1,27 @@
+id: documentary-gravitas
+label: Serious documentary open
+tone: serious
+description: >
+  Authoritative, cinematic cold open — Ken Burns drift, golden hour, measured VO.
+  No irony unless user style_notes add it.
+duration_hint: 12
+visual:
+  style: cinematic documentary, shallow depth of field, slow push-in
+  shot_types: [wide, aerial, close]
+  search_terms: [golden hour landscape, documentary broll, slow motion nature]
+audio:
+  music: solo piano or ambient swell, restrained, major-to-minor optional
+  sfx: subtle wind, room tone — no comedy stings
+  bgm_tags: [documentary piano, ambient serious, cinematic underscore]
+narration:
+  mode: authoritative
+  examples:
+    - "In a world where few noticed…"
+    - "This is the story of one ordinary Tuesday."
+structure:
+  - Establishing wide — place and time (4s)
+  - Human or subject detail — emotional anchor (4s)
+  - Thesis statement — why we're watching (4s)
+post_intro: Transition to main content without joke break
+example_lines:
+  - "Some moments change everything. This wasn't one of them — until it was."

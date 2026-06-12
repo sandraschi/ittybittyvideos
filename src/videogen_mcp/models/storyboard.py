@@ -93,6 +93,7 @@ class PlanRequest(BaseModel):
     structure: Annotated[
         str, Field(description="R10 narrative preset, e.g. trope:pet-food-duo-review.")
     ] = ""
+    intro: Annotated[str, Field(description="Intro pack preset, e.g. intro:bluey-horror-contrast.")] = ""
     visual_style: str = ""
     visual_material: str = ""
     visual_tone: str = ""

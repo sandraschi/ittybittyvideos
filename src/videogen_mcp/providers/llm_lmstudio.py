@@ -34,13 +34,19 @@ class LMStudioLLMProvider(OpenAILLMProvider):
         *,
         structure: str = "",
         style_notes: str = "",
+        intro: str = "",
     ) -> dict:
         client = await self._client()
         model = await self._resolve_model(client)
         resp = await client.chat.completions.create(
             model=model,
             messages=build_short_script_messages(
-                topic, paragraph_count, language, structure=structure, style_notes=style_notes
+                topic,
+                paragraph_count,
+                language,
+                structure=structure,
+                style_notes=style_notes,
+                intro=intro,
             ),
             temperature=0.8,
             max_tokens=2000,

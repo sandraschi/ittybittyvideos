@@ -18,6 +18,7 @@ class DeepSeekLLMProvider(LLMProvider):
         *,
         structure: str = "",
         style_notes: str = "",
+        intro: str = "",
     ) -> dict:
         settings = get_settings()
         if not settings.deepseek_api_key.strip():
@@ -30,7 +31,12 @@ class DeepSeekLLMProvider(LLMProvider):
         resp = await client.chat.completions.create(
             model=settings.deepseek_model,
             messages=build_short_script_messages(
-                topic, paragraph_count, language, structure=structure, style_notes=style_notes
+                topic,
+                paragraph_count,
+                language,
+                structure=structure,
+                style_notes=style_notes,
+                intro=intro,
             ),
             temperature=0.8,
             max_tokens=2000,

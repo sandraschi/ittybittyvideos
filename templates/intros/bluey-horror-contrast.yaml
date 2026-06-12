@@ -1,0 +1,33 @@
+id: bluey-horror-contrast
+label: Wholesome visuals × horror sound
+tone: hilarious_contrast
+description: >
+  Soft family-animation energy on screen — pastel, playful, Bluey-adjacent vibe
+  (not branded). Audio is completely wrong: horror drone, stingers, dread.
+  The joke IS the juxtaposition.
+duration_hint: 10
+visual:
+  style: soft 2D family animation feel, pastel palette, sunny backyard, playful dogs or kids energy
+  avoid: horror imagery, blood, jump-scare visuals — contrast comes from SOUND only
+  shot_types: [wide, medium, warm]
+  search_terms: [playful dog sunny yard, cartoon style family, pastel animation cheerful]
+audio:
+  music: slow horror drone, dissonant strings, minor key — nothing wholesome
+  sfx: distant thunder, creaking door, heartbeat, glass crack sting on cute tail wag
+  contrast_line: "Picture Saturday morning. Sound: the elevator from The Shining."
+  bgm_tags: [horror ambient, dark drone, cinematic dread]
+narration:
+  mode: deadpan_understatement
+  examples:
+    - "Today on Puppy Valley…"
+    - "A nice episode about snacks."
+    - "Everything is fine."
+structure:
+  - Optional faux title card — cheerful show name (3s)
+  - Establish wholesome scene — wagging, sunshine (3s)
+  - Horror audio bleeds in under unchanged visuals (2s)
+  - Hard smash cut or record-scratch to main hook
+post_intro: Audience knows the bit — contrast can drop or return as running gag
+example_lines:
+  - "Previously on the happiest place on earth… [SCREECH]"
+  - "Let's learn about sharing! [heartbeat intensifies]"

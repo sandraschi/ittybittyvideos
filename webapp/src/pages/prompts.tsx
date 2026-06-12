@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import {
   BUILTIN_PROMPTS,
   STRUCTURE_PRESETS,
+  INTRO_PRESETS,
   createPrompt,
   deletePrompt,
   duplicatePrompt,
@@ -21,6 +22,7 @@ const emptyForm = (): Omit<SavedPrompt, "id" | "createdAt" | "updatedAt"> => ({
   kind: "short",
   videoType: "explainer",
   structure: "",
+  intro: "",
   styleNotes: "",
   visual_style: "",
   visual_material: "",
@@ -51,6 +53,7 @@ export default function PromptsPage() {
         kind: p.kind,
         videoType: p.videoType ?? "explainer",
         structure: p.structure ?? "",
+        intro: p.intro ?? "",
         styleNotes: p.styleNotes ?? "",
         visual_style: p.visual_style ?? "",
         visual_material: p.visual_material ?? "",
@@ -86,6 +89,7 @@ export default function PromptsPage() {
         kind: form.kind,
         videoType: form.kind === "mid" ? form.videoType : undefined,
         structure: form.structure || undefined,
+        intro: form.intro || undefined,
         styleNotes: form.styleNotes?.trim() || undefined,
         visual_style: form.visual_style || undefined,
         visual_material: form.visual_material || undefined,
@@ -98,6 +102,7 @@ export default function PromptsPage() {
         kind: form.kind,
         videoType: form.kind === "mid" ? form.videoType : undefined,
         structure: form.structure || undefined,
+        intro: form.intro || undefined,
         styleNotes: form.styleNotes?.trim() || undefined,
         visual_style: form.visual_style || undefined,
         visual_material: form.visual_material || undefined,
@@ -114,6 +119,7 @@ export default function PromptsPage() {
       kind: p.kind,
       videoType: p.videoType,
       structure: p.structure,
+      intro: p.intro,
       styleNotes: p.styleNotes,
       visual_style: p.visual_style ?? "",
       visual_material: p.visual_material ?? "",
@@ -219,6 +225,20 @@ export default function PromptsPage() {
             </select>
           </label>
           <label className="block text-sm">
+            <span className="text-zinc-400">Intro preset</span>
+            <select
+              className="mt-1 w-full rounded-md bg-zinc-950 border border-zinc-700 px-3 py-2 text-sm"
+              value={form.intro ?? ""}
+              onChange={(e) => setForm({ ...form, intro: e.target.value })}
+            >
+              {INTRO_PRESETS.map((s) => (
+                <option key={s.id || "none"} value={s.id}>
+                  {s.label}
+                </option>
+              ))}
+            </select>
+          </label>
+          <label className="block text-sm">
             <span className="text-zinc-400">Style notes (optional)</span>
             <input
               className="mt-1 w-full rounded-md bg-zinc-950 border border-zinc-700 px-3 py-2 text-sm"
@@ -273,6 +293,9 @@ export default function PromptsPage() {
                 )}
                 {p.structure && (
                   <span className="text-[10px] text-violet-400/90">{p.structure}</span>
+                )}
+                {p.intro && (
+                  <span className="text-[10px] text-amber-400/90">{p.intro}</span>
                 )}
               </div>
               <p className="text-sm text-zinc-400 mt-1 line-clamp-2">{p.topic}</p>

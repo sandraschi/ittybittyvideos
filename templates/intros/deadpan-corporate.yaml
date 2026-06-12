@@ -1,0 +1,28 @@
+id: deadpan-corporate
+label: Deadpan corporate × chaos visuals
+tone: hilarious_contrast
+description: >
+  Boring HR/training video narration over increasingly unhinged footage.
+  Inverse of bluey-horror — calm VO, visuals escalate.
+duration_hint: 9
+visual:
+  style: start sterile office/stock corporate; escalate to absurd broll
+  shot_types: [screen_capture, medium, wide]
+  search_terms: [office meeting boring, corporate training, then dog chaos party]
+audio:
+  music: royalty-free elevator muzak, hold music, never changes
+  sfx: single soft ding when visuals go off rails
+  contrast_line: "Sound: compliance training. Picture: the purge but with puppies."
+  bgm_tags: [elevator music, corporate ambient, hold music]
+narration:
+  mode: corporate_deadpan
+  examples:
+    - "Module three: appropriate break-room behavior."
+    - "Remember to hydrate and respect shared surfaces."
+structure:
+  - Fake compliance title slide (2s)
+  - Calm VO over normal footage (3s)
+  - Visuals diverge — VO unchanged (4s)
+post_intro: VO may finally acknowledge chaos or stay deadpan through punchline
+example_lines:
+  - "Violence in the workplace is never acceptable. [cut to treat stampede]"

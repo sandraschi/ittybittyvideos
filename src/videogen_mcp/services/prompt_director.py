@@ -10,6 +10,7 @@ from loguru import logger
 
 from videogen_mcp.models.trope import TropeTemplate
 from videogen_mcp.services.credits import credits_prompt_for_trope
+from videogen_mcp.services.intros import intro_prompt_block, intro_prompt_for_trope, resolve_intro_pack
 
 
 def trope_dir() -> Path:
@@ -102,7 +103,22 @@ def _beat_block(trope: TropeTemplate, *, mid: bool) -> str:
         lines.append("")
         lines.append(credits_block)
 
+    intro_block = intro_prompt_for_trope(trope.intro if trope.intro else None)
+    if intro_block:
+        lines.append("")
+        lines.append(intro_block)
+
     return "\n".join(lines)
+
+
+def _append_intro_block(system: str, intro: str, trope: TropeTemplate | None) -> str:
+    pack_id = resolve_intro_pack(intro, trope.intro if trope and trope.intro else None)
+    if not pack_id:
+        return system
+    block = intro_prompt_block(pack_id)
+    if not block:
+        return system
+    return f"{system}\n\n{block}\n\nOpen with this intro before the main hook. First segment = intro when short form."
 
 
 def enrich_for_short_script(
@@ -112,30 +128,40 @@ def enrich_for_short_script(
     language: str,
     structure: str,
     style_notes: str,
+    intro: str = "",
 ) -> tuple[str, str]:
     user = f"Topic: {topic}\nSegments: {paragraph_count}\nLanguage: {language}"
     if style_notes.strip():
         user += f"\nStyle notes: {style_notes.strip()}"
 
     trope_id = normalize_structure_id(structure)
-    if not trope_id:
+    trope = load_trope(trope_id) if trope_id else None
+
+    if not trope_id and not intro.strip():
         return base_system, user
 
-    trope = load_trope(trope_id)
-    if not trope:
+    if not trope and trope_id:
+        if intro.strip():
+            system = _append_intro_block(base_system, intro, None)
+            return system, user
         return base_system, user
 
-    block = _beat_block(trope, mid=False)
-    system = (
-        f"{base_system}\n\n{block}\n\n"
-        "Follow the beat outline. Map beats to segments when segment count allows. "
-        "First segment must work as a 3-second hook."
-    )
-    if trope.credits:
+    block = _beat_block(trope, mid=False) if trope else ""
+    system = base_system
+    if block:
+        system = (
+            f"{base_system}\n\n{block}\n\n"
+            "Follow the beat outline. Map beats to segments when segment count allows. "
+            "First segment must work as a 3-second hook unless intro beats come first."
+        )
+    system = _append_intro_block(system, intro, trope)
+    if trope and trope.credits:
         system += (
             " If credits/post-credits beats exist: dedicate final segment(s) to the absurd roll "
             "and post-credits stinger — do not rush the featured historical advisors."
         )
+    if trope and trope.intro and not intro.strip():
+        system += " Honor intro scene_type beats before hook when present."
     return system, user
 
 
@@ -144,26 +170,33 @@ def enrich_for_planner(
     user_prompt: str,
     structure: str,
     style_notes: str,
+    intro: str = "",
 ) -> tuple[str, str]:
     trope_id = normalize_structure_id(structure)
-    if not trope_id:
+    trope = load_trope(trope_id) if trope_id else None
+
+    if not trope_id and not intro.strip():
         return base_system, user_prompt
 
-    trope = load_trope(trope_id)
-    if not trope:
+    if not trope and trope_id and not intro.strip():
         return base_system, user_prompt
 
-    block = _beat_block(trope, mid=True)
-    system = (
-        f"{base_system}\n\n{block}\n\n"
-        "Expand beats into chapters and scenes. Use suggested chapter titles when provided. "
-        "Keep hook scene first; honor text overlay cues in scene notes where relevant."
-    )
-    if trope.credits:
+    block = _beat_block(trope, mid=True) if trope else ""
+    system = base_system
+    if block:
+        system = (
+            f"{base_system}\n\n{block}\n\n"
+            "Expand beats into chapters and scenes. Use suggested chapter titles when provided. "
+            "Keep hook scene first unless intro beats precede it; honor text overlay cues in scene notes."
+        )
+    system = _append_intro_block(system, intro, trope)
+    if trope and trope.credits:
         system += (
             " Include full credits chapter(s) with text_overlay shot types and a post-credits stinger scene. "
             "Generate dozens of joke contributor lines in scene notes/narration."
         )
+    if trope and trope.intro:
+        system += " First chapter should be a full intro sequence scene with audio contrast notes in director notes."
     if style_notes.strip() and "Style notes:" not in user_prompt:
         user_prompt = f"{user_prompt.rstrip()}\nStyle notes: {style_notes.strip()}\n"
     return system, user_prompt

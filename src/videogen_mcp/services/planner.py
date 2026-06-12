@@ -94,7 +94,7 @@ async def plan_video(request: PlanRequest) -> Storyboard:
         prompt += f"{hint}\n"
 
     system_content, user_content = enrich_for_planner(
-        PLANNER_SYSTEM, prompt, request.structure, request.style_notes
+        PLANNER_SYSTEM, prompt, request.structure, request.style_notes, request.intro
     )
 
     from openai import AsyncOpenAI

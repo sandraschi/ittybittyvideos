@@ -18,6 +18,7 @@ export default function Plan() {
   const [preview, setPreview] = useState<string>("");
   const [structureNote, setStructureNote] = useState<string | null>(null);
   const [structure, setStructure] = useState("");
+  const [intro, setIntro] = useState("");
   const [styleNotes, setStyleNotes] = useState("");
   const [visualLook, setVisualLook] = useState(emptyVisualLook);
 
@@ -30,13 +31,14 @@ export default function Plan() {
     setTopic(s.topic);
     if (s.videoType) setVideoType(s.videoType);
     setStructure(s.structure ?? "");
+    setIntro(s.intro ?? "");
     setStyleNotes(s.styleNotes ?? "");
     setVisualLook({
       visual_style: s.visual_style ?? "",
       visual_material: s.visual_material ?? "",
       visual_tone: s.visual_tone ?? "",
     });
-    const notes = [s.structure, s.styleNotes, visualLookSummary({
+    const notes = [s.structure, s.intro, s.styleNotes, visualLookSummary({
       visual_style: s.visual_style ?? "",
       visual_material: s.visual_material ?? "",
       visual_tone: s.visual_tone ?? "",
@@ -54,6 +56,7 @@ export default function Plan() {
         chapters: 4,
         structure: structure || undefined,
         style_notes: styleNotes || undefined,
+        intro: intro || undefined,
         ...visualLook,
       }),
     onSuccess: (data) => {
@@ -74,6 +77,7 @@ export default function Plan() {
         chapters: 4,
         structure: structure || undefined,
         style_notes: styleNotes || undefined,
+        intro: intro || undefined,
         ...visualLook,
       }),
     onSuccess: (data) => {

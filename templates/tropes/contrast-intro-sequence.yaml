@@ -1,0 +1,35 @@
+id: contrast-intro-sequence
+label: Intro sequence (visual × audio contrast)
+video_types: [short, showcase, explainer, documentary]
+exemplar_views: "Bluey-wholesome × horror SFX class; deadpan corporate inverse"
+intro:
+  pack: bluey-horror-contrast
+  duration_hint: 10
+beats:
+  - scene_type: intro
+    narration_goal: Faux wholesome open — title or deadpan line; visuals sunny/cute
+    duration_hint: 4
+  - scene_type: broll
+    narration_goal: Horror/wrong audio under unchanged cute visuals — note SFX in narration notes
+    duration_hint: 4
+  - scene_type: hook
+    narration_goal: Smash cut to real hook — acknowledge contrast or pretend nothing happened
+    duration_hint: 3
+  - scene_type: demo
+    narration_goal: Main content
+    duration_hint: 20
+  - scene_type: recap
+    narration_goal: Payoff
+    duration_hint: 8
+visual:
+  aspect: "9:16"
+  cut_every_seconds: 1.5
+  text_overlays: ["Puppy Valley", "Episode 1", "??"]
+expand_to_mid:
+  chapters:
+    - Cold open intro — full contrast sequence (30s)
+    - Act I — main story setup
+    - Escalation — contrast gag may return
+    - Climax and recap
+    - Optional outro — restore wrong audio one last time
+example_hook: "The nicest dog show on television [heartbeat] [thunder]"

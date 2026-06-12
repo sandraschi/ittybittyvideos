@@ -75,6 +75,9 @@ if FastMCP:
             str, Field(description="R10 trope preset, e.g. trope:pet-food-duo-review.")
         ] = "",
         style_notes: Annotated[str, Field(description="Extra style guidance for scripting.")] = "",
+        intro: Annotated[
+            str, Field(description="Intro pack, e.g. intro:bluey-horror-contrast.")
+        ] = "",
     ) -> dict:
         """Generate a short video from a topic or script.
 
@@ -98,6 +101,7 @@ if FastMCP:
             llm_provider=llm_provider,
             structure=structure,
             style_notes=style_notes,
+            intro=intro,
         )
         job = await generate_video(req)
         return {
@@ -180,6 +184,27 @@ if FastMCP:
         return {"success": True, "structures": items, "count": len(items)}
 
     @mcp.tool()
+    async def videogen_intro_sample(
+        pack: Annotated[str, Field(description="Intro pack id, e.g. bluey-horror-contrast.")] = "bluey-horror-contrast",
+    ) -> dict:
+        """Sample intro sequence guidance (serious or hilarious visual/audio contrast).
+
+        ## Return Format
+        {"success": bool, "pack": str, "tone": str, "text": str}
+
+        ## Examples
+        videogen_intro_sample(pack="bluey-horror-contrast")
+        videogen_intro_sample(pack="documentary-gravitas")
+        """
+        from videogen_mcp.services.intros import intro_prompt_block, load_intro_pack
+
+        block = intro_prompt_block(pack)
+        meta = load_intro_pack(pack)
+        if not block or not meta:
+            return {"success": False, "message": f"Intro pack {pack!r} not found"}
+        return {"success": True, "pack": pack, "tone": meta.tone, "text": block}
+
+    @mcp.tool()
     async def videogen_credits_sample(
         pack: Annotated[str, Field(description="Credits pack id, e.g. absurd-pixar.")] = "absurd-pixar",
         lines: Annotated[int, Field(description="Sample lines to return.", ge=5, le=80)] = 24,
@@ -224,6 +249,7 @@ if FastMCP:
         chapters: Annotated[int, Field(description="Number of chapters.", ge=1, le=12)] = 4,
         style_notes: Annotated[str, Field(description="Style guidance for the planner.")] = "",
         structure: Annotated[str, Field(description="R10 trope preset, e.g. trope:pet-food-duo-review.")] = "",
+        intro: Annotated[str, Field(description="Intro pack, e.g. intro:bluey-horror-contrast.")] = "",
     ) -> dict:
         """Plan an intermediate-length video storyboard with chapters and scenes.
 
@@ -249,6 +275,7 @@ if FastMCP:
             chapters=chapters,
             style_notes=style_notes,
             structure=structure,
+            intro=intro,
         )
         board = await plan_video(req)
         return {
@@ -271,6 +298,7 @@ if FastMCP:
         chapters: Annotated[int, Field(description="Number of chapters.", ge=1, le=12)] = 4,
         style_notes: Annotated[str, Field(description="Style guidance.")] = "",
         structure: Annotated[str, Field(description="R10 trope preset.")] = "",
+        intro: Annotated[str, Field(description="Intro pack.")] = "",
     ) -> dict:
         """Plan AND render an intermediate-length video (3-15 min).
 
@@ -296,6 +324,7 @@ if FastMCP:
             chapters=chapters,
             style_notes=style_notes,
             structure=structure,
+            intro=intro,
         )
         job = await generate_planned_video(req, aspect=VideoAspect(aspect), voice=voice)
         return {
@@ -546,6 +575,25 @@ async def api_credits_sample(
     }
 
 
+@rest.get("/api/v1/intros/packs")
+async def api_intro_packs():
+    from videogen_mcp.services.intros import list_intro_packs
+
+    packs = list_intro_packs()
+    return {"success": True, "packs": packs, "count": len(packs)}
+
+
+@rest.get("/api/v1/intros/sample")
+async def api_intro_sample(pack: str = "bluey-horror-contrast", seed: int | None = None):
+    from videogen_mcp.services.intros import intro_prompt_block, load_intro_pack
+
+    block = intro_prompt_block(pack, seed=seed)
+    meta = load_intro_pack(pack)
+    if not block or not meta:
+        return {"success": False, "message": f"Intro pack {pack!r} not found"}
+    return {"success": True, "pack": pack, "tone": meta.tone, "text": block}
+
+
 @rest.post("/api/v1/plan/render")
 async def api_plan_render(
     topic: str,
@@ -557,6 +605,7 @@ async def api_plan_render(
     chapters: int = 4,
     style_notes: str = "",
     structure: str = "",
+    intro: str = "",
     visual_style: str = "",
     visual_material: str = "",
     visual_tone: str = "",
@@ -573,6 +622,7 @@ async def api_plan_render(
         chapters=chapters,
         style_notes=style_notes,
         structure=structure,
+        intro=intro,
         visual_style=visual_style,
         visual_material=visual_material,
         visual_tone=visual_tone,

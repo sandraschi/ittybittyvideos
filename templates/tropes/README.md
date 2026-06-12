@@ -13,8 +13,10 @@ Curated **viral Short structures** with optional **mid-length expansion** chapte
 | [myth-vs-truth.yaml](./myth-vs-truth.yaml) | Myth bust | Format class |
 | [story-hook-reveal.yaml](./story-hook-reveal.yaml) | Mid-crisis → reveal | 200M+ genre |
 | [absurd-credits-roll.yaml](./absurd-credits-roll.yaml) | Pixar absurd credits + post-credits | Comedy class |
+| [contrast-intro-sequence.yaml](./contrast-intro-sequence.yaml) | Wholesome × wrong-audio intro | Comedy class |
 
-**Credits packs:** [../credits/absurd-pixar.yaml](../credits/absurd-pixar.yaml) — Einstein, Attila, filler army.
+**Credits packs:** [../credits/absurd-pixar.yaml](../credits/absurd-pixar.yaml)  
+**Intro packs:** [../intros/](../intros/) — `bluey-horror-contrast`, `documentary-gravitas`, etc.
 
 **Research:** [docs/EXEMPLARS-RESEARCH.md](../../docs/EXEMPLARS-RESEARCH.md)
 

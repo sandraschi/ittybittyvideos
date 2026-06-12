@@ -51,6 +51,7 @@ export default function Generate() {
   const [paragraphs, setParagraphs] = useState(3);
   const [fromLibrary, setFromLibrary] = useState<string | null>(null);
   const [structure, setStructure] = useState("");
+  const [intro, setIntro] = useState("");
   const [styleNotes, setStyleNotes] = useState("");
   const [visualLook, setVisualLook] = useState(emptyVisualLook);
 
@@ -63,6 +64,7 @@ export default function Generate() {
     setTopic(s.topic);
     setFromLibrary(s.topic.slice(0, 48));
     setStructure(s.structure ?? "");
+    setIntro(s.intro ?? "");
     setStyleNotes(s.styleNotes ?? "");
     setVisualLook({
       visual_style: s.visual_style ?? "",
@@ -103,6 +105,7 @@ export default function Generate() {
         clip_duration: 5,
         structure: structure || undefined,
         style_notes: styleNotes || undefined,
+        intro: intro || undefined,
         ...visualLook,
       });
     },
@@ -154,6 +157,9 @@ export default function Generate() {
         )}
         {structure && (
           <p className="text-xs text-violet-400/90 mt-1">Structure: {structure}</p>
+        )}
+        {intro && (
+          <p className="text-xs text-amber-400/90 mt-1">Intro: {intro}</p>
         )}
       </div>
 

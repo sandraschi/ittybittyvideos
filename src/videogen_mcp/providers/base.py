@@ -42,6 +42,7 @@ class LLMProvider(abc.ABC):
         *,
         structure: str = "",
         style_notes: str = "",
+        intro: str = "",
     ) -> dict:
         """Return dict matching VideoScript schema: {title, segments: [{narration, search_terms}]}."""
 

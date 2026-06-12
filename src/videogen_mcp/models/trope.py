@@ -20,3 +20,4 @@ class TropeTemplate(BaseModel):
     visual: dict = Field(default_factory=dict)
     expand_to_mid: dict = Field(default_factory=dict)
     credits: dict = Field(default_factory=dict)
+    intro: dict = Field(default_factory=dict)

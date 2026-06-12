@@ -66,6 +66,9 @@ class GenerateRequest(BaseModel):
         str, Field(description="R10 narrative preset, e.g. trope:pet-food-duo-review.")
     ] = ""
     style_notes: Annotated[str, Field(description="Extra style guidance for LLM scripting.")] = ""
+    intro: Annotated[
+        str, Field(description="Intro pack preset, e.g. intro:bluey-horror-contrast.")
+    ] = ""
 
     def visual_look(self) -> VisualLook:
         return VisualLook(

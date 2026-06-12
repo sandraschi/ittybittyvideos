@@ -122,6 +122,7 @@ export async function generateVideo(body: {
   visual_tone?: string;
   structure?: string;
   style_notes?: string;
+  intro?: string;
 }): Promise<{ job_id: string; status: string }> {
   const res = await fetch(`${BASE}/generate`, {
     method: "POST",
@@ -152,6 +153,7 @@ export async function planVideo(body: {
   visual_material?: string;
   visual_tone?: string;
   structure?: string;
+  intro?: string;
 }): Promise<{ storyboard: Storyboard }> {
   const res = await fetch(`${BASE}/plan`, {
     method: "POST",
@@ -172,6 +174,7 @@ export async function planRender(body: {
   chapters?: number;
   style_notes?: string;
   structure?: string;
+  intro?: string;
   visual_style?: string;
   visual_material?: string;
   visual_tone?: string;

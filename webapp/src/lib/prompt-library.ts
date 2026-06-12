@@ -8,8 +8,10 @@ export type SavedPrompt = {
   topic: string;
   kind: PromptKind;
   videoType?: string;
-  /** R10 placeholder — e.g. trope:tutorial */
+  /** R10 — e.g. trope:pet-food-duo-review */
   structure?: string;
+  /** Intro pack — e.g. intro:bluey-horror-contrast */
+  intro?: string;
   styleNotes?: string;
   visual_style?: string;
   visual_material?: string;
@@ -32,6 +34,7 @@ export const STRUCTURE_PRESETS: { id: string; label: string; note: string }[] = 
   { id: "trope:myth-vs-truth", label: "Myth vs truth", note: "Contrarian reveal" },
   { id: "trope:story-hook-reveal", label: "Story hook + late reveal", note: "Interruption / twist" },
   { id: "trope:absurd-credits-roll", label: "Absurd credits + post-credits", note: "Pixar 2000-name energy · Einstein, Attila" },
+  { id: "trope:contrast-intro-sequence", label: "Intro contrast sequence", note: "Wholesome × wrong audio" },
   // Narrative (R10 planned)
   { id: "trope:tutorial", label: "Tutorial beats", note: "R10 — backend pending" },
   { id: "trope:documentary", label: "Documentary", note: "R10 — planned" },
@@ -40,7 +43,27 @@ export const STRUCTURE_PRESETS: { id: string; label: string; note: string }[] = 
   { id: "trope:problem-solution", label: "Problem → solution", note: "R10 — planned" },
 ];
 
+export const INTRO_PRESETS: { id: string; label: string; note: string }[] = [
+  { id: "", label: "(none)", note: "Jump straight to hook" },
+  { id: "intro:bluey-horror-contrast", label: "Wholesome × horror sound", note: "Bluey-adjacent visuals, dread SFX" },
+  { id: "intro:documentary-gravitas", label: "Serious documentary", note: "Cinematic gravitas, measured VO" },
+  { id: "intro:epic-trailer", label: "Epic trailer", note: "BRAAAM, in a world…" },
+  { id: "intro:deadpan-corporate", label: "Deadpan corporate × chaos", note: "HR voice, visuals unhinged" },
+];
+
 export const BUILTIN_PROMPTS: SavedPrompt[] = [
+  {
+    id: "sample-bluey-horror-intro",
+    title: "Puppy Valley (horror audio)",
+    topic: "Wholesome dog playdate — pastel sunny yard, completely wrong horror drone and stingers under the cute footage",
+    kind: "short",
+    structure: "trope:contrast-intro-sequence",
+    intro: "intro:bluey-horror-contrast",
+    styleNotes: "No horror visuals — contrast is audio only. Deadpan line: Today on Puppy Valley…",
+    visual_tone: "hilarious",
+    createdAt: "2026-06-12T00:00:00.000Z",
+    updatedAt: "2026-06-12T00:00:00.000Z",
+  },
   {
     id: "sample-absurd-credits",
     title: "Absurd credits short",
@@ -179,6 +202,7 @@ export function duplicatePrompt(source: SavedPrompt): SavedPrompt {
     kind: source.kind,
     videoType: source.videoType,
     structure: source.structure,
+    intro: source.intro,
     styleNotes: source.styleNotes,
     visual_style: source.visual_style,
     visual_material: source.visual_material,
@@ -191,5 +215,6 @@ export type PromptNavState = {
   kind?: PromptKind;
   videoType?: string;
   structure?: string;
+  intro?: string;
   styleNotes?: string;
 } & VisualLookValues;

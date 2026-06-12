@@ -160,6 +160,25 @@ Also: departments (*Canine Morale*, *Bork Foley*), joke pool (*Three Raccoons in
 
 ---
 
+## Intro sequences (`intro:*` packs)
+
+Opens can be **serious** or **hilarious** — especially **visual × audio contrast** (wholesome Bluey-adjacent footage + horror drone/SFX).
+
+| Pack | Tone | Bit |
+|------|------|-----|
+| `intro:bluey-horror-contrast` | hilarious | Sunny cute visuals, wrong horror sound |
+| `intro:documentary-gravitas` | serious | Ken Burns, piano, thesis statement |
+| `intro:epic-trailer` | epic | BRAAAM, quick cuts, "In a world…" |
+| `intro:deadpan-corporate` | hilarious | HR muzak VO, visuals go feral |
+
+**Trope:** `trope:contrast-intro-sequence` — intro beats → hook → main.  
+**Stack:** any trope + separate `intro` param (intro wins over trope default).  
+**API:** `GET /api/v1/intros/sample?pack=bluey-horror-contrast` · MCP `videogen_intro_sample`.
+
+**Not yet:** auto BGM/SFX layer from pack tags — today = LLM notes + `bgm_url` manual.
+
+---
+
 ## Legal & ethics
 
 - Do **not** re-upload Jade, Shiba Diva, or Clark source videos.  
