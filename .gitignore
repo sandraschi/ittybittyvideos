@@ -9,6 +9,8 @@ test_cache/
 *.egg-info/
 dist/
 build/
+*.spec
+server_err.log
 .ruff_cache/
 .pytest_cache/
 .pyright/
