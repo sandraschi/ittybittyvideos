@@ -2,15 +2,16 @@ import { useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Copy, ExternalLink, FolderOpen, Download } from "lucide-react";
-import { getPublishPack, listJobs, revealJob } from "@/lib/api";
+import { getPublishPack, listDepot, revealJob } from "@/lib/api";
 
 export default function Publish() {
   const [params, setParams] = useSearchParams();
   const jobId = params.get("job") ?? "";
   const [copied, setCopied] = useState(false);
 
-  const { data: jobList } = useQuery({ queryKey: ["jobs"], queryFn: () => listJobs(20) });
-  const completeJobs = jobList?.jobs.filter((j) => j.status === "complete") ?? [];
+  const { data: depot } = useQuery({ queryKey: ["depot"], queryFn: () => listDepot(50) });
+  const completeJobs =
+    depot?.items.filter((j) => j.has_file && j.status === "complete") ?? [];
 
   const { data: pack } = useQuery({
     queryKey: ["publish", jobId],

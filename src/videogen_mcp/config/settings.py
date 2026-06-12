@@ -17,7 +17,21 @@ class Settings(BaseSettings):
     openai_base_url: str = "https://api.openai.com/v1"
     openai_model: str = "gpt-4o-mini"
 
+    deepseek_api_key: str = ""
+    deepseek_base_url: str = "https://api.deepseek.com"
+    deepseek_model: str = "deepseek-v4-flash"
+
+    lmstudio_base_url: str = "http://localhost:1234/v1"
+    lmstudio_api_key: str = "lm-studio"
+    lmstudio_model: str = ""
+
+    ollama_base_url: str = "http://localhost:11434/v1"
+    ollama_model: str = "llama3.2:3b"
+
     pexels_api_key: str = ""
+
+    cogvideo_url: str = "http://localhost:8188"
+    localgen_url: str = ""
 
     edge_tts_voice: str = "en-US-AriaNeural"
 

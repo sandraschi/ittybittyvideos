@@ -1,6 +1,6 @@
-; roughcut NSIS hooks -- kill backend before install/uninstall
+; roughcutvideos NSIS hooks -- kill backend before install/uninstall
 !macro KillFleetProcesses
-  DetailPrint "Stopping roughcut processes..."
+  DetailPrint "Stopping roughcutvideos processes..."
   ExecWait 'taskkill /F /IM roughcut-backend.exe /T' $0
   ExecWait 'taskkill /F /IM roughcut-native.exe /T' $0
   !if "${INSTALLMODE}" == "currentUser"

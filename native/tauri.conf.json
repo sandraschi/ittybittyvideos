@@ -1,7 +1,7 @@
 {
-  "productName": "roughcut",
+  "productName": "roughcutvideos",
   "version": "0.1.0",
-  "identifier": "ai.fleet.roughcut",
+  "identifier": "ai.fleet.roughcutvideos",
   "build": {
     "frontendDist": "../webapp/dist",
     "devUrl": "http://localhost:11054"
@@ -10,7 +10,7 @@
     "windows": [
       {
         "label": "main",
-        "title": "roughcut",
+        "title": "roughcutvideos",
         "width": 800,
         "height": 700,
         "minWidth": 600,

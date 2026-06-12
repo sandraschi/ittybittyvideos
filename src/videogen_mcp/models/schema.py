@@ -53,6 +53,10 @@ class GenerateRequest(BaseModel):
     paragraph_count: Annotated[int, Field(description="Number of script segments.", ge=1, le=10)] = 3
     bgm_url: Annotated[str, Field(description="URL to background music file.")] = ""
     template: Annotated[str, Field(description="Video style template name.")] = "default"
+    llm_provider: Annotated[
+        str,
+        Field(description="Topic scripting LLM: deepseek | openai | lmstudio | ollama (ignored when script is set)."),
+    ] = ""
 
 
 class JobInfo(BaseModel):

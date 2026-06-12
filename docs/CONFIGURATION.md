@@ -1,0 +1,116 @@
+# Configuration — roughcutvideos
+
+Settings persist in **`.env`** at the repo root. The webapp **Settings** page reads and writes the same file.
+
+---
+
+## Core server
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `VIDEOGEN_HOST` | `127.0.0.1` | Bind address |
+| `VIDEOGEN_PORT` | `11054` | FastAPI + built webapp + `/mcp` |
+| `VIDEOGEN_OUTPUT_DIR` | `./output` | MP4 output and `depot.db` |
+| `VIDEOGEN_LOG_LEVEL` | `INFO` | Python logging |
+
+---
+
+## LLM providers (topic → script)
+
+Used when **Generate** mode is a cloud/local LLM topic (not custom script).
+
+| Variable | Provider | Notes |
+|----------|----------|-------|
+| `DEEPSEEK_API_KEY` | deepseek | Default cloud option in UI |
+| `OPENAI_API_KEY` | openai | GPT-family scripts |
+| `LMSTUDIO_BASE_URL` | lmstudio | e.g. `http://127.0.0.1:1234/v1` |
+| `OLLAMA_BASE_URL` | ollama | e.g. `http://127.0.0.1:11434` |
+| `OLLAMA_MODEL` | ollama | Model tag, e.g. `llama3.2` |
+
+**Custom script mode** skips the LLM entirely — paste narration text on the Generate page.
+
+Health probes on Settings reflect whether each provider is reachable and keyed.
+
+---
+
+## Stock footage
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `PEXELS_API_KEY` | — | Required for **pexels** provider |
+| `VIDEOGEN_STOCK_PROVIDER` | `pexels` | `pexels` or `localgen` |
+| `LOCALGEN_URL` | `http://127.0.0.1:8188` | LocalGen sidecar base URL |
+| `LOCALGEN_BACKEND` | `wan22-14b` | `wan22-14b`, `wan22-5b`, `cogvideo-2b` (legacy) |
+
+### Pexels (recommended default)
+
+Free API key, no GPU. The pipeline asks the LLM for search terms, downloads matching clips, caches them under `output/`, and trims to scene length.
+
+### LocalGen (optional GPU)
+
+Run `start-localgen.bat` before setting stock to **localgen**. Each scene prompt is sent to the sidecar; Wan 2.2 generates clips locally. Needs CUDA and sufficient VRAM (~24 GB for 14B).
+
+The registry alias **`cogvideo`** still resolves to the same LocalGen client for backward compatibility.
+
+---
+
+## Text-to-speech
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `VIDEOGEN_TTS_PROVIDER` | `edge-tts` | `edge-tts` or `cosyvoice` |
+| `COSYVOICE_URL` | `http://127.0.0.1:9880` | If using CosyVoice |
+
+Edge TTS is free and needs no key. Subtitles are generated from TTS timing (word-level when align extra is installed).
+
+---
+
+## Video defaults
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `VIDEOGEN_ASPECT` | `9:16` | `9:16` (shorts) or `16:9` |
+| `VIDEOGEN_TARGET_DURATION` | `45` | Short pipeline target seconds |
+| `VIDEOGEN_FPS` | `30` | Output frame rate |
+
+Mid-length jobs use separate duration/chapter settings in the API and **Mid-length** UI.
+
+---
+
+## Example `.env`
+
+```env
+VIDEOGEN_PORT=11054
+VIDEOGEN_OUTPUT_DIR=./output
+PEXELS_API_KEY=your_pexels_key
+DEEPSEEK_API_KEY=your_deepseek_key
+VIDEOGEN_STOCK_PROVIDER=pexels
+VIDEOGEN_TTS_PROVIDER=edge-tts
+VIDEOGEN_ASPECT=9:16
+```
+
+For all-local footage:
+
+```env
+VIDEOGEN_STOCK_PROVIDER=localgen
+LOCALGEN_URL=http://127.0.0.1:8188
+LOCALGEN_BACKEND=wan22-14b
+```
+
+---
+
+## MCP client config
+
+HTTP MCP (server must be running):
+
+```json
+{
+  "mcpServers": {
+    "roughcutvideos": {
+      "url": "http://127.0.0.1:11054/mcp"
+    }
+  }
+}
+```
+
+Environment for the server process should include the same `.env` values (load automatically from repo root when started via `start.bat` / `py -m videogen_mcp.server`).

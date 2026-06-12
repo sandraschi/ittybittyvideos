@@ -86,7 +86,7 @@ if (-not $SkipInstall) {
 }
 
 # ── 7. Launch ─────────────────────────────────────────────────────────
-Write-Step "Starting roughcut on http://127.0.0.1:$BackendPort"
+Write-Step "Starting roughcutvideos on http://127.0.0.1:$BackendPort"
 Write-Host ""
 Write-Host "    API docs:  http://127.0.0.1:$BackendPort/docs" -ForegroundColor White
 Write-Host "    Health:    http://127.0.0.1:$BackendPort/health" -ForegroundColor White

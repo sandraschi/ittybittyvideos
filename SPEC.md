@@ -1,10 +1,10 @@
-# videogen-mcp ("roughcut") — AI Video Generation MCP Server
+# videogen-mcp ("roughcutvideos") — AI Video Generation MCP Server
 
 **Version**: 0.1.0
 **Port**: 11054 (backend, serves webapp dist) / 11055 (Vite dev server)
 **Status**: MVP — core pipeline + mid-length mode; SOTA webapp (React/Vite, 10 pages)
 
-**Fleet docs:** [ASSESSMENT-BY-CURSOR.md](./ASSESSMENT-BY-CURSOR.md) · [MCD project page](../mcp-central-docs/projects/roughcut/README.md) · [Competition analysis](../mcp-central-docs/projects/roughcut/COMPETITIVE_ANALYSIS.md)
+**Fleet docs:** [ASSESSMENT-BY-CURSOR.md](./ASSESSMENT-BY-CURSOR.md) · [MCD project page](../mcp-central-docs/projects/roughcutvideos/README.md) · [Competition analysis](../mcp-central-docs/projects/roughcutvideos/COMPETITIVE_ANALYSIS.md)
 
 ## Problem
 
@@ -119,7 +119,7 @@ Provider-local (read via os.environ, not in Settings):
 
 ## Native Packaging
 
-`native/` contains a Tauri shell ("roughcut") wrapping a PyInstaller-built
+`native/` contains a Tauri shell ("roughcutvideos") wrapping a PyInstaller-built
 backend (`roughcut-backend.exe`, spec at repo root). NSIS hooks in
 `native/windows/`. Build via `native/build.ps1`.
 

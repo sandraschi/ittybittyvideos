@@ -67,7 +67,7 @@ def _slug_words(text: str, limit: int = 4) -> list[str]:
 
 
 def _hashtags(topic: str) -> list[str]:
-    base = ["#roughcut", "#ai", "#explainer"]
+    base = ["#roughcutvideos", "#ai", "#explainer"]
     for w in _slug_words(topic, 3):
         if len(w) > 2:
             base.append(f"#{w}")

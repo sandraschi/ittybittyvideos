@@ -24,6 +24,10 @@ Return ONLY valid JSON, no markdown fences, no explanation."""
 class OpenAILLMProvider(LLMProvider):
     async def generate_script(self, topic: str, paragraph_count: int, language: str = "en") -> dict:
         settings = get_settings()
+        if not settings.openai_api_key.strip():
+            raise ValueError(
+                "OPENAI_API_KEY is not set. Add it to .env, use Ollama, or pass a custom script."
+            )
         client = AsyncOpenAI(api_key=settings.openai_api_key, base_url=settings.openai_base_url)
         resp = await client.chat.completions.create(
             model=settings.openai_model,
@@ -52,6 +56,9 @@ class OpenAILLMProvider(LLMProvider):
 
 def _parse_script_json(raw: str) -> dict:
     raw = re.sub(r"<think>.*?</think>", "", raw, flags=re.DOTALL).strip()
+    think_open = "<" + "think" + ">"
+    think_close = "<" + "/" + "think" + ">"
+    raw = re.sub(re.escape(think_open) + r"[\s\S]*?" + re.escape(think_close), "", raw).strip()
     raw = re.sub(r"^```(?:json)?\s*", "", raw)
     raw = re.sub(r"\s*```$", "", raw)
     try:

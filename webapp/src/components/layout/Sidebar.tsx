@@ -4,9 +4,11 @@ import {
   Film,
   HelpCircle,
   LayoutDashboard,
+  Library,
   ListVideo,
   MessageSquare,
   Radio,
+  Settings,
   Share2,
   Sparkles,
   Wrench,
@@ -19,10 +21,12 @@ const links = [
   { to: "/generate", label: "Short video", icon: Sparkles },
   { to: "/plan", label: "Mid-length", icon: Film },
   { to: "/jobs", label: "Jobs", icon: ListVideo },
+  { to: "/depot", label: "Depot", icon: Library },
   { to: "/publish", label: "Publish", icon: Share2 },
   { to: "/tools", label: "Tools", icon: Wrench },
   { to: "/chat", label: "Chat", icon: MessageSquare },
   { to: "/status", label: "Status", icon: Activity },
+  { to: "/settings", label: "Settings", icon: Settings },
   { to: "/api-docs", label: "API Docs", icon: Code2 },
   { to: "/help", label: "Help", icon: HelpCircle },
 ];
@@ -33,7 +37,7 @@ export default function Sidebar() {
       <div className="flex items-center gap-2 px-2 py-3 mb-2">
         <Clapperboard className="w-5 h-5 text-blue-500" />
         <div>
-          <p className="text-sm font-bold tracking-tight">roughcut</p>
+          <p className="text-sm font-bold tracking-tight">roughcutvideos</p>
           <p className="text-[10px] text-zinc-500">videogen-mcp</p>
         </div>
       </div>

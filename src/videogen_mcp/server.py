@@ -14,6 +14,7 @@ from videogen_mcp import __version__
 from videogen_mcp.config import get_settings
 from videogen_mcp.models.schema import GenerateRequest, JobStatus
 from videogen_mcp.models.storyboard import PlanRequest
+from videogen_mcp.services.config_store import SettingsUpdate
 
 try:
     from fastmcp import FastMCP
@@ -23,7 +24,13 @@ except ImportError:
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    from videogen_mcp.services.job_store import init_db, scan_output_directory
+
+    init_db()
+    imported = scan_output_directory()
     logger.info(f"videogen-mcp v{__version__} starting on port {get_settings().videogen_port}")
+    if imported:
+        logger.info(f"Depot: imported {imported} video(s) from output folder")
     yield
     logger.info("videogen-mcp shutting down")
 
@@ -53,6 +60,9 @@ if FastMCP:
         voice: Annotated[str, Field(description="TTS voice identifier.")] = "",
         clip_duration: Annotated[float, Field(description="Seconds per clip.", ge=2.0, le=30.0)] = 5.0,
         paragraph_count: Annotated[int, Field(description="Number of script segments.", ge=1, le=10)] = 3,
+        llm_provider: Annotated[
+            str, Field(description="Topic LLM: deepseek | openai | lmstudio | ollama (ignored with custom script).")
+        ] = "",
     ) -> dict:
         """Generate a short video from a topic or script.
 
@@ -73,6 +83,7 @@ if FastMCP:
             voice=voice,
             clip_duration=clip_duration,
             paragraph_count=paragraph_count,
+            llm_provider=llm_provider,
         )
         job = await generate_video(req)
         return {
@@ -238,7 +249,19 @@ async def health():
 
 @rest.post("/api/v1/generate")
 async def api_generate(request: GenerateRequest):
+    from fastapi import HTTPException
+
+    from videogen_mcp.providers.llm_resolve import ensure_llm_for_topic, resolve_llm_for_topic
     from videogen_mcp.services.pipeline import generate_video
+
+    if not request.script and request.topic.strip():
+        try:
+            if request.llm_provider.strip():
+                await ensure_llm_for_topic(request.llm_provider)
+            else:
+                await resolve_llm_for_topic(None)
+        except ValueError as e:
+            raise HTTPException(status_code=400, detail=str(e)) from e
 
     job = await generate_video(request)
     return {"success": True, "job_id": job.job_id, "status": job.status.value}
@@ -264,12 +287,58 @@ async def api_get_job(job_id: str):
 
 @rest.get("/api/v1/jobs/{job_id}/download")
 async def api_download(job_id: str):
-    from videogen_mcp.services.pipeline import get_job
+    from videogen_mcp.services.job_store import resolve_output_path
 
-    job = get_job(job_id)
-    if not job or job.status != JobStatus.COMPLETE:
+    path = resolve_output_path(job_id)
+    if not path:
         return {"success": False, "message": "Video not ready"}
-    return FileResponse(job.output_path, filename=f"{job_id}.mp4", media_type="video/mp4")
+    return FileResponse(path, filename=f"{job_id}.mp4", media_type="video/mp4")
+
+
+@rest.get("/api/v1/depot")
+async def api_depot(limit: int = 100):
+    from videogen_mcp.services.depot import depot_summary, list_depot
+
+    items = list_depot(limit)
+    return {
+        "success": True,
+        "summary": depot_summary().model_dump(),
+        "items": [i.model_dump() for i in items],
+        "count": len(items),
+    }
+
+
+@rest.post("/api/v1/depot/scan")
+async def api_depot_scan():
+    from videogen_mcp.services.depot import list_depot, scan_depot
+
+    summary = scan_depot()
+    items = list_depot(100)
+    return {
+        "success": True,
+        "summary": summary.model_dump(),
+        "items": [i.model_dump() for i in items],
+        "message": f"Scan complete; {summary.imported} new import(s)",
+    }
+
+
+@rest.delete("/api/v1/depot/{job_id}")
+async def api_depot_delete(job_id: str, delete_file: bool = True):
+    from videogen_mcp.services.depot import delete_depot_item
+
+    if delete_depot_item(job_id, delete_file=delete_file):
+        return {"success": True, "message": f"Removed {job_id} from depot"}
+    return {"success": False, "message": f"Job {job_id} not found"}
+
+
+@rest.get("/api/v1/depot/{job_id}/poster")
+async def api_depot_poster(job_id: str):
+    from videogen_mcp.services.depot import ensure_poster
+
+    poster = ensure_poster(job_id)
+    if not poster:
+        return {"success": False, "message": "Poster unavailable"}
+    return FileResponse(poster, media_type="image/jpeg")
 
 
 @rest.post("/api/v1/plan")
@@ -317,12 +386,16 @@ async def api_status():
     import shutil
 
     from videogen_mcp.providers import list_providers
+    from videogen_mcp.providers.llm_resolve import llm_topic_status
     from videogen_mcp.services.align import is_available
     from videogen_mcp.services.pipeline import list_jobs
     from videogen_mcp.services.publish import PLATFORMS
+    from videogen_mcp.services.stock_status import stock_footage_status
 
     settings = get_settings()
     jobs = list_jobs(50)
+    llm = await llm_topic_status()
+    stock = await stock_footage_status()
     complete = sum(1 for j in jobs if j.status == JobStatus.COMPLETE)
     active = sum(1 for j in jobs if j.status not in (JobStatus.COMPLETE, JobStatus.FAILED))
 
@@ -330,11 +403,13 @@ async def api_status():
         "status": "ok",
         "version": __version__,
         "service": "videogen-mcp",
-        "product": "roughcut",
+        "product": "roughcutvideos",
         "backend_port": settings.videogen_port,
         "frontend_port": 11055,
         "ffmpeg": shutil.which("ffmpeg") is not None,
         "align_available": is_available(),
+        "llm": llm,
+        "stock": stock,
         "providers": list_providers(),
         "job_count": len(jobs),
         "jobs_complete": complete,
@@ -342,6 +417,40 @@ async def api_status():
         "publish_platforms": len(PLATFORMS),
         "tool_count": 6 if FastMCP else 0,
     }
+
+
+@rest.get("/api/v1/settings")
+async def api_get_settings():
+    from videogen_mcp.services.settings_api import get_settings_with_models
+
+    return await get_settings_with_models()
+
+
+@rest.get("/api/v1/settings/models")
+async def api_list_models(provider: str | None = None):
+    from videogen_mcp.services.model_discovery import discover_all_llm_models, discover_llm_models
+
+    if provider:
+        result = await discover_llm_models(provider)
+        return {"success": True, "discovery": result.model_dump()}
+    results = await discover_all_llm_models()
+    return {"success": True, "discoveries": [r.model_dump() for r in results]}
+
+
+@rest.get("/api/v1/settings/stock")
+async def api_stock_status():
+    from videogen_mcp.services.stock_status import stock_footage_status
+
+    status = await stock_footage_status()
+    return {"success": True, "stock": status}
+
+
+@rest.put("/api/v1/settings")
+async def api_save_settings(payload: SettingsUpdate):
+    from videogen_mcp.services.settings_api import save_settings
+
+    saved = await save_settings(payload)
+    return {"success": True, "settings": saved.model_dump(), "message": "Settings saved to .env"}
 
 
 @rest.get("/api/v1/tools")
@@ -371,12 +480,15 @@ async def api_tools():
 
 @rest.get("/api/v1/jobs/{job_id}/publish-pack")
 async def api_publish_pack(job_id: str):
-    from videogen_mcp.services.pipeline import get_job
+    from videogen_mcp.services.job_store import get_job, resolve_output_path
     from videogen_mcp.services.publish import build_publish_pack
 
     job = get_job(job_id)
     if not job:
         return {"success": False, "message": f"Job {job_id} not found"}
+    path = resolve_output_path(job_id)
+    if path:
+        job = job.model_copy(update={"output_path": str(path)})
     return build_publish_pack(job)
 
 
@@ -385,14 +497,11 @@ async def api_reveal_job(job_id: str):
     import platform
     import subprocess
 
-    from videogen_mcp.services.pipeline import get_job
+    from videogen_mcp.services.job_store import resolve_output_path
 
-    job = get_job(job_id)
-    if not job or job.status != JobStatus.COMPLETE or not job.output_path:
+    path = resolve_output_path(job_id)
+    if not path:
         return {"success": False, "message": "Video not ready"}
-    path = Path(job.output_path)
-    if not path.exists():
-        return {"success": False, "message": "Output file missing on disk"}
 
     if platform.system() == "Windows":
         subprocess.Popen(["explorer", "/select,", str(path.resolve())])  # noqa: S603

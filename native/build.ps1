@@ -4,7 +4,7 @@ $Triple = "x86_64-pc-windows-msvc"
 $ResourceDir = "$PSScriptRoot\resources"
 $DevDir = "$PSScriptRoot\binaries"
 
-Write-Host "==> roughcut native build pipeline" -ForegroundColor Cyan
+Write-Host "==> roughcutvideos native build pipeline" -ForegroundColor Cyan
 Write-Host ""
 
 # Step 1: Webapp is pre-built (static HTML, no build step needed)

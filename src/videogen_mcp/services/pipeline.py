@@ -13,25 +13,29 @@ from videogen_mcp.models.schema import (
     ScriptSegment,
     VideoScript,
 )
-from videogen_mcp.providers import get_llm, get_stock, get_tts
+from videogen_mcp.providers import get_stock, get_tts
+from videogen_mcp.providers.llm_resolve import resolve_llm_for_topic
 from videogen_mcp.services.align import align_words, words_to_sentences
 from videogen_mcp.services.cache import cache_path, is_cached
 from videogen_mcp.services.compose import compose_video
-
-_jobs: dict[str, JobInfo] = {}
+from videogen_mcp.services import job_store
 
 
 def get_job(job_id: str) -> JobInfo | None:
-    return _jobs.get(job_id)
+    return job_store.get_job(job_id)
 
 
 def list_jobs(limit: int = 20) -> list[JobInfo]:
-    return sorted(_jobs.values(), key=lambda j: j.created_at, reverse=True)[:limit]
+    return job_store.list_jobs(limit)
+
+
+def _save(job: JobInfo) -> None:
+    job_store.upsert_job(job)
 
 
 async def generate_video(request: GenerateRequest) -> JobInfo:
     job = JobInfo(topic=request.topic or "custom script")
-    _jobs[job.job_id] = job
+    _save(job)
     asyncio.create_task(_run_pipeline(job, request))
     return job
 
@@ -43,14 +47,17 @@ async def _run_pipeline(job: JobInfo, request: GenerateRequest) -> None:
 
     try:
         job.update(JobStatus.SCRIPTING, 10.0)
+        _save(job)
         script = await _get_script(request)
         logger.info(f"[{job.job_id}] Script: {script.title} ({len(script.segments)} segments)")
 
         job.update(JobStatus.FETCHING_FOOTAGE, 30.0)
+        _save(job)
         footage_paths = await _fetch_footage(job.job_id, script, request)
         logger.info(f"[{job.job_id}] Footage: {len(footage_paths)} clips")
 
         job.update(JobStatus.GENERATING_VOICE, 50.0)
+        _save(job)
         full_narration = " ".join(seg.narration for seg in script.segments)
         tts = get_tts()
         audio_dir = output_dir / job.job_id
@@ -62,15 +69,15 @@ async def _run_pipeline(job: JobInfo, request: GenerateRequest) -> None:
         )
         logger.info(f"[{job.job_id}] Voice: {tts_result.duration:.1f}s, {len(tts_result.subtitles)} subs")
 
-        # R1: ensure word-level timing; whisper-align when the provider has none
         words = tts_result.words
         subtitles = tts_result.subtitles
         if words is None and settings.videogen_align:
             words = await asyncio.to_thread(align_words, tts_result.audio_path, full_narration)
             if words:
-                subtitles = words_to_sentences(words)  # real audio timing replaces provider estimate
+                subtitles = words_to_sentences(words)
 
         job.update(JobStatus.COMPOSING, 70.0)
+        _save(job)
         output_path = output_dir / f"{job.job_id}.mp4"
         bgm = Path(request.bgm_url) if request.bgm_url else None
 
@@ -90,12 +97,14 @@ async def _run_pipeline(job: JobInfo, request: GenerateRequest) -> None:
 
         job.output_path = str(output_path)
         job.update(JobStatus.COMPLETE, 100.0)
+        _save(job)
         logger.info(f"[{job.job_id}] Complete: {output_path}")
 
     except Exception as e:
         logger.error(f"[{job.job_id}] Pipeline failed: {e}")
         job.error = str(e)
         job.update(JobStatus.FAILED, 0.0)
+        _save(job)
 
 
 async def _get_script(request: GenerateRequest) -> VideoScript:
@@ -104,7 +113,7 @@ async def _get_script(request: GenerateRequest) -> VideoScript:
         segments = [ScriptSegment(narration=p, search_terms=p.split()[:3]) for p in paragraphs]
         return VideoScript(title="Custom Script", segments=segments)
 
-    llm = get_llm()
+    llm = await resolve_llm_for_topic(request.llm_provider or None)
     raw = await llm.generate_script(request.topic, request.paragraph_count)
     return VideoScript.model_validate(raw)
 
@@ -114,7 +123,7 @@ async def _fetch_footage(job_id: str, script: VideoScript, request: GenerateRequ
     all_paths: list[Path] = []
     seen_sources: set[str] = set()
 
-    for i, segment in enumerate(script.segments):
+    for segment in script.segments:
         query = " ".join(segment.search_terms[:2])
         clips = await stock.search(query, count=3, aspect=request.aspect.value)
 

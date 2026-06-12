@@ -1,138 +1,155 @@
-# roughcut
+# roughcutvideos
 
-Your film school dropout that actually ships. Topic in, video out. No degree required.
+**Topic or script in → short or mid-length video out.** Fleet-grade AI video generation with a React dashboard, SQLite depot, and optional local Wan 2.2 footage on your GPU.
 
-> *"We built this in an afternoon. It has more tests than MoneyPrinterTurbo (86k stars, zero tests). We are not the same."*
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![FastMCP](https://img.shields.io/badge/FastMCP-3.2%2B-green.svg)](https://github.com/jlowin/fastmcp)
+[![Python](https://img.shields.io/badge/python-3.10%2B-blue.svg)](https://www.python.org/)
 
-## What It Does
+**Repo folder:** `videogen-mcp` · **Python package:** `videogen_mcp` · **Product name:** roughcutvideos
 
-You give it a topic. It gives you a video. With narration, stock footage, subtitles, and background music. In HD. While you go make coffee.
+---
 
-**Short mode** (30-60s): TikTok, Reels, Douyin. The usual.
+## Features
 
-**Mid-length mode** (3-15 min): Tutorials, demos, explainers, documentaries. This is the part nobody else does well. An LLM plans a chaptered storyboard, a videographer rules engine enforces professional pacing (hook, B-roll, transitions, outro), then it renders scene-by-scene.
+- **Short pipeline** — 30–60 s vertical or landscape clips from a topic or custom script
+- **Mid-length pipeline** — 3–15 min chaptered videos with storyboard planning and videographer rules
+- **Stock footage** — Pexels (default) or all-AI clips via LocalGen (Wan 2.2 on RTX 4090-class GPUs)
+- **TTS & subtitles** — Edge TTS (default), CosyVoice optional; burned-in or sidecar SRT
+- **Depot** — SQLite-backed library of every render under `./output/` with posters and metadata
+- **Publish helpers** — Platform upload URLs and `#roughcutvideos` copy for YouTube, TikTok, Instagram
+- **MCP + REST** — FastMCP tools at `/mcp` and OpenAPI at `/docs` on port **11054**
 
-## The Pipeline
+---
 
-```
-"How quantum computing works"
-        |
-        v
-   LLM writes chaptered script with search terms
-        |
-        v
-   Stock footage fetched + cached (or AI-generated via CogVideoX)
-        |
-        v
-   Edge TTS / CosyVoice narration; word-level timestamps for any
-   voice via faster-whisper forced alignment (karaoke captions!)
-        |
-        v
-   Videographer rules: hook -> pacing -> B-roll -> transitions -> outro
-        |
-        v
-   FFmpeg compose with burned subtitles
-        |
-        v
-   quantum_computing_tutorial.mp4
-```
+## Example output
 
-## vs The Incumbent
+Real render from this repo (smoke test, 2026-06-12) — not a mockup.
 
-| MoneyPrinterTurbo (86k stars) | roughcut |
-|------------------------------|----------|
-| Zero tests | 64+ tests |
-| One 2000-line LLM router | Plugin registry (7 providers, one file each) |
-| Short-form only (60s max) | **3-15 minute mid-length videos** |
-| No scene planning | **Chaptered storyboard + videographer rules** |
-| TOML secrets | Env vars (12-factor) |
-| Bundled Microsoft fonts (lol) | System fonts |
-| g4f reverse-engineering dep | Clean deps only |
-| Port 8080 | 11054 |
-| No tests, no CI, no lint | ruff + pytest + pyright from day one |
+![Cat facts — 9:16 short generated with roughcutvideos](docs/examples/cats-facts-short-poster.jpg)
 
-## Chinese Open-Weight Stack
+<video src="docs/examples/cats-facts-short.mp4" controls width="280">
+  <a href="docs/examples/cats-facts-short.mp4">Download cats-facts-short.mp4</a>
+</video>
 
-Run the whole thing on your GPU. No API keys. No cloud. No permission.
+| | |
+|---|---|
+| **Duration** | ~22 s |
+| **Format** | 1080×1920 vertical (9:16) |
+| **Footage** | Pexels — 6 B-roll clips |
+| **Narration** | Edge TTS |
+| **Script** | Custom text (no LLM) — same copy as the Generate page sample |
 
-| Tool | What | How |
-|------|------|-----|
-| **Qwen 3** | Script generation | `VIDEOGEN_LLM_PROVIDER=qwen` (DashScope or Ollama) |
-| **CosyVoice 2** | Mandarin TTS + voice cloning | `VIDEOGEN_TTS_PROVIDER=cosyvoice` |
-| **CogVideoX** | AI video clip generation | `VIDEOGEN_STOCK_PROVIDER=cogvideo` |
+> *"Cats are fascinating companions. They sleep up to sixteen hours a day and still find time to judge you…"*
 
-## Quick Start
+[Download MP4](docs/examples/cats-facts-short.mp4) · [Reproduce this demo](docs/examples/README.md) (`py scripts/smoke_render.py`)
 
-```bash
-cp .env.example .env
-# Add your OPENAI_API_KEY and PEXELS_API_KEY
+---
 
-uv sync
-uv run python -m videogen_mcp.server
-# http://127.0.0.1:11054/docs
-```
+## Quick start
 
-## Tools
-
-| Tool | What |
-|------|------|
-| `videogen_generate` | Short video from topic (30-60s) |
-| `videogen_plan` | Plan a mid-length storyboard (preview, no render) |
-| `videogen_plan_render` | Plan AND render mid-length video (3-15 min) |
-| `videogen_status` | Poll job progress |
-| `videogen_list_jobs` | Recent jobs |
-| `videogen_providers` | Available LLM/stock/TTS providers |
-
-## REST
-
-`POST /api/v1/generate` | `POST /api/v1/plan` | `POST /api/v1/plan/render`
-`GET /api/v1/jobs` | `GET /api/v1/jobs/{id}` | `GET /api/v1/jobs/{id}/download`
-`GET /api/v1/providers` | `GET /health`
-
-## Provider Plugin System
-
-Each provider is one file with one decorator. Adding Gemini takes 40 lines. No router rewrite needed.
-
-```
-providers/
-  llm_openai.py    @register_llm("openai")
-  llm_ollama.py    @register_llm("ollama")
-  llm_qwen.py      @register_llm("qwen")
-  stock_pexels.py   @register_stock("pexels")
-  stock_cogvideo.py @register_stock("cogvideo")
-  tts_edge.py       @register_tts("edge-tts")
-  tts_cosyvoice.py  @register_tts("cosyvoice")
-```
-
-## Videographer Rules Engine
-
-Not just concatenation. Professional editing patterns, codified:
-
-- **Hook**: First 3 seconds grab attention (separate scene, close shot)
-- **Pacing**: Scene duration clamped by video type (tutorials: 5-30s, docs: 6-40s)
-- **B-roll**: Inserted after 3 consecutive A-roll segments (visual breathing room)
-- **Transitions**: Cut for continuity, crossfade for topic change, fade-to-black for outro
-- **Rebalancing**: Scene durations scaled to hit target total length
-
-## Dev
+### Desktop (recommended)
 
 ```powershell
-just test      # 64 tests
-just lint      # ruff
-just typecheck # pyright
-just check     # all three
+cd D:\Dev\repos\videogen-mcp
+.\start.bat
 ```
 
-## Fleet docs
+Open **http://127.0.0.1:11054** → **Generate** → enter a topic → wait for the job → **Depot** to download.
 
-| Doc | Location |
-|-----|----------|
-| Cross-agent assessment | [ASSESSMENT-BY-CURSOR.md](./ASSESSMENT-BY-CURSOR.md) |
-| MCD project page | [mcp-central-docs/projects/roughcut/README.md](../mcp-central-docs/projects/roughcut/README.md) |
-| Competition analysis | [mcp-central-docs/projects/roughcut/COMPETITIVE_ANALYSIS.md](../mcp-central-docs/projects/roughcut/COMPETITIVE_ANALYSIS.md) |
-| Webapp | `webapp/start.ps1` → http://127.0.0.1:11055 |
-| Architecture + roadmap | [SPEC.md](./SPEC.md) |
+### Local AI footage (optional)
+
+On a machine with ~24 GB VRAM and CUDA:
+
+```powershell
+.\start-localgen.bat
+```
+
+In **Settings**, set stock provider to **localgen** (or use Pexels for zero-GPU workflow).
+
+---
+
+## Installation
+
+See **[INSTALL.md](INSTALL.md)** for MCPB drag-and-drop, manual Claude config, developer setup, and verification.
+
+| Path | Use when |
+|------|----------|
+| [INSTALL.md](INSTALL.md) | First-time install |
+| [docs/CONFIGURATION.md](docs/CONFIGURATION.md) | API keys, providers, `.env` |
+| [docs/TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md) | Common failures |
+
+---
+
+## Configuration (summary)
+
+| Variable | Required | Default | Description |
+|----------|----------|---------|-------------|
+| `PEXELS_API_KEY` | For Pexels stock | — | Free key from [pexels.com/api](https://www.pexels.com/api/) |
+| `DEEPSEEK_API_KEY` | For DeepSeek script mode | — | Cloud LLM for topic → script |
+| `OPENAI_API_KEY` | For OpenAI script mode | — | Alternative cloud LLM |
+| `VIDEOGEN_PORT` | No | `11054` | Backend + built webapp |
+| `VIDEOGEN_OUTPUT_DIR` | No | `./output` | Renders + `depot.db` |
+| `LOCALGEN_URL` | No | `http://127.0.0.1:8188` | LocalGen sidecar |
+
+Most settings can be edited in the webapp **Settings** page (writes `.env`). Full list: [docs/CONFIGURATION.md](docs/CONFIGURATION.md).
+
+---
+
+## Documentation
+
+| Document | Description |
+|----------|-------------|
+| [INSTALL.md](INSTALL.md) | Install options (MCPB, source, dev) |
+| [docs/CONFIGURATION.md](docs/CONFIGURATION.md) | Environment variables and providers |
+| [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md) | Dev server, tests, packaging |
+| [docs/TOOLS.md](docs/TOOLS.md) | MCP tools and REST API |
+| [docs/TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md) | Fixes for common issues |
+| [SPEC.md](SPEC.md) | Architecture and roadmap |
+| [AGENTS.md](AGENTS.md) | Notes for coding agents |
+| In-app **Help** | Tabbed guide at `/help` in the dashboard |
+
+Fleet registry: [mcp-central-docs/projects/roughcutvideos](https://github.com/sandraschi/mcp-central-docs/tree/main/projects/roughcutvideos)
+
+---
+
+## MCP usage
+
+Server runs as HTTP (not stdio). Point an MCP client at `http://127.0.0.1:11054/mcp` after `start.bat`, or see [INSTALL.md](INSTALL.md) for Claude Desktop patterns.
+
+Example prompts:
+
+- *"Generate a 45-second video about Vienna coffee culture using Pexels footage."*
+- *"Plan a 5-minute mid-length video on sourdough baking — show the storyboard first."*
+- *"What videogen providers are available?"*
+
+Tool reference: [docs/TOOLS.md](docs/TOOLS.md).
+
+---
+
+## Development
+
+```powershell
+pip install -e ".[dev]"
+py -m pytest
+```
+
+Webapp dev (hot reload on **11055**, API proxy to **11054**):
+
+```powershell
+cd webapp
+npm install
+npm run dev
+```
+
+Details: [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md).
+
+---
 
 ## License
 
-MIT
+MIT — see [LICENSE](LICENSE).
+
+**Status:** MVP (core pipelines + depot + LocalGen sidecar)  
+**Maintained by:** sandraschi  
+**Last updated:** 2026-06-12

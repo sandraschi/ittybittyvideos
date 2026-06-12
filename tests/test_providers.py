@@ -25,9 +25,46 @@ def test_pexels_registered():
     assert "pexels" in providers["stock"]
 
 
+def test_localgen_registered():
+    providers = list_providers()
+    assert "localgen" in providers["stock"]
+    assert "cogvideo" in providers["stock"]
+
+
+def test_localgen_prompt_parse():
+    from videogen_mcp.providers.stock_localgen import _aspect_from_clip_url, _prompt_from_clip_url
+
+    url = "localgen://generate?prompt=dog%20running&aspect=9%3A16"
+    assert _prompt_from_clip_url(url) == "dog running"
+    assert _aspect_from_clip_url(url) == "9:16"
+
+
+def test_cogvideo_registered():
+    providers = list_providers()
+    assert "cogvideo" in providers["stock"]
+
+
+def test_cogvideo_prompt_parse():
+    from videogen_mcp.providers.stock_localgen import _aspect_from_clip_url, _prompt_from_clip_url
+
+    url = "cogvideo://generate?prompt=dog%20running&aspect=9%3A16"
+    assert _prompt_from_clip_url(url) == "dog running"
+    assert _aspect_from_clip_url(url) == "9:16"
+
+
 def test_edge_tts_registered():
     providers = list_providers()
     assert "edge-tts" in providers["tts"]
+
+
+def test_lmstudio_registered():
+    providers = list_providers()
+    assert "lmstudio" in providers["llm"]
+
+
+def test_deepseek_registered():
+    providers = list_providers()
+    assert "deepseek" in providers["llm"]
 
 
 def test_unknown_provider_raises():

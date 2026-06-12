@@ -10,6 +10,21 @@ export interface StatusResponse {
   frontend_port: number;
   ffmpeg: boolean;
   align_available: boolean;
+  llm?: {
+    configured_provider: string;
+    openai_key_set: boolean;
+    openai_ready: boolean;
+    deepseek_key_set: boolean;
+    deepseek_ready: boolean;
+    deepseek_model: string;
+    lmstudio_ready: boolean;
+    lmstudio_model: string | null;
+    lmstudio_base_url: string;
+    ollama_reachable: boolean;
+    ollama_ready: boolean;
+    ready_for_topics: boolean;
+    hint: string;
+  };
   providers: { llm: string[]; stock: string[]; tts: string[] };
   job_count: number;
   jobs_complete: number;
@@ -97,6 +112,7 @@ export async function getJob(jobId: string): Promise<{ job: Job }> {
 export async function generateVideo(body: {
   topic?: string;
   script?: string | null;
+  llm_provider?: string;
   aspect?: string;
   voice?: string;
   clip_duration?: number;
@@ -107,7 +123,16 @@ export async function generateVideo(body: {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(body),
   });
-  if (!res.ok) throw new Error(await res.text());
+  if (!res.ok) {
+    const text = await res.text();
+    try {
+      const parsed = JSON.parse(text) as { detail?: string };
+      throw new Error(parsed.detail ?? text);
+    } catch (e) {
+      if (e instanceof Error && e.message !== text) throw e;
+      throw new Error(text || `Generate failed (${res.status})`);
+    }
+  }
   return res.json();
 }
 
@@ -146,6 +171,63 @@ export async function planRender(body: {
   return res.json();
 }
 
+export interface DepotItem {
+  job_id: string;
+  topic: string;
+  status: string;
+  progress: number;
+  file_size_mb: number;
+  created_at: string;
+  updated_at: string;
+  source: string;
+  has_file: boolean;
+  download_url: string;
+  publish_url: string;
+  poster_url: string;
+  error: string;
+}
+
+export interface DepotSummary {
+  output_dir: string;
+  db_path: string;
+  total: number;
+  on_disk: number;
+  imported: number;
+}
+
+export async function listDepot(limit = 100): Promise<{
+  success: boolean;
+  summary: DepotSummary;
+  items: DepotItem[];
+  count: number;
+}> {
+  const res = await fetch(`${BASE}/depot?limit=${limit}`);
+  if (!res.ok) throw new Error(`Depot ${res.status}`);
+  return res.json();
+}
+
+export async function scanDepot(): Promise<{
+  success: boolean;
+  summary: DepotSummary;
+  items: DepotItem[];
+  message: string;
+}> {
+  const res = await fetch(`${BASE}/depot/scan`, { method: "POST" });
+  if (!res.ok) throw new Error(`Scan ${res.status}`);
+  return res.json();
+}
+
+export async function deleteDepotItem(jobId: string, deleteFile = true): Promise<{ success: boolean; message: string }> {
+  const res = await fetch(`${BASE}/depot/${jobId}?delete_file=${deleteFile ? "true" : "false"}`, {
+    method: "DELETE",
+  });
+  return res.json();
+}
+
+export function posterUrl(jobId: string): string {
+  return `${API_ROOT}/api/v1/depot/${jobId}/poster`;
+}
+
 export async function getPublishPack(jobId: string): Promise<PublishPack> {
   const res = await fetch(`${BASE}/jobs/${jobId}/publish-pack`);
   return res.json();
@@ -167,4 +249,118 @@ export async function probeOllama(): Promise<boolean> {
   } catch {
     return false;
   }
+}
+
+export const SECRET_MASK = "••••••••";
+
+export interface ProviderSettings {
+  id: string;
+  label: string;
+  ready: boolean;
+  model: string;
+  base_url: string;
+  api_key_set: boolean;
+  api_key_hint: string;
+}
+
+export interface LlmDiscovery {
+  provider: string;
+  available: boolean;
+  error: string;
+  models: string[];
+  selected_model: string;
+}
+
+export interface AppSettings {
+  env_path: string;
+  videogen_llm_provider: string;
+  llm_providers: ProviderSettings[];
+  videogen_stock_provider: string;
+  pexels_api_key_set: boolean;
+  pexels_api_key_hint: string;
+  cogvideo_url: string;
+  cogvideo_ready: boolean;
+  cogvideo_error: string;
+  stock_ready_for_renders: boolean;
+  stock_hint: string;
+  videogen_tts_provider: string;
+  edge_tts_voice: string;
+}
+
+export interface SettingsBundle {
+  success: boolean;
+  settings: AppSettings;
+  models: LlmDiscovery[];
+  secret_mask: string;
+}
+
+export interface SettingsSavePayload {
+  videogen_llm_provider?: string;
+  deepseek_api_key?: string;
+  deepseek_base_url?: string;
+  deepseek_model?: string;
+  openai_api_key?: string;
+  openai_base_url?: string;
+  openai_model?: string;
+  lmstudio_base_url?: string;
+  lmstudio_api_key?: string;
+  lmstudio_model?: string;
+  ollama_base_url?: string;
+  ollama_model?: string;
+  pexels_api_key?: string;
+  cogvideo_url?: string;
+  videogen_stock_provider?: string;
+  videogen_tts_provider?: string;
+  edge_tts_voice?: string;
+}
+
+export async function getSettings(): Promise<SettingsBundle> {
+  const res = await fetch(`${BASE}/settings`);
+  if (!res.ok) throw new Error(`Settings ${res.status}`);
+  return res.json();
+}
+
+export async function refreshModels(provider?: string): Promise<LlmDiscovery | LlmDiscovery[]> {
+  const q = provider ? `?provider=${encodeURIComponent(provider)}` : "";
+  const res = await fetch(`${BASE}/settings/models${q}`);
+  if (!res.ok) throw new Error(`Models ${res.status}`);
+  const data = await res.json();
+  if (provider) return data.discovery as LlmDiscovery;
+  return data.discoveries as LlmDiscovery[];
+}
+
+export async function refreshStockStatus(): Promise<{
+  success: boolean;
+  stock: {
+    active_provider: string;
+    ready_for_renders: boolean;
+    pexels_ready: boolean;
+    cogvideo_url: string;
+    cogvideo_ready: boolean;
+    cogvideo_error: string;
+    hint: string;
+  };
+}> {
+  const res = await fetch(`${BASE}/settings/stock`);
+  if (!res.ok) throw new Error(`Stock status ${res.status}`);
+  return res.json();
+}
+
+export async function saveSettings(body: SettingsSavePayload): Promise<{ success: boolean; message: string }> {
+  const res = await fetch(`${BASE}/settings`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(body),
+  });
+  if (!res.ok) {
+    const text = await res.text();
+    try {
+      const parsed = JSON.parse(text) as { detail?: string };
+      throw new Error(parsed.detail ?? text);
+    } catch (e) {
+      if (e instanceof Error && e.message !== text) throw e;
+      throw new Error(text || `Save failed (${res.status})`);
+    }
+  }
+  return res.json();
 }

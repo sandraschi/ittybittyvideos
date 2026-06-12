@@ -37,6 +37,8 @@ def register_tts(name: str):
 
 
 def get_llm(name: str | None = None) -> LLMProvider:
+    import videogen_mcp.providers.llm_deepseek  # noqa: F401
+    import videogen_mcp.providers.llm_lmstudio  # noqa: F401
     import videogen_mcp.providers.llm_ollama  # noqa: F401
     import videogen_mcp.providers.llm_openai  # noqa: F401
     import videogen_mcp.providers.llm_qwen  # noqa: F401
@@ -49,9 +51,12 @@ def get_llm(name: str | None = None) -> LLMProvider:
 
 
 def get_stock(name: str | None = None) -> StockProvider:
-    import videogen_mcp.providers.stock_cogvideo  # noqa: F401
+    import videogen_mcp.providers.stock_localgen  # noqa: F401
     import videogen_mcp.providers.stock_pexels  # noqa: F401
     from videogen_mcp.config import get_settings
+
+    if "cogvideo" not in _stock_registry and "localgen" in _stock_registry:
+        _stock_registry["cogvideo"] = _stock_registry["localgen"]
 
     key = name or get_settings().videogen_stock_provider
     if key not in _stock_registry:
@@ -71,13 +76,18 @@ def get_tts(name: str | None = None) -> TTSProvider:
 
 
 def list_providers() -> dict[str, list[str]]:
+    import videogen_mcp.providers.llm_deepseek  # noqa: F401
+    import videogen_mcp.providers.llm_lmstudio  # noqa: F401
     import videogen_mcp.providers.llm_ollama  # noqa: F401
     import videogen_mcp.providers.llm_openai  # noqa: F401
     import videogen_mcp.providers.llm_qwen  # noqa: F401
-    import videogen_mcp.providers.stock_cogvideo  # noqa: F401
+    import videogen_mcp.providers.stock_localgen  # noqa: F401
     import videogen_mcp.providers.stock_pexels  # noqa: F401
     import videogen_mcp.providers.tts_cosyvoice  # noqa: F401
     import videogen_mcp.providers.tts_edge  # noqa: F401
+
+    if "cogvideo" not in _stock_registry and "localgen" in _stock_registry:
+        _stock_registry["cogvideo"] = _stock_registry["localgen"]
 
     return {
         "llm": list(_llm_registry),

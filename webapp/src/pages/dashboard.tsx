@@ -19,7 +19,7 @@ export default function Dashboard() {
     <div className="max-w-4xl space-y-6">
       <div>
         <h1 className="text-2xl font-bold">Dashboard</h1>
-        <p className="text-sm text-zinc-500 mt-1">roughcut · backend :11054 · dev UI :11055</p>
+        <p className="text-sm text-zinc-500 mt-1">roughcutvideos · backend :11054 · dev UI :11055</p>
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">

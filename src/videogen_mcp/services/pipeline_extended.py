@@ -15,8 +15,12 @@ from videogen_mcp.providers.base import SubtitleEntry
 from videogen_mcp.services.align import align_words, words_to_sentences
 from videogen_mcp.services.cache import cache_path, is_cached
 from videogen_mcp.services.compose import compose_video
-from videogen_mcp.services.pipeline import _jobs
+from videogen_mcp.services import job_store
 from videogen_mcp.services.planner import plan_video
+
+
+def _save(job: JobInfo) -> None:
+    job_store.upsert_job(job)
 
 
 async def generate_planned_video(
@@ -25,7 +29,7 @@ async def generate_planned_video(
     voice: str = "",
 ) -> JobInfo:
     job = JobInfo(topic=request.topic)
-    _jobs[job.job_id] = job
+    _save(job)
     asyncio.create_task(_run_planned_pipeline(job, request, aspect, voice))
     return job
 
@@ -42,6 +46,7 @@ async def _run_planned_pipeline(
 
     try:
         job.update(JobStatus.SCRIPTING, 5.0)
+        _save(job)
         board = await plan_video(request)
         logger.info(f"[{job.job_id}] Storyboard: {board.title}, {board.total_scenes} scenes")
 
@@ -56,6 +61,7 @@ async def _run_planned_pipeline(
         for i, scene in enumerate(all_scenes):
             progress = 10.0 + (80.0 * i / total)
             job.update(JobStatus.FETCHING_FOOTAGE, progress)
+            _save(job)
 
             footage = await _fetch_scene_footage(scene, aspect, work_dir / f"footage_{i:03d}.mp4")
             scene_footage.append(footage)
@@ -85,6 +91,7 @@ async def _run_planned_pipeline(
                 scene_words.append([])
 
         job.update(JobStatus.COMPOSING, 90.0)
+        _save(job)
 
         merged_audio = await _merge_audio(scene_audio, work_dir / "narration_full.mp3")
         all_subs = [s for subs in scene_subs for s in subs]
@@ -106,12 +113,14 @@ async def _run_planned_pipeline(
 
         job.output_path = str(output_path)
         job.update(JobStatus.COMPLETE, 100.0)
+        _save(job)
         logger.info(f"[{job.job_id}] Complete: {output_path}")
 
     except Exception as e:
         logger.error(f"[{job.job_id}] Planned pipeline failed: {e}")
         job.error = str(e)
         job.update(JobStatus.FAILED, 0.0)
+        _save(job)
 
 
 def _offset(entry: SubtitleEntry, by: float) -> SubtitleEntry:

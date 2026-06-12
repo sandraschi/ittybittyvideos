@@ -26,7 +26,13 @@ export default function Jobs() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold">Jobs</h1>
-          <p className="text-sm text-zinc-500">In-memory queue — restarts clear history (v0.2: persistence)</p>
+          <p className="text-sm text-zinc-500">
+            Live pipeline queue — persisted in depot.db.{" "}
+            <Link to="/depot" className="text-blue-400 hover:underline">
+              Open Depot
+            </Link>{" "}
+            for finished videos.
+          </p>
         </div>
         <button
           type="button"
@@ -63,12 +69,20 @@ export default function Jobs() {
                 {j.status}
               </span>
               {j.status === "complete" && (
-                <Link
-                  to={`/publish?job=${j.job_id}`}
-                  className="text-xs text-blue-400 hover:underline"
-                >
-                  Publish
-                </Link>
+                <>
+                  <Link
+                    to={`/publish?job=${j.job_id}`}
+                    className="text-xs text-blue-400 hover:underline"
+                  >
+                    Publish
+                  </Link>
+                  <Link
+                    to="/depot"
+                    className="text-xs text-zinc-400 hover:underline"
+                  >
+                    Depot
+                  </Link>
+                </>
               )}
             </div>
             {j.error && <p className="text-xs text-red-400 sm:col-span-2">{j.error}</p>}
