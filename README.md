@@ -3,7 +3,7 @@
 **Topic or script in → narrated video out.** Shorts for TikTok and Reels, or longer chaptered explainers — with stock footage, your Jellyfin/Plex home videos, or local AI clips.
 
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
-[![Status](https://img.shields.io/badge/status-alpha-orange.svg)](docs/ALPHA-RELEASE-CHECKLIST.md)
+[![Status](https://img.shields.io/badge/status-alpha-orange.svg)](docs/ALPHA-RELEASE-CHECKLIST.md) · [中文 README](README-zh.md)
 
 > **Alpha — under construction.** APIs, pipelines (R3 screening, R9 talker), and the Windows installer may change between releases. Not production-ready. See [alpha release checklist](docs/ALPHA-RELEASE-CHECKLIST.md) before going public or tagging.
 
@@ -28,6 +28,7 @@ Same engine under all three: Python backend on port **11054**, React dashboard o
 | [MCP server](#mcp-server) | Agent automation |
 | [What you need](#what-you-need) | Keys and optional extras |
 | [Footage sources](#footage-sources) | Where B-roll comes from |
+| [vs MoneyPrinterTurbo](#how-this-differs-from-moneyprinterturbo) | Why pick ittybitty |
 | [More help](#more-help) | Config, troubleshooting, API docs |
 | [Marketing site](https://sandraschi.github.io/ittybittyvideos/) | GitHub Pages one-pager (also [website/](website/index.html) locally) |
 
@@ -104,6 +105,26 @@ Pick one in **Settings → Footage**:
 - **LocalGen** — Wan 2.2 on your GPU
 
 Finished videos land in `./output/` and appear in **Depot**.
+
+---
+
+## How this differs from MoneyPrinterTurbo
+
+[MoneyPrinterTurbo](https://github.com/Harry-Yu-001/MoneyPrinterTurbo) popularized *topic → short video*. ittybitty targets the same job with **fleet tooling**: agents, longer formats, your own libraries, and a path to local GPU — still **alpha**, so expect rough edges.
+
+| | MoneyPrinterTurbo | ittybitty (alpha) |
+|--|-------------------|-------------------|
+| **How you run it** | Web UI | **Windows app** + web dashboard + **HTTP MCP** |
+| **Length** | Mostly shorts (~60s) | Shorts + **3–15 min** chapters (planner + videographer rules) |
+| **Footage** | Stock APIs | Pexels + **Jellyfin/Plex** + **LocalGen (Wan 2.2)** + Veo/Omni |
+| **Agents** | — | **`videogen_*` tools** for Cursor, Claude, fleet MCP clients |
+| **Library & jobs** | — | **SQLite depot**, job history, publish handoff |
+| **Edit intelligence** | Assembly / concat | **Hook, pacing, B-roll, transitions**; R1 karaoke subs; R2 beat snap + ducking; R3 screening (experimental) |
+| **Architecture** | Monolith | **Plugin registry** — swap LLM, stock, and TTS providers |
+| **Desktop** | — | **NSIS installer** (Windows, backend bundled) |
+| **Status** | Mature OSS | **Alpha** — [checklist](docs/ALPHA-RELEASE-CHECKLIST.md) |
+
+中文说明与中国本地栈（通义千问、CosyVoice 等）：[README-zh.md](README-zh.md)
 
 ---
 
