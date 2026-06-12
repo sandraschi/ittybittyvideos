@@ -1,0 +1,40 @@
+id: absurd-credits-roll
+label: Absurd credits + post-credits stinger
+video_types: [short, showcase, documentary, explainer]
+exemplar_views: "Pixar-style 2000-name scroll — comedy payoff; post-credits tag optional"
+credits:
+  pack: absurd-pixar
+  min_lines: 50
+  post_credits: true
+beats:
+  - scene_type: hook
+    narration_goal: Main bit hook — do NOT open with credits
+    duration_hint: 3
+  - scene_type: demo
+    narration_goal: Core content — the joke or story earns the absurd credits
+    duration_hint: 25
+  - scene_type: recap
+    narration_goal: Punchline or emotional beat — "and that's why..."
+    duration_hint: 8
+  - scene_type: outro
+    narration_goal: Tease the credits — "thanks to our team of..." (understate how many)
+    duration_hint: 5
+  - scene_type: broll
+    narration_goal: Credits roll — rapid-fire absurd contributor names (scroll VO or sparse narrator)
+    duration_hint: 20
+  - scene_type: outro
+    narration_goal: Post-credits stinger — one extra joke after "the end"
+    duration_hint: 6
+visual:
+  aspect: "9:16"
+  cut_every_seconds: 1.2
+  text_overlays: ["THE END?", "Credits", "Still here?", "Fine. One more."]
+  shot_types: [text_overlay, medium]
+expand_to_mid:
+  chapters:
+    - Main story — full setup and payoff
+    - Fake ending — audience relaxes
+    - Credits roll I — departments + featured historical advisors
+    - Credits roll II — numbered filler army (40+ lines)
+    - Post-credits — stinger scene + optional second scroll
+example_hook: "We made a 30-second dog video. The credits are longer than the Bible."

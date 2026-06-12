@@ -12,9 +12,12 @@ Curated **viral Short structures** with optional **mid-length expansion** chapte
 | [countdown-three-things.yaml](./countdown-three-things.yaml) | 3 things countdown | Format class |
 | [myth-vs-truth.yaml](./myth-vs-truth.yaml) | Myth bust | Format class |
 | [story-hook-reveal.yaml](./story-hook-reveal.yaml) | Mid-crisis → reveal | 200M+ genre |
+| [absurd-credits-roll.yaml](./absurd-credits-roll.yaml) | Pixar absurd credits + post-credits | Comedy class |
+
+**Credits packs:** [../credits/absurd-pixar.yaml](../credits/absurd-pixar.yaml) — Einstein, Attila, filler army.
 
 **Research:** [docs/EXEMPLARS-RESEARCH.md](../../docs/EXEMPLARS-RESEARCH.md)
 
-**Not wired to backend yet** — select `trope:*` in webapp **Prompt library**; planner integration is R10.
+**Wired:** select `trope:*` in webapp **Prompt library** → `structure` on generate/plan (R10).
 
-Schema: `id`, `label`, `beats[]`, `visual`, `expand_to_mid.chapters[]`, `example_hook`.
+Schema: `id`, `label`, `beats[]`, `visual`, `credits`, `expand_to_mid.chapters[]`, `example_hook`.

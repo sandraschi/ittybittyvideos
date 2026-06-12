@@ -65,6 +65,7 @@ packages = ["src/videogen_mcp"]
 
 [tool.hatch.build.targets.wheel.force-include]
 "templates/tropes" = "videogen_mcp/tropes"
+"templates/credits" = "videogen_mcp/credits"
 
 [project.scripts]
 localgen-server = "videogen_mcp.localgen_server.__main__:main"

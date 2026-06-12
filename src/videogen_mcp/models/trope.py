@@ -19,3 +19,4 @@ class TropeTemplate(BaseModel):
     exemplar_refs: list[str] = Field(default_factory=list)
     visual: dict = Field(default_factory=dict)
     expand_to_mid: dict = Field(default_factory=dict)
+    credits: dict = Field(default_factory=dict)

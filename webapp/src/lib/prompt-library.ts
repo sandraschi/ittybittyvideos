@@ -31,6 +31,7 @@ export const STRUCTURE_PRESETS: { id: string; label: string; note: string }[] = 
   { id: "trope:countdown-three-things", label: "3 things countdown", note: "Listicle explainer" },
   { id: "trope:myth-vs-truth", label: "Myth vs truth", note: "Contrarian reveal" },
   { id: "trope:story-hook-reveal", label: "Story hook + late reveal", note: "Interruption / twist" },
+  { id: "trope:absurd-credits-roll", label: "Absurd credits + post-credits", note: "Pixar 2000-name energy · Einstein, Attila" },
   // Narrative (R10 planned)
   { id: "trope:tutorial", label: "Tutorial beats", note: "R10 — backend pending" },
   { id: "trope:documentary", label: "Documentary", note: "R10 — planned" },
@@ -40,6 +41,16 @@ export const STRUCTURE_PRESETS: { id: string; label: string; note: string }[] = 
 ];
 
 export const BUILTIN_PROMPTS: SavedPrompt[] = [
+  {
+    id: "sample-absurd-credits",
+    title: "Absurd credits short",
+    topic: "A 30-second video about our office dog — the real joke is the end credits thanking 200 fake people",
+    kind: "short",
+    structure: "trope:absurd-credits-roll",
+    styleNotes: "Must include Einstein + Attila in credits; post-credits stinger after THE END",
+    createdAt: "2026-06-12T00:00:00.000Z",
+    updatedAt: "2026-06-12T00:00:00.000Z",
+  },
   {
     id: "sample-vienna-coffee",
     title: "Vienna coffee houses",

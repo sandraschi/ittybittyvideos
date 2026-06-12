@@ -9,6 +9,7 @@ import yaml
 from loguru import logger
 
 from videogen_mcp.models.trope import TropeTemplate
+from videogen_mcp.services.credits import credits_prompt_for_trope
 
 
 def trope_dir() -> Path:
@@ -96,6 +97,11 @@ def _beat_block(trope: TropeTemplate, *, mid: bool) -> str:
     if cut:
         lines.append(f"Target cut pace: ~every {cut}s")
 
+    credits_block = credits_prompt_for_trope(trope.credits if trope.credits else None)
+    if credits_block:
+        lines.append("")
+        lines.append(credits_block)
+
     return "\n".join(lines)
 
 
@@ -125,6 +131,11 @@ def enrich_for_short_script(
         "Follow the beat outline. Map beats to segments when segment count allows. "
         "First segment must work as a 3-second hook."
     )
+    if trope.credits:
+        system += (
+            " If credits/post-credits beats exist: dedicate final segment(s) to the absurd roll "
+            "and post-credits stinger — do not rush the featured historical advisors."
+        )
     return system, user
 
 
@@ -148,6 +159,11 @@ def enrich_for_planner(
         "Expand beats into chapters and scenes. Use suggested chapter titles when provided. "
         "Keep hook scene first; honor text overlay cues in scene notes where relevant."
     )
+    if trope.credits:
+        system += (
+            " Include full credits chapter(s) with text_overlay shot types and a post-credits stinger scene. "
+            "Generate dozens of joke contributor lines in scene notes/narration."
+        )
     if style_notes.strip() and "Style notes:" not in user_prompt:
         user_prompt = f"{user_prompt.rstrip()}\nStyle notes: {style_notes.strip()}\n"
     return system, user_prompt

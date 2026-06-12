@@ -1,0 +1,108 @@
+id: absurd-pixar
+label: Absurd Pixar-style credits roll
+description: >
+  Fake end-credits with hundreds of joke contributors — everybody laughs at the
+  Pixar "2000 people" scroll. Always include featured names; pad with departments
+  and numbered filler roles.
+min_contributors: 48
+max_contributors: 200
+featured:
+  - name: Albert Einstein
+    role: Relativity Advisor
+  - name: Attila the Hun
+    role: Strategy Consultant
+  - name: Cleopatra
+    role: Treat Allocation Pharaoh
+  - name: Isaac Newton
+    role: Gravity Compliance Officer
+  - name: Marie Curie
+    role: Radiant Snack Safety
+  - name: Leonardo da Vinci
+    role: Reverse Engineering (Treats)
+  - name: Socrates
+    role: Chief "Whazzat?" Philosophical Review
+  - name: Genghis Khan
+    role: Portion Control (Historical)
+  - name: Joan of Arc
+    role: Flame-Broiled Motivation
+  - name: Nikola Tesla
+    role: Wireless Treat Delivery (Unlicensed)
+departments:
+  - Executive Pawducer
+  - Canine Morale & Snack Equity
+  - Yummy / Whazzat Localization
+  - Bork Foley & Crunch Mix
+  - Tail Wag Physics
+  - Second-Unit Belly Rubs
+  - Post-Production Treat Color Grade
+  - Intern Herding (Dogs, Not People)
+  - Legal — "Good Boy" Trademarks
+  - Historical Consultants (Unpaid)
+  - Additional Vibes
+  - Very Additional Vibes
+  - People Who Said "One More Take"
+  - People Who Regretted "One More Take"
+pool:
+  - name: The Neighbor's Cat
+    role: Uncredited Antagonist
+  - name: A Single Cheerio
+    role: Method Actor
+  - name: Whoever Invented the Fridge Beep
+    role: Sound Design Nemesis
+  - name: Three Raccoons in a Trenchcoat
+    role: Focus Group
+  - name: Karen from Accounting
+    role: Spreadsheet of Treats
+  - name: A Very Good Stick
+    role: Executive Producer
+  - name: The Vacuum Cleaner
+    role: Trauma Consultant
+  - name: 4,000 Unread Emails
+    role: Scheduling Conflict
+  - name: A Bag of Ice
+    role: Cooldown Specialist
+  - name: The UPS Driver
+    role: Deus ex Chewbox
+  - name: Schrödinger's Cat
+    role: Simultaneously Fed / Not Fed
+  - name: A Roomba With Ambition
+    role: B-Roll Pursuit Unit
+  - name: The Smoke Detector
+    role: Unexpected Interruption Coordinator
+  - name: Two Ducks
+    role: Honk Supervision
+  - name: A Rotisserie Chicken
+    role: Forbidden Cameo
+  - name: The Wi-Fi Router
+    role: Buffering Emotions
+  - name: A Child Drawing a Dog
+    role: Concept Art
+  - name: The Moon
+    role: Night Shift Lighting
+  - name: A Parking Meter
+    role: Time Limit Enforcement
+  - name: The Concept of Lunch
+    role: Executive Motivator
+  - name: A Sentient Toaster
+    role: Crumb Infrastructure
+  - name: The Dog From the Other Timeline
+    role: Multiverse Continuity
+  - name: A Bowl That Is Always Empty
+    role: Tragic Prop Master
+  - name: The Word "Walk"
+    role: Trigger Warning Consultant
+  - name: A Tennis Ball
+    role: Hope
+filler_templates:
+  - "Additional Treat Wrangler #{n}"
+  - "Assistant to the Assistant Sniff Director #{n}"
+  - "Junior Good Boy #{n}"
+  - "Senior Whazzat Analyst #{n}"
+  - "Uncredited Tail Double #{n}"
+  - "Background Bork #{n}"
+post_credits_stingers:
+  - "One dog returns for the treat everyone forgot. Roll credits again. There is no end."
+  - "Attila the Hun demands a bonus treat. Legal says no. Chaos ensues."
+  - "Albert Einstein explains that time is relative; dinner is not."
+  - "The picky dog finally says Yummy. Cut to black. Applause."
+  - "A raccoon was credited by mistake. The raccoon accepts the Emmy."

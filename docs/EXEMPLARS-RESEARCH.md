@@ -137,6 +137,29 @@ punchline (8s)            →  Ch5 twist + outro (45s)
 
 ---
 
+## Absurd credits + post-credits (`trope:absurd-credits-roll`)
+
+Pixar’s **~2,000-name scroll** is the joke — baby names, fake departments, historical cameos. We emulate structure, not their footage.
+
+**Credits pack:** `templates/credits/absurd-pixar.yaml`
+
+| Featured | Role |
+|----------|------|
+| Albert Einstein | Relativity Advisor |
+| Attila the Hun | Strategy Consultant |
+| Cleopatra | Treat Allocation Pharaoh |
+| Socrates | Chief "Whazzat?" Philosophical Review |
+
+Also: departments (*Canine Morale*, *Bork Foley*), joke pool (*Three Raccoons in a Trenchcoat*), numbered filler (*Treat Wrangler #47*), and **post-credits stingers**.
+
+**Short:** main bit → tease credits → scroll segment → stinger after “THE END”.  
+**Mid:** fake ending → credits I (featured) → credits II (filler army) → post-credits scene.
+
+**API:** `GET /api/v1/credits/sample?pack=absurd-pixar` · MCP `videogen_credits_sample`.  
+**Future:** FFmpeg scroll card (R7 visual template) — today = LLM narration + scene notes.
+
+---
+
 ## Legal & ethics
 
 - Do **not** re-upload Jade, Shiba Diva, or Clark source videos.  

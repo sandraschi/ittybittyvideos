@@ -180,6 +180,38 @@ if FastMCP:
         return {"success": True, "structures": items, "count": len(items)}
 
     @mcp.tool()
+    async def videogen_credits_sample(
+        pack: Annotated[str, Field(description="Credits pack id, e.g. absurd-pixar.")] = "absurd-pixar",
+        lines: Annotated[int, Field(description="Sample lines to return.", ge=5, le=80)] = 24,
+        post_credits: Annotated[bool, Field(description="Include post-credits stinger hint.")] = True,
+    ) -> dict:
+        """Sample absurd end-credits contributor lines (Pixar-style joke roll).
+
+        ## Return Format
+        {"success": bool, "pack": str, "text": str, "contributors": [{name, role}]}
+
+        ## Examples
+        videogen_credits_sample(pack="absurd-pixar", lines=30)
+        """
+        from videogen_mcp.services.credits import (
+            build_contributor_roll,
+            format_roll_text,
+            load_credits_pack,
+            sample_credits_block,
+        )
+
+        block = sample_credits_block(pack, line_count=lines, post_credits=post_credits)
+        roll = build_contributor_roll(pack, count=lines)
+        if not block:
+            return {"success": False, "message": f"Credits pack {pack!r} not found"}
+        return {
+            "success": True,
+            "pack": pack,
+            "text": block,
+            "contributors": [{"name": e.name, "role": e.role} for e in roll[:lines]],
+        }
+
+    @mcp.tool()
     async def videogen_plan(
         topic: Annotated[str, Field(description="Video topic or subject.")],
         video_type: Annotated[
@@ -483,6 +515,35 @@ async def api_structures():
 
     items = list_structures()
     return {"success": True, "structures": items, "count": len(items)}
+
+
+@rest.get("/api/v1/credits/packs")
+async def api_credits_packs():
+    from videogen_mcp.services.credits import list_credits_packs
+
+    packs = list_credits_packs()
+    return {"success": True, "packs": packs, "count": len(packs)}
+
+
+@rest.get("/api/v1/credits/sample")
+async def api_credits_sample(
+    pack: str = "absurd-pixar",
+    lines: int = 24,
+    post_credits: bool = True,
+    seed: int | None = None,
+):
+    from videogen_mcp.services.credits import build_contributor_roll, sample_credits_block
+
+    block = sample_credits_block(pack, line_count=lines, post_credits=post_credits, seed=seed)
+    roll = build_contributor_roll(pack, count=lines, seed=seed)
+    if not block:
+        return {"success": False, "message": f"Credits pack {pack!r} not found"}
+    return {
+        "success": True,
+        "pack": pack,
+        "text": block,
+        "contributors": [{"name": e.name, "role": e.role} for e in roll[:lines]],
+    }
 
 
 @rest.post("/api/v1/plan/render")
