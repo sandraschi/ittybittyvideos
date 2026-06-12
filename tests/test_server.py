@@ -43,7 +43,7 @@ def test_status_endpoint(client):
 def test_tools_endpoint(client):
     resp = client.get("/api/v1/tools")
     assert resp.status_code == 200
-    assert resp.json()["count"] == 6
+    assert resp.json()["count"] == 7
 
 
 def test_providers_endpoint(client):

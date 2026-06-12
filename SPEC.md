@@ -154,18 +154,21 @@ timestamp plumbing with one universal post-pass.
 
 ### Phase 2 — The star-makers (v0.3, ~4-5 days)
 
-**R3. Screening Room — closed-loop self-critique**
+**R3. Screening Room — closed-loop self-critique — DONE 2026-06-12 (needs live VLM validation)**
 Render draft at 480p → extract one frame per scene → local VLM
 (Qwen3.5-VL via Ollama/LM Studio) reviews frames + narration + subtitle
 boxes like an editor watching dailies. Structured critique JSON:
 `{scene_id, verdict, issues: [footage_mismatch|pacing|sub_collision|weak_hook], fix_hint}`.
 Planner re-plans only flagged scenes; re-render; max N passes.
-- New: `services/critic.py`, `videogen_review` MCP tool (review existing job),
-  `--screening-passes` on plan_render (default 1, 0 = off)
+- New: `services/critic.py` + `models/critique.py`, `videogen_review` MCP tool
+  (reviews any finished job via evenly-sampled frames), screening loop in
+  `pipeline_extended` (passes = `VIDEOGEN_SCREENING_PASSES`, default 1,
+  0 = off; VLM unreachable → pass skipped with warning, render ships)
 - Env: `VIDEOGEN_VLM_URL`, `VIDEOGEN_VLM_MODEL` (default qwen3.5-vl via Ollama)
 - Headline feature: nobody in the MPT-clone genre does closed-loop QC.
-- Acceptance: fixture with deliberately mismatched clip gets flagged and
-  replaced; pass count and critique log stored on the job record.
+- Acceptance: mocked fixture with mismatched clip gets flagged and replaced
+  (test green); critique log persisted as `critique_pass_N.json` in the job
+  work dir. Live validation against a real Qwen-VL on Ollama: pending.
 
 **R4. Source-grounded mode (paper/URL/repo → video)**
 `videogen_plan(source_url=...)`: fetch + chunk source (arXiv HTML→markdown

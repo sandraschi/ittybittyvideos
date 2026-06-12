@@ -89,3 +89,10 @@
 1. Pick one P0 row; finish before starting new SPEC phases (R3+).  
 2. Update this file and the assessment agent log when closing items.  
 3. Do not commit `.env`, `output/`, or `native/resources/*.exe`.
+
+### R3 Screening Room - DONE 2026-06-12 (Fable)
+
+- [x] critic.py + critique models + screening loop in pipeline_extended
+- [x] videogen_review tool (tool_count 7) + 14 tests (145 total)
+- [ ] Live VLM validation: ollama pull a qwen-vl vision model, run one plan_render with VIDEOGEN_SCREENING_PASSES=1, check critique_pass_1.json
+- [ ] Webapp: surface critique report on job detail page

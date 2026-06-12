@@ -246,6 +246,66 @@ if FastMCP:
             "message": f"Planned video generation started for: {topic} ({target_duration / 60:.0f} min)",
         }
 
+    @mcp.tool()
+    async def videogen_review(
+        job_id: Annotated[str, Field(description="Completed job to review.")],
+        frames: Annotated[int, Field(description="Frames to sample evenly across the video.", ge=1, le=12)] = 6,
+    ) -> dict:
+        """Screening Room: have a local vision LLM review a finished video.
+
+        Samples frames evenly, critiques footage coherence, subtitle collisions
+        and pacing per frame. Requires an OpenAI-compatible VLM endpoint
+        (VIDEOGEN_VLM_URL, default Ollama :11434 with a vision model).
+
+        ## Return Format
+        {"success": bool, "report": {pass_number, model, scenes: [...]}} or
+        {"success": false, "message": str} when the VLM is unreachable.
+
+        ## Examples
+        videogen_review(job_id="abc123def456")
+        """
+        from videogen_mcp.models.storyboard import Scene, SceneType
+        from videogen_mcp.services.critic import critique_video
+        from videogen_mcp.services.job_store import resolve_output_path
+        from videogen_mcp.services.pipeline import get_job
+
+        job = get_job(job_id)
+        if not job:
+            return {"success": False, "message": f"Job {job_id} not found"}
+        path = resolve_output_path(job_id)
+        if not path:
+            return {"success": False, "message": "Video not ready"}
+
+        # No persisted storyboard for arbitrary jobs: sample evenly with generic scene stubs.
+        import subprocess as sp
+
+        probe = sp.run(
+            ["ffprobe", "-v", "quiet", "-show_entries", "format=duration", "-of", "csv=p=0", str(path)],
+            capture_output=True,
+            text=True,
+            timeout=30,
+        )
+        try:
+            duration = float(probe.stdout.strip())
+        except ValueError:
+            return {"success": False, "message": "Could not probe video duration (ffprobe)"}
+
+        slot = duration / frames
+        stubs = [
+            Scene(
+                scene_type=SceneType.BROLL,
+                title=f"sample {i + 1}/{frames}",
+                narration=job.topic,
+                search_terms=[],
+                duration_target=max(2.0, slot),
+            )
+            for i in range(frames)
+        ]
+        report = await critique_video(path, stubs, slot, path.parent / job_id, pass_number=0)
+        if report is None:
+            return {"success": False, "message": "VLM unreachable (set VIDEOGEN_VLM_URL / start Ollama)"}
+        return {"success": True, "report": report.model_dump(mode="json")}
+
 
 _webapp_dir = webapp_dist_dir()
 
@@ -449,7 +509,7 @@ async def api_status():
         "jobs_complete": complete,
         "jobs_active": active,
         "publish_platforms": len(PLATFORMS),
-        "tool_count": 6 if FastMCP else 0,
+        "tool_count": 7 if FastMCP else 0,
     }
 
 
@@ -508,6 +568,11 @@ async def api_tools():
         {"name": "videogen_status", "description": "Poll job progress.", "kind": "solo"},
         {"name": "videogen_list_jobs", "description": "List recent generation jobs.", "kind": "solo"},
         {"name": "videogen_providers", "description": "List LLM, stock, and TTS providers.", "kind": "solo"},
+        {
+            "name": "videogen_review",
+            "description": "Screening Room: VLM critique of a finished video.",
+            "kind": "solo",
+        },
     ]
     return {"success": True, "tools": tools, "count": len(tools)}
 

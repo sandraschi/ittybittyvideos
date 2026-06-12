@@ -80,6 +80,11 @@ class Settings(BaseSettings):
     videogen_talker_corner: str = "bottom-right"  # bottom-right | bottom-left | top-right | top-left
     videogen_talker_scale: float = 0.28  # head height as fraction of video height
 
+    # R3: Screening Room (closed-loop VLM self-critique on mid-length renders)
+    videogen_screening_passes: int = 1  # 0 = off; skipped with a warning when VLM unreachable
+    videogen_vlm_url: str = "http://localhost:11434/v1"  # OpenAI-compatible vision endpoint (Ollama default)
+    videogen_vlm_model: str = "qwen3.5-vl"
+
 
 @lru_cache
 def get_settings() -> Settings:

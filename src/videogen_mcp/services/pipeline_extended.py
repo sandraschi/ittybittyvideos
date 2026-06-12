@@ -16,6 +16,7 @@ from videogen_mcp.services import job_store
 from videogen_mcp.services.align import align_words, words_to_sentences
 from videogen_mcp.services.cache import cache_path, is_cached
 from videogen_mcp.services.compose import compose_video
+from videogen_mcp.services.critic import critique_video, refetch_queries
 from videogen_mcp.services.planner import plan_video
 
 
@@ -98,18 +99,52 @@ async def _run_planned_pipeline(
         all_words = [w for ws in scene_words for w in ws]
 
         output_path = settings.videogen_output_dir / f"{job.job_id}.mp4"
-        await asyncio.to_thread(
-            compose_video,
-            footage_paths=scene_footage,
-            audio_path=merged_audio,
-            subtitles=all_subs,
-            output_path=output_path,
-            aspect=aspect,
-            fps=settings.videogen_default_fps,
-            clip_duration=max(s.duration_target for s in all_scenes),
-            word_subtitles=all_words or None,
-            sub_style=settings.videogen_sub_style,
-        )
+        clip_dur = max(s.duration_target for s in all_scenes)
+
+        async def _compose() -> None:
+            await asyncio.to_thread(
+                compose_video,
+                footage_paths=scene_footage,
+                audio_path=merged_audio,
+                subtitles=all_subs,
+                output_path=output_path,
+                aspect=aspect,
+                fps=settings.videogen_default_fps,
+                clip_duration=clip_dur,
+                word_subtitles=all_words or None,
+                sub_style=settings.videogen_sub_style,
+            )
+
+        await _compose()
+
+        # R3: Screening Room -- editor watches the dailies, mismatched footage gets re-fetched
+        for pass_n in range(1, settings.videogen_screening_passes + 1):
+            report = await critique_video(output_path, all_scenes, clip_dur, work_dir, pass_number=pass_n)
+            if report is None:
+                break
+            (work_dir / f"critique_pass_{pass_n}.json").write_text(report.model_dump_json(indent=2), encoding="utf-8")
+            queries = refetch_queries(report, all_scenes)
+            if not queries:
+                logger.info(f"[{job.job_id}] Screening pass {pass_n}: no footage flags, done")
+                break
+            job.update(JobStatus.COMPOSING, min(99.0, 92.0 + pass_n * 2))
+            _save(job)
+            replaced = 0
+            for idx, query in queries.items():
+                try:
+                    scene_footage[idx] = await _fetch_scene_footage(
+                        all_scenes[idx],
+                        aspect,
+                        work_dir / f"footage_{idx:03d}_p{pass_n}.mp4",
+                        query_override=query,
+                        exclude={scene_footage[idx]},
+                    )
+                    replaced += 1
+                except RuntimeError as e:
+                    logger.warning(f"[{job.job_id}] Screening: no replacement for scene {idx} ({e})")
+            logger.info(f"[{job.job_id}] Screening pass {pass_n}: replaced {replaced}/{len(queries)} flagged clips")
+            if replaced:
+                await _compose()
 
         job.output_path = str(output_path)
         job.update(JobStatus.COMPLETE, 100.0)
@@ -127,19 +162,30 @@ def _offset(entry: SubtitleEntry, by: float) -> SubtitleEntry:
     return SubtitleEntry(start=entry.start + by, end=entry.end + by, text=entry.text)
 
 
-async def _fetch_scene_footage(scene: Scene, aspect: VideoAspect, dest: Path) -> Path:
+async def _fetch_scene_footage(
+    scene: Scene,
+    aspect: VideoAspect,
+    dest: Path,
+    query_override: str | None = None,
+    exclude: set[Path] | None = None,
+) -> Path:
     if not scene.search_terms:
         scene.search_terms = ["abstract", "cinematic"]
 
     stock = get_stock()
-    query = " ".join(scene.search_terms[:2])
+    query = query_override or " ".join(scene.search_terms[:2])
     clips = await stock.search(query, count=3, aspect=aspect.value)
+    excluded = exclude or set()
 
     for clip in clips:
         cached = is_cached(clip.url)
         if cached:
+            if cached in excluded:
+                continue
             return cached
         downloaded = await stock.download(clip, cache_path(clip.url))
+        if downloaded in excluded:
+            continue
         return downloaded
 
     raise RuntimeError(f"No footage found for scene: {scene.title} ({query})")
