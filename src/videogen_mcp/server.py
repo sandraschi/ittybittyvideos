@@ -71,6 +71,10 @@ if FastMCP:
         llm_provider: Annotated[
             str, Field(description="Topic LLM: deepseek | openai | lmstudio | ollama (ignored with custom script).")
         ] = "",
+        structure: Annotated[
+            str, Field(description="R10 trope preset, e.g. trope:pet-food-duo-review.")
+        ] = "",
+        style_notes: Annotated[str, Field(description="Extra style guidance for scripting.")] = "",
     ) -> dict:
         """Generate a short video from a topic or script.
 
@@ -92,6 +96,8 @@ if FastMCP:
             clip_duration=clip_duration,
             paragraph_count=paragraph_count,
             llm_provider=llm_provider,
+            structure=structure,
+            style_notes=style_notes,
         )
         job = await generate_video(req)
         return {
@@ -159,6 +165,21 @@ if FastMCP:
         return {"success": True, "providers": list_providers()}
 
     @mcp.tool()
+    async def videogen_structures() -> dict:
+        """List R10 narrative structure presets (trope YAML templates).
+
+        ## Return Format
+        {"success": bool, "structures": [{id, trope_id, label, video_types, exemplar_views, beat_count}]}
+
+        ## Examples
+        videogen_structures()
+        """
+        from videogen_mcp.services.prompt_director import list_structures
+
+        items = list_structures()
+        return {"success": True, "structures": items, "count": len(items)}
+
+    @mcp.tool()
     async def videogen_plan(
         topic: Annotated[str, Field(description="Video topic or subject.")],
         video_type: Annotated[
@@ -170,6 +191,7 @@ if FastMCP:
         language: Annotated[str, Field(description="Language code (en, zh, de, ja).")] = "en",
         chapters: Annotated[int, Field(description="Number of chapters.", ge=1, le=12)] = 4,
         style_notes: Annotated[str, Field(description="Style guidance for the planner.")] = "",
+        structure: Annotated[str, Field(description="R10 trope preset, e.g. trope:pet-food-duo-review.")] = "",
     ) -> dict:
         """Plan an intermediate-length video storyboard with chapters and scenes.
 
@@ -194,6 +216,7 @@ if FastMCP:
             language=language,
             chapters=chapters,
             style_notes=style_notes,
+            structure=structure,
         )
         board = await plan_video(req)
         return {
@@ -214,6 +237,8 @@ if FastMCP:
         language: Annotated[str, Field(description="Language code.")] = "en",
         voice: Annotated[str, Field(description="TTS voice identifier.")] = "",
         chapters: Annotated[int, Field(description="Number of chapters.", ge=1, le=12)] = 4,
+        style_notes: Annotated[str, Field(description="Style guidance.")] = "",
+        structure: Annotated[str, Field(description="R10 trope preset.")] = "",
     ) -> dict:
         """Plan AND render an intermediate-length video (3-15 min).
 
@@ -237,6 +262,8 @@ if FastMCP:
             target_duration=target_duration,
             language=language,
             chapters=chapters,
+            style_notes=style_notes,
+            structure=structure,
         )
         job = await generate_planned_video(req, aspect=VideoAspect(aspect), voice=voice)
         return {
@@ -450,6 +477,14 @@ async def api_visual_look_catalog():
     return {"success": True, "ai_stock_providers": sorted(AI_STOCK_PROVIDERS), "catalog": LOOK_CATALOG}
 
 
+@rest.get("/api/v1/structures")
+async def api_structures():
+    from videogen_mcp.services.prompt_director import list_structures
+
+    items = list_structures()
+    return {"success": True, "structures": items, "count": len(items)}
+
+
 @rest.post("/api/v1/plan/render")
 async def api_plan_render(
     topic: str,
@@ -460,6 +495,7 @@ async def api_plan_render(
     voice: str = "",
     chapters: int = 4,
     style_notes: str = "",
+    structure: str = "",
     visual_style: str = "",
     visual_material: str = "",
     visual_tone: str = "",
@@ -475,6 +511,7 @@ async def api_plan_render(
         language=language,
         chapters=chapters,
         style_notes=style_notes,
+        structure=structure,
         visual_style=visual_style,
         visual_material=visual_material,
         visual_tone=visual_tone,

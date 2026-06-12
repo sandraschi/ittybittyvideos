@@ -12,12 +12,20 @@ from loguru import logger
 from openai import AsyncOpenAI
 
 from videogen_mcp.providers import register_llm
-from videogen_mcp.providers.llm_openai import SYSTEM_PROMPT, OpenAILLMProvider, _parse_script_json
+from videogen_mcp.providers.llm_openai import OpenAILLMProvider, _parse_script_json, build_short_script_messages
 
 
 @register_llm("qwen")
 class QwenLLMProvider(OpenAILLMProvider):
-    async def generate_script(self, topic: str, paragraph_count: int, language: str = "zh") -> dict:
+    async def generate_script(
+        self,
+        topic: str,
+        paragraph_count: int,
+        language: str = "zh",
+        *,
+        structure: str = "",
+        style_notes: str = "",
+    ) -> dict:
         api_key = os.environ.get("DASHSCOPE_API_KEY", "")
         if api_key:
             base_url = "https://dashscope.aliyuncs.com/compatible-mode/v1"
@@ -30,10 +38,9 @@ class QwenLLMProvider(OpenAILLMProvider):
         client = AsyncOpenAI(api_key=api_key, base_url=base_url)
         resp = await client.chat.completions.create(
             model=model,
-            messages=[
-                {"role": "system", "content": SYSTEM_PROMPT},
-                {"role": "user", "content": f"Topic: {topic}\nSegments: {paragraph_count}\nLanguage: {language}"},
-            ],
+            messages=build_short_script_messages(
+                topic, paragraph_count, language, structure=structure, style_notes=style_notes
+            ),
             temperature=0.8,
             max_tokens=2000,
         )

@@ -17,6 +17,8 @@ export default function Plan() {
   const [duration, setDuration] = useState(300);
   const [preview, setPreview] = useState<string>("");
   const [structureNote, setStructureNote] = useState<string | null>(null);
+  const [structure, setStructure] = useState("");
+  const [styleNotes, setStyleNotes] = useState("");
   const [visualLook, setVisualLook] = useState(emptyVisualLook);
 
   const { data: settings } = useQuery({ queryKey: ["settings"], queryFn: getSettings });
@@ -27,6 +29,8 @@ export default function Plan() {
     if (!s?.topic) return;
     setTopic(s.topic);
     if (s.videoType) setVideoType(s.videoType);
+    setStructure(s.structure ?? "");
+    setStyleNotes(s.styleNotes ?? "");
     setVisualLook({
       visual_style: s.visual_style ?? "",
       visual_material: s.visual_material ?? "",
@@ -48,6 +52,8 @@ export default function Plan() {
         video_type: videoType,
         target_duration: duration,
         chapters: 4,
+        structure: structure || undefined,
+        style_notes: styleNotes || undefined,
         ...visualLook,
       }),
     onSuccess: (data) => {
@@ -66,6 +72,8 @@ export default function Plan() {
         target_duration: duration,
         aspect: "16:9",
         chapters: 4,
+        structure: structure || undefined,
+        style_notes: styleNotes || undefined,
         ...visualLook,
       }),
     onSuccess: (data) => {

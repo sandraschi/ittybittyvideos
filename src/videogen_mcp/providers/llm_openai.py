@@ -9,6 +9,7 @@ from openai import AsyncOpenAI
 from videogen_mcp.config import get_settings
 from videogen_mcp.providers import register_llm
 from videogen_mcp.providers.base import LLMProvider
+from videogen_mcp.services.prompt_director import enrich_for_short_script
 
 SYSTEM_PROMPT = """You are a short-video script writer. Given a topic, produce a JSON object with:
 - "title": catchy video title (5-10 words)
@@ -20,19 +21,40 @@ Match the language of the narration to the topic language.
 Return ONLY valid JSON, no markdown fences, no explanation."""
 
 
+def build_short_script_messages(
+    topic: str,
+    paragraph_count: int,
+    language: str = "en",
+    *,
+    structure: str = "",
+    style_notes: str = "",
+) -> list[dict[str, str]]:
+    system, user = enrich_for_short_script(
+        SYSTEM_PROMPT, topic, paragraph_count, language, structure, style_notes
+    )
+    return [{"role": "system", "content": system}, {"role": "user", "content": user}]
+
+
 @register_llm("openai")
 class OpenAILLMProvider(LLMProvider):
-    async def generate_script(self, topic: str, paragraph_count: int, language: str = "en") -> dict:
+    async def generate_script(
+        self,
+        topic: str,
+        paragraph_count: int,
+        language: str = "en",
+        *,
+        structure: str = "",
+        style_notes: str = "",
+    ) -> dict:
         settings = get_settings()
         if not settings.openai_api_key.strip():
             raise ValueError("OPENAI_API_KEY is not set. Add it to .env, use Ollama, or pass a custom script.")
         client = AsyncOpenAI(api_key=settings.openai_api_key, base_url=settings.openai_base_url)
         resp = await client.chat.completions.create(
             model=settings.openai_model,
-            messages=[
-                {"role": "system", "content": SYSTEM_PROMPT},
-                {"role": "user", "content": f"Topic: {topic}\nSegments: {paragraph_count}\nLanguage: {language}"},
-            ],
+            messages=build_short_script_messages(
+                topic, paragraph_count, language, structure=structure, style_notes=style_notes
+            ),
             temperature=0.8,
             max_tokens=2000,
         )

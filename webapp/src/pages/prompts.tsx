@@ -128,7 +128,7 @@ export default function PromptsPage() {
         <div>
           <h1 className="text-2xl font-bold">Prompt library</h1>
           <p className="text-sm text-zinc-500 mt-1">
-            Sample topics + your saved prompts (browser storage). R10 structure presets are stored for later — backend not wired yet.
+            Sample topics + your saved prompts (browser storage). Structure presets wire to the backend R10 prompt director.
           </p>
         </div>
         <button

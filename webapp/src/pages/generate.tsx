@@ -50,6 +50,8 @@ export default function Generate() {
   const [aspect, setAspect] = useState("9:16");
   const [paragraphs, setParagraphs] = useState(3);
   const [fromLibrary, setFromLibrary] = useState<string | null>(null);
+  const [structure, setStructure] = useState("");
+  const [styleNotes, setStyleNotes] = useState("");
   const [visualLook, setVisualLook] = useState(emptyVisualLook);
 
   const { data: settings } = useQuery({ queryKey: ["settings"], queryFn: getSettings });
@@ -60,6 +62,8 @@ export default function Generate() {
     if (!s?.topic) return;
     setTopic(s.topic);
     setFromLibrary(s.topic.slice(0, 48));
+    setStructure(s.structure ?? "");
+    setStyleNotes(s.styleNotes ?? "");
     setVisualLook({
       visual_style: s.visual_style ?? "",
       visual_material: s.visual_material ?? "",
@@ -97,6 +101,8 @@ export default function Generate() {
         aspect,
         paragraph_count: paragraphs,
         clip_duration: 5,
+        structure: structure || undefined,
+        style_notes: styleNotes || undefined,
         ...visualLook,
       });
     },
@@ -145,6 +151,9 @@ export default function Generate() {
         </p>
         {fromLibrary && (
           <p className="text-xs text-emerald-500/90 mt-1">Loaded from prompt library</p>
+        )}
+        {structure && (
+          <p className="text-xs text-violet-400/90 mt-1">Structure: {structure}</p>
         )}
       </div>
 

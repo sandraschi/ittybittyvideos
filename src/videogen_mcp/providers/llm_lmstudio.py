@@ -5,7 +5,7 @@ from openai import AsyncOpenAI
 
 from videogen_mcp.config import get_settings
 from videogen_mcp.providers import register_llm
-from videogen_mcp.providers.llm_openai import SYSTEM_PROMPT, OpenAILLMProvider, _parse_script_json
+from videogen_mcp.providers.llm_openai import OpenAILLMProvider, _parse_script_json, build_short_script_messages
 
 
 @register_llm("lmstudio")
@@ -26,18 +26,22 @@ class LMStudioLLMProvider(OpenAILLMProvider):
             return models.data[0].id
         raise ValueError("LM Studio has no model loaded. Open LM Studio, load a model, and enable the local server.")
 
-    async def generate_script(self, topic: str, paragraph_count: int, language: str = "en") -> dict:
+    async def generate_script(
+        self,
+        topic: str,
+        paragraph_count: int,
+        language: str = "en",
+        *,
+        structure: str = "",
+        style_notes: str = "",
+    ) -> dict:
         client = await self._client()
         model = await self._resolve_model(client)
         resp = await client.chat.completions.create(
             model=model,
-            messages=[
-                {"role": "system", "content": SYSTEM_PROMPT},
-                {
-                    "role": "user",
-                    "content": f"Topic: {topic}\nSegments: {paragraph_count}\nLanguage: {language}",
-                },
-            ],
+            messages=build_short_script_messages(
+                topic, paragraph_count, language, structure=structure, style_notes=style_notes
+            ),
             temperature=0.8,
             max_tokens=2000,
         )

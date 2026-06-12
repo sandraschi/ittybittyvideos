@@ -62,6 +62,10 @@ class GenerateRequest(BaseModel):
     visual_style: Annotated[str, Field(description="AI footage style preset (localgen/veo/omni).")] = ""
     visual_material: Annotated[str, Field(description="AI footage material preset.")] = ""
     visual_tone: Annotated[str, Field(description="AI footage tone preset.")] = ""
+    structure: Annotated[
+        str, Field(description="R10 narrative preset, e.g. trope:pet-food-duo-review.")
+    ] = ""
+    style_notes: Annotated[str, Field(description="Extra style guidance for LLM scripting.")] = ""
 
     def visual_look(self) -> VisualLook:
         return VisualLook(

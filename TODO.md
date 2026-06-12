@@ -16,7 +16,7 @@
 | P1 | Gitignore / untrack legacy `docs/examples/*.mp4` | ⬜ |
 | P1 | FFmpeg compose integration test (mocked) | ⬜ |
 | P2 | mcpb packaging | ⬜ deferred |
-| P2 | **R10** Prompt director (trope/genre templates) | ⬜ planned |
+| P2 | **R10** Prompt director (trope/genre templates) | ✅ backend wired |
 | P2 | MCD project page version → 0.2.0 sync | ⬜ |
 
 ---
@@ -73,11 +73,11 @@
 
 Narrative structure presets before LLM calls. See [SPEC.md § R10](./SPEC.md#phase-3--from-generator-to-tool-v04-4-days).
 
-- [ ] Schema + `templates/tropes/*.yaml` (8 viral exemplars — see EXEMPLARS-RESEARCH.md)
-- [ ] `services/prompt_director.py` — `enrich(system, user, structure_id) -> messages`
-- [ ] Wire into `generate_script` + `plan_video` when `structure` set
-- [ ] `PlanRequest` + REST/MCP optional `structure` param; `videogen_structures` list tool
-- [x] Exemplar research doc + trope YAML seeds (`docs/EXEMPLARS-RESEARCH.md`, `templates/tropes/*.yaml`)
+- [x] Schema + `templates/tropes/*.yaml` (8 viral exemplars — see EXEMPLARS-RESEARCH.md)
+- [x] `services/prompt_director.py` — `enrich(system, user, structure_id) -> messages`
+- [x] Wire into `generate_script` + `plan_video` when `structure` set
+- [x] `PlanRequest` + REST/MCP optional `structure` param; `videogen_structures` list tool
+- [x] Webapp Prompt library → pass `structure` on Generate / Plan
 - [x] Prompt library exemplar presets + GSD food duo sample
 - [x] Docs: `docs/PROMPT-DIRECTOR.md` — mermaid diagrams; no live TVTropes scraping
 

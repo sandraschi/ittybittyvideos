@@ -34,7 +34,15 @@ class SubtitleEntry:
 
 class LLMProvider(abc.ABC):
     @abc.abstractmethod
-    async def generate_script(self, topic: str, paragraph_count: int, language: str = "en") -> dict:
+    async def generate_script(
+        self,
+        topic: str,
+        paragraph_count: int,
+        language: str = "en",
+        *,
+        structure: str = "",
+        style_notes: str = "",
+    ) -> dict:
         """Return dict matching VideoScript schema: {title, segments: [{narration, search_terms}]}."""
 
     @abc.abstractmethod

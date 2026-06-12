@@ -168,7 +168,12 @@ async def _get_script(request: GenerateRequest) -> VideoScript:
         return VideoScript(title="Custom Script", segments=segments)
 
     llm = await resolve_llm_for_topic(request.llm_provider or None)
-    raw = await llm.generate_script(request.topic, request.paragraph_count)
+    raw = await llm.generate_script(
+        request.topic,
+        request.paragraph_count,
+        structure=request.structure,
+        style_notes=request.style_notes,
+    )
     return VideoScript.model_validate(raw)
 
 

@@ -23,6 +23,7 @@ from videogen_mcp.models.storyboard import (
     Storyboard,
     TransitionType,
 )
+from videogen_mcp.services.prompt_director import enrich_for_planner
 from videogen_mcp.services.videographer import apply_videographer_rules
 
 PLANNER_SYSTEM = """You are a professional video storyboard planner. Given a topic, video type,
@@ -92,6 +93,10 @@ async def plan_video(request: PlanRequest) -> Storyboard:
     if hint:
         prompt += f"{hint}\n"
 
+    system_content, user_content = enrich_for_planner(
+        PLANNER_SYSTEM, prompt, request.structure, request.style_notes
+    )
+
     from openai import AsyncOpenAI
 
     from videogen_mcp.config import get_settings
@@ -103,8 +108,8 @@ async def plan_video(request: PlanRequest) -> Storyboard:
     resp = await client.chat.completions.create(
         model=model,
         messages=[
-            {"role": "system", "content": PLANNER_SYSTEM},
-            {"role": "user", "content": prompt},
+            {"role": "system", "content": system_content},
+            {"role": "user", "content": user_content},
         ],
         temperature=0.7,
         max_tokens=4000,

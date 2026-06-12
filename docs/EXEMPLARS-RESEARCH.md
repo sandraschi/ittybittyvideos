@@ -150,7 +150,7 @@ punchline (8s)            →  Ch5 twist + outro (45s)
 
 - [x] Trope YAML seeds in `templates/tropes/`  
 - [x] Prompt library structure presets (`trope:*`)  
-- [ ] Wire `structure` → `prompt_director.py` (R10 backend)  
+- [x] Wire `structure` → `prompt_director.py` (R10 backend)  
 - [ ] GSD demo render from Jellyfin + `pet-food-duo-review`  
 - [ ] Mid-length test: same trope at 300s with chapter previews  
 
