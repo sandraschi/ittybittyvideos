@@ -300,7 +300,6 @@ if FastMCP:
         """
         from videogen_mcp.services.credits import (
             build_contributor_roll,
-            load_credits_pack,
             normalize_credits_id,
             sample_credits_block,
         )

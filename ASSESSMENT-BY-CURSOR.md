@@ -1,15 +1,15 @@
 # ittybitty / videogen-mcp — Assessment by Cursor
 
-**Date:** 2026-06-12 (rev 3)  
+**Date:** 2026-06-12 (rev 4)  
 **Assessed by:** Cursor (Composer)  
 **Audience:** Continuing agents (Fable, DeepSeek, Sandra)  
 **Repo path:** `D:\Dev\repos\videogen-mcp`  
 **GitHub remote:** `https://github.com/sandraschi/ittybittyvideos.git` (private)  
 **Product:** **ittybitty**  
 **Version:** **0.2.0** (`pyproject.toml`)  
-**HEAD:** `fed4b77` — `Rebrand to ittybitty and simplify README for end users.`  
-**Working tree:** clean (post-push)  
-**Supersedes:** rev 2 (stale uncommitted / Fable-timeout narrative)
+**HEAD (local):** `191abbe` — `feat(R3): Screening Room` (+ 2 unpushed commits below)  
+**Working tree:** Fable WIP — uncommitted `align.py`, `audio.py`, `planner.py`, `scripts/validate_fable.py`  
+**Supersedes:** rev 3 (stale: 113 tests, R2 unwired)
 
 ---
 
@@ -22,29 +22,53 @@
 
 ---
 
-## Executive summary (rev 3)
+## Executive summary (rev 4)
 
-**ittybitty** is a shippable **0.2.0 MVP+**:
+**ittybitty** is **0.2.0 MVP++** with Fable’s R2/R3/R9 landed locally (3 commits **not pushed**):
 
 | Area | State |
 |------|--------|
 | Short + mid-length pipelines | ✅ |
-| SQLite job + depot | ✅ `job_store.py`, `depot.db` |
-| SOTA webapp (13 pages) | ✅ committed |
-| Publish handoff API | ✅ |
-| Fleet Logs page + ring buffer | ✅ |
-| Settings UI + `.env` persistence | ✅ |
-| Stock: Pexels, Veo/Omni, LocalGen, **Jellyfin, Plex** | ✅ |
-| Windows NSIS + Tauri sidecar | ✅; backend spawn fixed (resources path) |
-| Dev launch (Vite :11055 + API :11054) | ✅ |
-| Tests | ✅ **113** (`uv run pytest -q`) |
-| R1 alignment / karaoke ASS | ✅ committed |
-| R2 beat snap | ⚠️ `audio.py` + compose ducking exist; **not wired** in pipeline; no `beats` extra |
-| Golden demo video in README | ⏳ GSD puppy short planned; legacy cats MP4 still in git (~1.7 MB) |
-| pyright clean | ⚠️ verify with `uv run pyright src/` |
-| mcpb packaging | ❌ deferred |
+| SQLite job + depot | ✅ |
+| SOTA webapp (13 pages) | ✅ |
+| Stock: Pexels, Veo/Omni, LocalGen, Jellyfin, Plex | ✅ |
+| Windows NSIS + Tauri sidecar | ✅ (release v0.2.0 on GitHub) |
+| **R1** alignment / karaoke ASS | ✅ |
+| **R2** beat snap + ducking | ✅ wired in `pipeline.py` (`bc2b519`) |
+| **R3** Screening Room VLM | ✅ code + tests; live VLM validation pending |
+| **R9** talking-head PiP | ✅ plumbing; external `TALKER_URL` backend pending |
+| Tests | ✅ **145** (`uv run pytest -q`) |
+| Playwright e2e smoke | ✅ scaffold (`webapp/e2e/`, rev 4 Cursor) |
+| Provider/model docs | ✅ [docs/PROVIDERS-AND-MODELS.md](./docs/PROVIDERS-AND-MODELS.md) |
+| Golden demo video | ⏳ GSD puppy short planned |
+| R4–R8 | ❌ not started |
 
-**Verdict:** Ship and iterate. Next leverage = finish **R2 wiring**, **demo asset hygiene**, **YouTube Shorts upload (Tier 2 publish)**.
+**Verdict:** Fable finished **runs 2–3** (R2+R9, then R3). He is now on **live-validation / hardening** (uncommitted CUDA→CPU align fallback, librosa numpy fix, planner respects `VIDEOGEN_LLM_PROVIDER`, `validate_fable.py`). Do **not** edit those four paths in parallel without merging his WIP first.
+
+---
+
+## Fable session map (2026-06-12)
+
+| Commit / artifact | SPEC | What shipped |
+|-------------------|------|--------------|
+| `bc2b519` | **R2 + R9** | `detect_beats`/`snap_cut_durations` in short pipeline; sidechain duck in compose; `beats` extra; `talker_sadtalker.py`, `overlay.py`, post-pass in `pipeline.py` |
+| `191abbe` | **R3** | `critic.py`, `videogen_review`, screening loop in `pipeline_extended.py`, `tests/test_critic.py` |
+| WIP (uncommitted) | **R1/R3 validation** | CUDA→CPU whisper retry; audio tempo fix; planner uses configured LLM; `scripts/validate_fable.py` (phase1 short + phase2 screening) |
+
+**Which “run”?** Not R4 yet. Fable is between **R3 commit** and **validate_fable live run** — effectively a **validation run**, not the next SPEC feature phase.
+
+### Conflict zones (hands off for other agents)
+
+- `src/videogen_mcp/services/align.py`, `audio.py`, `planner.py`
+- `scripts/validate_fable.py`
+- Already committed but Fable-owned: `critic.py`, `pipeline.py`, `pipeline_extended.py`, `overlay.py`, `talker_sadtalker.py`
+
+### Safe parallel work
+
+- Docs (`docs/*`, `ASSESSMENT`, Help page copy)
+- Playwright e2e (`webapp/e2e/`)
+- New pytest that mocks FFmpeg / VLM (no pipeline edits)
+- R4+ only after Fable WIP is committed and Sandra reprioritizes
 
 ---
 
@@ -63,23 +87,18 @@
 
 ---
 
-## Reconciliation (rev 3)
+## Reconciliation (rev 4)
 
-Verified 2026-06-12: `git log -1`, `uv run pytest -q` → **113 passed**, `*.bak` count **0**.
+Verified 2026-06-12: `git log -3`, `uv run pytest -q` → **145 passed**; local **ahead of origin by 3** (`eb9cf6b`, `bc2b519`, `191abbe`).
 
 | Claim | Status | Notes |
 |-------|--------|-------|
-| rev 2 “uncommitted webapp” | **Stale** | Committed in `45ca9e4` / `dd36bb0` / `e414b3a` |
-| rev 2 “in-memory jobs” | **Stale** | SQLite `job_store` + depot |
-| rev 2 “64 tests” | **Stale** | **113** tests |
-| rev 2 “20 *.bak files” | **Fixed** | 0 on disk; `*.bak` gitignored |
-| R2 beat snap | **Partial** | `services/audio.py`; not imported by pipeline |
-| R2 music ducking | **Partial** | `compose.py` sidechain; pipeline may not pass BGM path consistently |
-| Tauri backend spawn | **Fixed** | `fed4b77` era — resolve `resources/ittybitty-backend.exe` |
-| NSIS staging wrong exe | **Fixed** | `build.ps1` matches version suffix |
-| Jellyfin/Plex library stock | **Done** | `stock_library.py`, settings UI |
-| Private repo CI workflow | **In git, disabled on GitHub** | run locally per fleet policy |
-| README embedded demo video | **Removed** | poster/MP4 deferred; see [TODO.md](./TODO.md) |
+| rev 3 “R2 unwired” | **Stale** | Wired in `bc2b519`; `beats` extra in pyproject |
+| rev 3 “113 tests” | **Stale** | **145** after R2/R3/R9 tests |
+| R3 Screening Room | **Done (code)** | Live gemma/qwen VLM run pending |
+| R9 talking head | **Plumbing done** | Needs `TALKER_URL` service ~:11100 |
+| Fable validate script | **WIP** | `scripts/validate_fable.py` untracked |
+| Tauri / NSIS / rebrand | **Done** | Release v0.2.0 on GitHub |
 
 ---
 
@@ -94,15 +113,13 @@ src/videogen_mcp/
     job_store.py            SQLite persistence ✅
     depot.py                library scan/import
     planner.py / videographer.py
-    compose.py              FFmpeg + karaoke ASS + ducking (R2 partial)
-    align.py                R1 whisper alignment ✅
-    audio.py                R2 beats ⚠️ unwired
-    jellyfin_library.py / plex_library.py / library_clips.py
-    publish.py              social handoff ✅
-    google_video.py         Veo/Omni bridge
-webapp/src/pages/           13 routes (Dashboard, Generate, Plan, Jobs, Depot, Publish, Settings, Help, Logs, …)
-native/                     Tauri + PyInstaller + NSIS
-tests/                      113 passed
+    compose.py              FFmpeg + karaoke ASS + ducking ✅
+    align.py                R1 whisper alignment ✅ (Fable WIP: CUDA fallback)
+    audio.py                R2 beats ✅ (Fable WIP: numpy/librosa fix)
+    critic.py               R3 VLM screening ✅
+    overlay.py              R9 PiP ✅
+  providers/talker_sadtalker.py  R9 HTTP contract ✅
+tests/                      145 passed · webapp/e2e Playwright smoke (Cursor rev 4)
 ```
 
 ---
@@ -111,10 +128,11 @@ tests/                      113 passed
 
 | ID | Item | Notes |
 |----|------|-------|
-| P0-1 | **Wire R2 beats** | `[project.optional-dependencies] beats = ["librosa>=0.10"]`; pipeline imports `detect_beats` / `snap_cut_durations`; `tests/test_audio.py` |
-| P0-2 | **GSD puppy demo** | Short vertical sample; poster JPG in README only (no embedded `<video>`); see gitignore assessment for MP4 policy |
-| P0-3 | **Rebuild NSIS after rebrand** | Binary names now `ittybitty-*`; upload new release asset |
-| P0-4 | **pyright** | Run `uv run pyright src/`; fix any regressions in `tts_edge.py` if still failing |
+| P0-1 | **Commit + push Fable stack** | 3 local commits + WIP align/audio/planner/validate_fable |
+| P0-2 | **Live validation** | `uv run python scripts/validate_fable.py` (needs BGM, Ollama VLM, Pexels) |
+| P0-3 | **R9 talker backend** | Wrapper on ~:11100; Settings UI fields |
+| P0-4 | **GSD puppy demo** | Short vertical sample for README poster |
+| P0-5 | **Rebuild NSIS** | After Fable work lands |
 
 ---
 
@@ -122,8 +140,8 @@ tests/                      113 passed
 
 | ID | Item |
 |----|------|
-| P1-1 | Mocked FFmpeg integration test (compose argv) |
-| P1-2 | YouTube Shorts resumable upload (Publish Tier 2) |
+| P1-1 | Playwright e2e in CI-like script | `scripts/run-e2e.ps1` ✅ scaffold |
+| P1-2 | Mocked FFmpeg integration test (compose argv) |
 | P1-3 | Trim or gitignore `docs/examples/*.mp4` (keep poster + release attachment) |
 | P1-4 | mcpb package (deferred but spec’d in INSTALL) |
 
@@ -165,7 +183,7 @@ Start: `.\start.bat` or `just go` · Dev UI **11055** · API/MCP **11054**
 | Ports 11054/11055 | ✅ MCD registered |
 | WEBAPP_SOTA | ✅ |
 | ruff | ✅ |
-| pytest | ✅ 113 |
+| pytest | ✅ 145 |
 | Job persistence | ✅ SQLite |
 | Tauri fleet spawn pattern | ✅ (post resources-path fix) |
 | mcp-central-docs project page | ✅ `projects/ittybitty/` |
@@ -176,7 +194,7 @@ Start: `.\start.bat` or `just go` · Dev UI **11055** · API/MCP **11054**
 
 ## What NOT to build yet
 
-R3 Screening Room, R4 arXiv grounding, R5 semantic match, R6 storyboard editor overhaul — blocked on **R2 complete** + **golden demo** unless Sandra reprioritizes.
+**R4–R8** (source grounding, semantic match, storyboard editor, templates, fleet bridge) until Fable WIP is merged and live R1–R3 validation passes. Other agents: prefer docs/tests over pipeline edits.
 
 ---
 
@@ -188,11 +206,14 @@ R3 Screening Room, R4 arXiv grounding, R5 semantic match, R6 storyboard editor o
 | 2026-06-12 | Fable 5 | R1 commit; R2 partial; timeout |
 | 2026-06-12 | Cursor | rev 2 assessment (pre-commit sprawl) |
 | 2026-06-12 | Cursor | v0.2.0: webapp, depot, NSIS, Jellyfin/Plex, Tauri fix |
-| 2026-06-12 | Cursor | Rebrand → **ittybitty**; README simplification; **rev 3** assessment |
+| 2026-06-12 | Fable 5 | R2+R9 (`bc2b519`), R3 (`191abbe`); validation WIP |
+| 2026-06-12 | Cursor | rev 4 assessment; PROVIDERS-AND-MODELS.md; Playwright e2e scaffold |
 
 ---
 
-## MCD (fleet mirror)
+## Verdict (rev 4)
+
+**Fable delivered R2, R9 plumbing, and R3.** He paused on **live validation** (3 h timeout), not R4. Cursor can safely extend **docs and e2e**; push Fable’s commits when reviewed. See [TODO.md](./TODO.md) and [docs/PROVIDERS-AND-MODELS.md](./docs/PROVIDERS-AND-MODELS.md).
 
 | Doc | Path |
 |-----|------|
@@ -202,6 +223,4 @@ R3 Screening Room, R4 arXiv grounding, R5 semantic match, R6 storyboard editor o
 
 ---
 
-## Verdict (rev 3)
-
-**ittybitty is in good shape for 0.2.0.** The repo’s enemy is no longer uncommitted sprawl — it’s **finishing R2**, **lean demo assets**, and **publish automation**. Read [TODO.md](./TODO.md) for the ordered backlog.
+## MCD (fleet mirror)

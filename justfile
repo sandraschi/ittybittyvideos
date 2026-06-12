@@ -69,3 +69,7 @@ build-native-debug:
     Set-Location "{{justfile_directory()}}\native"
     $env:Path = "$env:USERPROFILE\.cargo\bin;$env:Path"
     npx @tauri-apps/cli build --debug
+
+# Sync with feature extras (plain 'uv sync' silently drops align/beats - use this instead)
+sync:
+    uv sync --extra align --extra beats --extra dev

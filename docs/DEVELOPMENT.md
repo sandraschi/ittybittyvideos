@@ -29,8 +29,14 @@ Optional extras:
 | Extra | Purpose |
 |-------|---------|
 | `localgen` | Torch + diffusers for LocalGen sidecar |
-| `align` | faster-whisper for word-level subtitles |
-| `tauri` | Desktop packaging deps |
+| `align` | faster-whisper for word-level subtitles (R1) |
+| `beats` | librosa for beat snap + ducking (R2) |
+| `google` | Direct Google Veo/Omni clients |
+| `dev` | pytest, ruff, pyright |
+
+Browser e2e: see [docs/E2E.md](./E2E.md) (`webapp/` Playwright smoke tests).
+
+Provider links: [docs/EXTERNAL-REFERENCES.md](./EXTERNAL-REFERENCES.md).
 
 ---
 

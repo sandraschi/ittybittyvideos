@@ -211,7 +211,9 @@ async def _merge_audio(audio_paths: list[Path], output: Path) -> Path:
     list_file = Path(tempfile.mktemp(suffix=".txt"))
     with open(list_file, "w") as f:
         for p in audio_paths:
-            f.write(f"file '{p}'\n")
+            # concat demuxer resolves relative paths against the LIST FILE's dir, not CWD
+            abs_path = str(Path(p).resolve()).replace("\\", "/").replace("'", "'\\''")
+            f.write(f"file '{abs_path}'\n")
 
     output.parent.mkdir(parents=True, exist_ok=True)
     result = subprocess.run(

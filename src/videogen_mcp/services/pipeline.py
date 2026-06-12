@@ -6,7 +6,6 @@ from pathlib import Path
 from loguru import logger
 
 from videogen_mcp.config import get_settings
-from videogen_mcp.models.visual_look import apply_visual_look_to_query
 from videogen_mcp.models.schema import (
     GenerateRequest,
     JobInfo,
@@ -14,6 +13,7 @@ from videogen_mcp.models.schema import (
     ScriptSegment,
     VideoScript,
 )
+from videogen_mcp.models.visual_look import apply_visual_look_to_query
 from videogen_mcp.providers import get_stock, get_tts
 from videogen_mcp.providers.llm_resolve import resolve_llm_for_topic
 from videogen_mcp.services import job_store
