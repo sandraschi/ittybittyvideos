@@ -458,7 +458,7 @@ export async function exportLogsJson(params: LogQueryParams = {}): Promise<void>
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
   a.href = url;
-  a.download = "roughcutvideos-logs.json";
+  a.download = "ittybitty-logs.json";
   a.click();
   URL.revokeObjectURL(url);
 }

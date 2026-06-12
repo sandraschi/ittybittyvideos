@@ -13,7 +13,7 @@ $FrontendPort = 11055
 
 . (Join-Path $ProjectRoot "scripts\ensure_ffmpeg_path.ps1")
 
-Write-Host "=== roughcutvideos webapp ===" -ForegroundColor Cyan
+Write-Host "=== ittybitty webapp ===" -ForegroundColor Cyan
 
 foreach ($port in @($BackendPort, $FrontendPort)) {
     Get-NetTCPConnection -LocalPort $port -ErrorAction SilentlyContinue | ForEach-Object {

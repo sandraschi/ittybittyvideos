@@ -258,9 +258,9 @@ async def root():
 
     return HTMLResponse(
         """<!DOCTYPE html>
-<html lang="en"><head><meta charset="utf-8"><title>roughcutvideos</title></head>
+<html lang="en"><head><meta charset="utf-8"><title>ittybitty</title></head>
 <body style="font-family:system-ui;max-width:42rem;margin:3rem auto;padding:0 1rem;color:#111">
-<h1>roughcutvideos</h1>
+<h1>ittybitty</h1>
 <p>API and MCP are running on this port (<strong>11054</strong>).</p>
 <ul>
 <li><strong>Dev dashboard</strong> — <a href="http://127.0.0.1:11055/">http://127.0.0.1:11055/</a>
@@ -437,7 +437,7 @@ async def api_status():
         "status": "ok",
         "version": __version__,
         "service": "videogen-mcp",
-        "product": "roughcutvideos",
+        "product": "ittybitty",
         "backend_port": settings.videogen_port,
         "frontend_port": 11055,
         "ffmpeg": shutil.which("ffmpeg") is not None,

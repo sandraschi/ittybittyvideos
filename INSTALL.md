@@ -1,4 +1,4 @@
-# Installing roughcutvideos
+# Installing ittybitty
 
 Topic-or-script → rendered MP4 with optional MCP and a built-in dashboard. Repo path: `videogen-mcp`.
 
@@ -27,9 +27,9 @@ After winget installs, **close and reopen PowerShell** so PATH updates apply.
 
 ### NSIS installer (recommended)
 
-Download **`roughcutvideos-0.2.0-x64-setup.exe`** from [Releases](https://github.com/sandraschi/roughcut/releases) and run it. Single-file NSIS, current-user install, bundles the dashboard + Python backend sidecar.
+Download **`ittybitty-0.2.0-x64-setup.exe`** from [Releases](https://github.com/sandraschi/ittybitty/releases) and run it. Single-file NSIS, current-user install, bundles the dashboard + Python backend sidecar.
 
-Build locally: `just build-native` → `dist/roughcutvideos-{version}-x64-setup.exe`  
+Build locally: `just build-native` → `dist/ittybitty-{version}-x64-setup.exe`  
 Upload release: `just publish-release` or `scripts/publish-release-local.ps1 -SkipBuild`
 
 ### From source (dev stack)
@@ -37,7 +37,7 @@ Upload release: `just publish-release` or `scripts/publish-release-local.ps1 -Sk
 No Claude required. Dev dashboard on **11055** (API **11054**).
 
 ```powershell
-git clone https://github.com/sandraschi/roughcut.git videogen-mcp
+git clone https://github.com/sandraschi/ittybitty.git videogen-mcp
 cd videogen-mcp
 pip install -e .
 .\start.bat
@@ -55,7 +55,7 @@ Single-port UI on **11054** only after `just build-web` (Tauri / release builds)
 
 When a `.mcpb` release is published:
 
-1. Download `{roughcutvideos}-*.mcpb` from [Releases](https://github.com/sandraschi/roughcut/releases)
+1. Download `{ittybitty}-*.mcpb` from [Releases](https://github.com/sandraschi/ittybitty/releases)
 2. Drag onto Claude Desktop and accept the install prompt
 3. Set `PEXELS_API_KEY` and LLM keys in the MCPB env panel
 4. Restart Claude Desktop
@@ -66,7 +66,7 @@ When a `.mcpb` release is published:
 
 ## Option C — Manual Claude / Cursor MCP (HTTP)
 
-roughcutvideos exposes MCP over **HTTP** on the same port as the REST API. Start the server first:
+ittybitty exposes MCP over **HTTP** on the same port as the REST API. Start the server first:
 
 ```powershell
 cd D:\path\to\videogen-mcp
@@ -79,7 +79,7 @@ Add to your MCP config (Cursor `mcp.json` or equivalent):
 ```json
 {
   "mcpServers": {
-    "roughcutvideos": {
+    "ittybitty": {
       "url": "http://127.0.0.1:11054/mcp"
     }
   }
@@ -93,7 +93,7 @@ Use env vars or `.env` in the repo root for API keys. See [docs/CONFIGURATION.md
 ## Option D — Developer mode
 
 ```powershell
-git clone https://github.com/sandraschi/roughcut.git videogen-mcp
+git clone https://github.com/sandraschi/ittybitty.git videogen-mcp
 cd videogen-mcp
 pip install -e ".[dev,localgen]"
 py -m pytest

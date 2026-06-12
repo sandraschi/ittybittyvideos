@@ -1,7 +1,7 @@
 {
-  "productName": "roughcutvideos",
+  "productName": "ittybitty",
   "version": "0.2.0",
-  "identifier": "ai.fleet.roughcutvideos",
+  "identifier": "ai.fleet.ittybitty",
   "build": {
     "frontendDist": "../webapp/dist",
     "devUrl": "http://localhost:11055",
@@ -11,7 +11,7 @@
     "windows": [
       {
         "label": "main",
-        "title": "roughcutvideos",
+        "title": "ittybitty",
         "width": 1100,
         "height": 750,
         "minWidth": 700,
@@ -27,7 +27,7 @@
     "active": true,
     "targets": ["nsis"],
     "icon": ["icons/icon.ico", "icons/icon.png"],
-    "resources": ["resources/roughcut-backend.exe"],
+    "resources": ["resources/ittybitty-backend.exe"],
     "windows": {
       "webviewInstallMode": {
         "type": "skip"

@@ -1,4 +1,4 @@
-# Development — roughcutvideos
+# Development — ittybitty
 
 ---
 
@@ -105,7 +105,7 @@ Workflow: [`.github/workflows/ci.yml`](../.github/workflows/ci.yml) — **one jo
 3. `uv run pytest -q`
 4. `npm ci` + `npm run build` in `webapp/`
 
-**Private repo note:** `sandraschi/roughcut` is private. Per [mcp-central-docs/standards/GITHUB_ACTIONS_NO_PRIVATE_CI.md](../../mcp-central-docs/standards/GITHUB_ACTIONS_NO_PRIVATE_CI.md), GitHub Actions are **disabled** on private fleet repos to avoid billing. The workflow file is kept in git so CI runs automatically if the repo is made **public** or Actions are explicitly re-enabled.
+**Private repo note:** `sandraschi/ittybitty` is private. Per [mcp-central-docs/standards/GITHUB_ACTIONS_NO_PRIVATE_CI.md](../../mcp-central-docs/standards/GITHUB_ACTIONS_NO_PRIVATE_CI.md), GitHub Actions are **disabled** on private fleet repos to avoid billing. The workflow file is kept in git so CI runs automatically if the repo is made **public** or Actions are explicitly re-enabled.
 
 Local equivalent (run before push):
 
@@ -155,7 +155,7 @@ Private repos: GitHub Actions disabled by fleet policy — see [Continuous integ
 
 | Service | Port |
 |---------|------|
-| roughcutvideos backend | 11054 |
+| ittybitty backend | 11054 |
 | Vite dev | 11055 |
 | LocalGen sidecar | 8188 |
 

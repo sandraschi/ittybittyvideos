@@ -2496,7 +2496,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "roughcut-native"
+name = "ittybitty-native"
 version = "0.2.0"
 dependencies = [
  "serde",

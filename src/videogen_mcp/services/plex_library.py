@@ -1,4 +1,4 @@
-"""Plex personal-library search + stream URLs for roughcut B-roll."""
+"""Plex personal-library search + stream URLs for ittybitty B-roll."""
 
 from __future__ import annotations
 

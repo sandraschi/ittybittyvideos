@@ -1,4 +1,4 @@
-# Claude project context — roughcutvideos
+# Claude project context — ittybitty
 
 This file mirrors [AGENTS.md](AGENTS.md) for Claude Code / Desktop sessions.
 

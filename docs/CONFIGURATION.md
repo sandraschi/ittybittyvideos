@@ -1,4 +1,4 @@
-# Configuration — roughcutvideos
+# Configuration — ittybitty
 
 Settings persist in **`.env`** at the repo root. The webapp **Settings** page reads and writes the same file.
 
@@ -126,7 +126,7 @@ HTTP MCP (server must be running):
 ```json
 {
   "mcpServers": {
-    "roughcutvideos": {
+    "ittybitty": {
       "url": "http://127.0.0.1:11054/mcp"
     }
   }

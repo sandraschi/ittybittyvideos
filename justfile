@@ -55,7 +55,7 @@ test:
 # Full check (lint + typecheck + test)
 check: lint typecheck test
 
-# Build Tauri NSIS installer → dist/roughcutvideos-{version}-x64-setup.exe
+# Build Tauri NSIS installer → dist/ittybitty-{version}-x64-setup.exe
 build-native:
     pwsh -NoLogo -File "{{justfile_directory()}}\native\build.ps1"
 

@@ -36,7 +36,7 @@ def test_status_endpoint(client):
     resp = client.get("/api/v1/status")
     assert resp.status_code == 200
     data = resp.json()
-    assert data["product"] == "roughcutvideos"
+    assert data["product"] == "ittybitty"
     assert "ffmpeg" in data
 
 

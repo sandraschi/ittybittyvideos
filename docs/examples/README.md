@@ -1,13 +1,13 @@
 # Example renders
 
-Shipped samples produced by roughcutvideos on this repo (not stock placeholders).
+Shipped samples produced by **ittybitty** (not placeholders).
 
 | File | Description |
 |------|-------------|
-| [cats-facts-short.mp4](./cats-facts-short.mp4) | ~23 s vertical short; custom script, Pexels B-roll, Edge TTS |
-| [cats-facts-short-poster.jpg](./cats-facts-short-poster.jpg) | Poster frame for README / docs |
+| *(coming soon)* `gsd-puppy-short.mp4` | Vertical short from home-library or Pexels B-roll |
+| `cats-facts-short.mp4` | Legacy smoke-test sample (~23 s); may be removed from git to keep the repo lean |
 
-Reproduce the cats demo:
+Reproduce a test render:
 
 ```powershell
 pip install -e .
@@ -15,4 +15,4 @@ pip install -e .
 py scripts/smoke_render.py
 ```
 
-The smoke script uses the same narration as the Generate page sample script (`scripts/smoke_render.py`).
+The smoke script uses the same narration as the Generate page sample (`scripts/smoke_render.py`).

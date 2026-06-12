@@ -1,5 +1,5 @@
 @echo off
-title roughcutvideos webapp
+title ittybitty webapp
 setlocal
 set "ROOT=%~dp0"
 set "WEBAPP=%ROOT%webapp\start.bat"

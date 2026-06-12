@@ -88,7 +88,7 @@ if (-not $SkipInstall) {
 }
 
 if ($BackendOnly -or $Headless) {
-    Write-Step "Starting roughcutvideos backend on http://127.0.0.1:$BackendPort"
+    Write-Step "Starting ittybitty backend on http://127.0.0.1:$BackendPort"
     Write-Host "    Dev UI:  http://127.0.0.1:11055/  (run start.bat without -BackendOnly)" -ForegroundColor White
     Write-Host "    API docs: http://127.0.0.1:$BackendPort/docs" -ForegroundColor White
     Write-Host ""

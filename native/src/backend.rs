@@ -11,7 +11,7 @@ use tauri::{AppHandle, Emitter, Manager};
 
 pub struct BackendProcess(pub Mutex<Option<Child>>);
 
-const BACKEND_NAME: &str = "roughcut-backend.exe";
+const BACKEND_NAME: &str = "ittybitty-backend.exe";
 const BACKEND_PORT: u16 = 11054;
 
 fn dev_backend_path() -> Option<PathBuf> {
@@ -20,7 +20,7 @@ fn dev_backend_path() -> Option<PathBuf> {
     }
     let path = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
         .join("binaries")
-        .join("roughcut-backend-x86_64-pc-windows-msvc.exe");
+        .join("ittybitty-backend-x86_64-pc-windows-msvc.exe");
     path.exists().then_some(path)
 }
 
@@ -48,7 +48,7 @@ fn resolve_bundled_backend(app: &AppHandle) -> Result<PathBuf, String> {
 
     if let Ok(path) = app
         .path()
-        .resolve("resources/roughcut-backend.exe", BaseDirectory::Resource)
+        .resolve("resources/ittybitty-backend.exe", BaseDirectory::Resource)
     {
         tried.push(path.display().to_string());
         if path.exists() {

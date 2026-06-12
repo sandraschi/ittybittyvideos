@@ -1,15 +1,15 @@
-# Agent notes — roughcutvideos (`videogen-mcp`)
+# Agent notes — ittybitty (`videogen-mcp`)
 
 ## Identity
 
 | Field | Value |
 |-------|--------|
-| Product | **roughcutvideos** |
+| Product | **ittybitty** |
 | Folder | `videogen-mcp` |
 | Python package | `videogen_mcp` |
 | Backend port | **11054** (Vite dev UI **11055**) |
 | LocalGen sidecar | **8188** |
-| GitHub | `sandraschi/roughcut` (rename to `roughcutvideos` optional) |
+| GitHub | `sandraschi/ittybitty` |
 
 ## Before editing
 
@@ -40,11 +40,11 @@
 ## Conventions
 
 - Minimal diffs; match existing FastMCP 3.2 + FastAPI patterns.
-- User-facing strings use **roughcutvideos**; internal crate/exe may still say `roughcut`.
+- User-facing strings and native binaries use **ittybitty**; Python package remains `videogen_mcp`.
 - No GitHub Actions on private repos (fleet policy).
 - PowerShell on Windows — no `&&` in scripts shown to the user.
 
 ## Docs map
 
 - User: [README.md](README.md), [INSTALL.md](INSTALL.md), [CHANGELOG.md](CHANGELOG.md), `docs/*.md`, in-app `/help` and `/logs`
-- Fleet: `mcp-central-docs/projects/roughcutvideos/`
+- Fleet: `mcp-central-docs/projects/ittybitty/`

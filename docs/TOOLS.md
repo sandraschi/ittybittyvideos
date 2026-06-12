@@ -1,4 +1,4 @@
-# MCP tools & REST API — roughcutvideos
+# MCP tools & REST API — ittybitty
 
 Base URL (local): **http://127.0.0.1:11054**
 

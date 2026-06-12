@@ -42,9 +42,9 @@ function TabContent({ tab }: { tab: HelpTab }) {
   if (tab === "overview") {
     return (
       <div className="space-y-4">
-        <Panel title="What is roughcutvideos?">
+        <Panel title="What is ittybitty?">
           <p>
-            <strong className="text-zinc-200">roughcutvideos</strong> turns a topic or custom
+            <strong className="text-zinc-200">ittybitty</strong> turns a topic or custom
             narration script into a finished MP4. It is the fleet-grade successor to one-shot
             generators like MoneyPrinterTurbo: tested pipelines, a SQLite <strong>depot</strong>,
             provider plugins, and MCP tools for agents.
@@ -384,13 +384,13 @@ function TabContent({ tab }: { tab: HelpTab }) {
         <Panel title="Manual publish (current)">
           <p>
             Fully automated TikTok/YouTube upload needs OAuth and platform app review. Until then,
-            roughcutvideos optimizes for <strong className="text-zinc-300">minimum fuss</strong> manual
+            ittybitty optimizes for <strong className="text-zinc-300">minimum fuss</strong> manual
             posting:
           </p>
           <ol className="list-decimal list-inside space-y-1 mt-2">
             <li>Generate vertical <Code>9:16</Code> for Shorts / Reels / TikTok</li>
             <li>Download MP4 from Depot or use Reveal in Explorer (Windows)</li>
-            <li>Copy suggested caption and <Code>#roughcutvideos</Code> hashtags from Publish</li>
+            <li>Copy suggested caption and <Code>#ittybitty</Code> hashtags from Publish</li>
             <li>Open the platform upload URL in a new browser tab</li>
           </ol>
         </Panel>
@@ -422,7 +422,7 @@ function TabContent({ tab }: { tab: HelpTab }) {
           <pre className="mt-2 rounded-md bg-zinc-950 border border-zinc-700 p-3 text-xs text-zinc-300 overflow-x-auto">
             {`{
   "mcpServers": {
-    "roughcutvideos": {
+    "ittybitty": {
       "url": "http://127.0.0.1:11054/mcp"
     }
   }
@@ -469,7 +469,7 @@ function TabContent({ tab }: { tab: HelpTab }) {
       <Panel title="More help">
         <p>
           Repo <Code>docs/TROUBLESHOOTING.md</Code>, <Code>INSTALL.md</Code>, and fleet docs at{" "}
-          <Code>mcp-central-docs/projects/roughcutvideos/</Code>.
+          <Code>mcp-central-docs/projects/ittybitty/</Code>.
         </p>
       </Panel>
     </div>
@@ -484,7 +484,7 @@ export default function Help() {
       <div>
         <h1 className="text-2xl font-bold text-zinc-100">Help</h1>
         <p className="text-zinc-500 mt-1">
-          How roughcutvideos works — pipeline, providers, depot, and publish.
+          How ittybitty works — pipeline, providers, depot, and publish.
         </p>
       </div>
 

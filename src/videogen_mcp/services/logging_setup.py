@@ -28,7 +28,7 @@ def install_activity_logging() -> None:
         return
     logger.add(_loguru_sink, level="DEBUG", format="{message}")
     _sink_installed = True
-    log_activity("system", "roughcutvideos activity log ready", level="INFO")
+    log_activity("system", "ittybitty activity log ready", level="INFO")
 
 
 def log_api(kind: str, detail: str, *, level: str = "INFO", **meta) -> None:

@@ -30,9 +30,9 @@ if (-not $SkipTauri -and -not $SkipBuild) {
     Write-Host "=== Skipping Tauri build (-SkipBuild); using existing dist/ installer ===" -ForegroundColor Gray
 }
 
-$installer = Get-Item "dist\roughcutvideos-$Version-x64-setup.exe" -ErrorAction SilentlyContinue
+$installer = Get-Item "dist\ittybitty-$Version-x64-setup.exe" -ErrorAction SilentlyContinue
 if (-not $installer -and -not $SkipTauri) {
-    throw "Expected dist\roughcutvideos-$Version-x64-setup.exe after Tauri build"
+    throw "Expected dist\ittybitty-$Version-x64-setup.exe after Tauri build"
 }
 
 $uploads = @()
@@ -47,7 +47,7 @@ if (-not $uploads) { throw "No release files to upload" }
 $releaseExists = gh release view $Tag 2>$null
 if ($LASTEXITCODE -ne 0) {
     Write-Host "=== Creating release $Tag ===" -ForegroundColor Cyan
-    gh release create $Tag --title "roughcutvideos $Tag" --notes "Windows NSIS installer (single-file setup.exe)."
+    gh release create $Tag --title "ittybitty $Tag" --notes "Windows NSIS installer (single-file setup.exe)."
 }
 
 Write-Host "=== Upload to $Tag ===" -ForegroundColor Cyan
@@ -56,4 +56,4 @@ foreach ($f in $uploads) {
     gh release upload $Tag $f.FullName --clobber
 }
 
-Write-Host "Done: https://github.com/sandraschi/roughcut/releases/tag/$Tag" -ForegroundColor Green
+Write-Host "Done: https://github.com/sandraschi/ittybitty/releases/tag/$Tag" -ForegroundColor Green

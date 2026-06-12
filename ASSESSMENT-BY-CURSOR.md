@@ -1,10 +1,10 @@
-# roughcutvideos / videogen-mcp — Assessment by Cursor
+# ittybitty / videogen-mcp — Assessment by Cursor
 
 **Date:** 2026-06-12 (rev 2 — post-Fable timeout)  
 **Assessed by:** Cursor (Composer)  
 **Audience:** Fable 5 (resume after 5h timeout), DeepSeek v4, any continuing agent  
 **Repo path:** `D:\Dev\repos\videogen-mcp`  
-**GitHub remote:** `https://github.com/sandraschi/roughcut.git` (private; product rebrand → **roughcutvideos**, repo rename optional)  
+**GitHub remote:** `https://github.com/sandraschi/ittybitty.git` (private; product rebrand → **ittybitty**, repo rename optional)  
 **Version assessed:** 0.1.0  
 **HEAD commit:** `9ed0a75` — `feat(R1): universal word-level subtitles via faster-whisper forced alignment + karaoke ASS captions`  
 **Working tree:** **dirty** — webapp, publish API, R2 partial, doc drift (see § Uncommitted work)  
@@ -42,7 +42,7 @@ Fable likely died mid-**SPEC R2** (beat snap + music ducking):
 
 ## Executive summary
 
-**roughcutvideos** graduated from “afternoon scaffold” to **credible 0.1.0 product skeleton**:
+**ittybitty** graduated from “afternoon scaffold” to **credible 0.1.0 product skeleton**:
 
 - **R1 shipped** (committed): faster-whisper alignment, karaoke ASS, CosyVoice timing fix path  
 - **SOTA webapp** (uncommitted): React/Vite, 10 pages, Publish handoff for TikTok/Shorts/Reels  
@@ -60,11 +60,11 @@ Still **not production-shippable**: in-memory jobs, no FFmpeg E2E test, no full 
 
 | Layer | Name |
 |-------|------|
-| Product | **roughcutvideos** |
-| GitHub | `roughcut` (folder `videogen-mcp`; rename TBD) |
+| Product | **ittybitty** |
+| GitHub | `ittybitty` (folder `videogen-mcp`) |
 | Package / MCP | `videogen-mcp` / `videogen_*` |
 | Env | `VIDEOGEN_*` |
-| Tauri | `roughcut-native` |
+| Tauri | `ittybitty-native` |
 
 ---
 
@@ -85,7 +85,7 @@ Verified 2026-06-12 rev 2: `git log`, source read, `uv run pytest` → **64 pass
 | Mid-length pipeline | **Implemented** | planner + videographer + extended pipeline |
 | Job persistence | **Missing** | `_jobs` dict |
 | FFmpeg E2E | **Missing** | Unit tests on SRT/align only |
-| mcp-central-docs | **Done** | `projects/roughcutvideos/` + competition analysis |
+| mcp-central-docs | **Done** | `projects/ittybitty/` + competition analysis |
 | `*.bak` clutter | **Worse (20 files)** | Delete before next agent session |
 | pyright clean | **No** | 4 errors `tts_edge.py` TypedDict (known pre-R1) |
 
@@ -273,7 +273,7 @@ R3 Screening Room, R4 arXiv grounding, R5 semantic match, R6 storyboard editor �
 
 ## Verdict (rev 2)
 
-**roughcutvideos is going great** — R1 landed, webapp + publish path exist, Fable left R2 on the 10-yard line. The repo's enemy is now **uncommitted sprawl** and **agent backup files**, not architecture.
+**ittybitty is going great** — R1 landed, webapp + publish path exist, Fable left R2 on the 10-yard line. The repo's enemy is now **uncommitted sprawl** and **agent backup files**, not architecture.
 
 **Next 2 hours for a human or agent:** commit webapp → Fable finishes R2 → delete `.bak` → job SQLite → one demo video through Publish.
 
@@ -283,5 +283,5 @@ R3 Screening Room, R4 arXiv grounding, R5 semantic match, R6 storyboard editor �
 
 | Doc | Path |
 |-----|------|
-| Project page | `mcp-central-docs/projects/roughcutvideos/README.md` |
-| Competition | `mcp-central-docs/projects/roughcutvideos/COMPETITIVE_ANALYSIS.md` |
+| Project page | `mcp-central-docs/projects/ittybitty/README.md` |
+| Competition | `mcp-central-docs/projects/ittybitty/COMPETITIVE_ANALYSIS.md` |

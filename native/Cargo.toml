@@ -1,7 +1,7 @@
 [package]
-name = "roughcut-native"
+name = "ittybitty-native"
 version = "0.2.0"
-description = "roughcutvideos desktop app"
+description = "ittybitty desktop app"
 edition = "2021"
 
 [build-dependencies]

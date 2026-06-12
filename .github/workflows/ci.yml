@@ -1,5 +1,5 @@
 # Minimal Windows CI — single job (fleet hygiene: speech-mcp pattern).
-# Note: roughcut is currently private; GitHub Actions are disabled on private
+# Note: ittybitty is currently private; GitHub Actions are disabled on private
 # fleet repos by default (see mcp-central-docs/standards/GITHUB_ACTIONS_NO_PRIVATE_CI.md).
 # This workflow runs when the repo is public or Actions are explicitly re-enabled.
 

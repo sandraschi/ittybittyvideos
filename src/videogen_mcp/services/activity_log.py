@@ -173,7 +173,7 @@ def export_logs(
                     "meta": json.dumps(row.get("meta") or {}),
                 }
             )
-        return buffer.getvalue(), "text/csv", f"roughcutvideos-logs-{stamp}.csv"
+        return buffer.getvalue(), "text/csv", f"ittybitty-logs-{stamp}.csv"
 
     body = json.dumps({"exported_at": datetime.now(UTC).isoformat(), "entries": entries}, indent=2)
-    return body, "application/json", f"roughcutvideos-logs-{stamp}.json"
+    return body, "application/json", f"ittybitty-logs-{stamp}.json"

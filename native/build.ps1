@@ -6,10 +6,10 @@ $Native = $PSScriptRoot
 $Port = 11054
 $Version = (Select-String -Path "$Root\pyproject.toml" -Pattern '^version = "(.+)"' | ForEach-Object { $_.Matches.Groups[1].Value })
 
-Write-Host "==> roughcutvideos native build v$Version" -ForegroundColor Cyan
+Write-Host "==> ittybitty native build v$Version" -ForegroundColor Cyan
 Write-Host ""
 
-Get-Process -Name "roughcut-backend","roughcut-native" -ErrorAction SilentlyContinue | Stop-Process -Force -ErrorAction SilentlyContinue
+Get-Process -Name "ittybitty-backend","ittybitty-native" -ErrorAction SilentlyContinue | Stop-Process -Force -ErrorAction SilentlyContinue
 
 Write-Host "[1/5] Building webapp (VITE_API_BASE=http://127.0.0.1:$Port)..." -ForegroundColor Green
 Push-Location "$Root\webapp"
@@ -37,7 +37,7 @@ pwsh -NoLogo -File "$Native\build-sidecar.ps1"
 if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 
 Write-Host "[3/5] Smoke test frozen backend..." -ForegroundColor Green
-$backendExe = Join-Path $Root "dist\roughcut-backend.exe"
+$backendExe = Join-Path $Root "dist\ittybitty-backend.exe"
 $env:VIDEOGEN_PORT = "$Port"
 $env:VIDEOGEN_TAURI = "1"
 $p = Start-Process -FilePath $backendExe -PassThru -WindowStyle Hidden
@@ -54,7 +54,7 @@ try {
     Write-Host "    Smoke OK: /health + /api/v1/providers" -ForegroundColor Gray
 } finally {
     if ($p -and -not $p.HasExited) { Stop-Process -Id $p.Id -Force -ErrorAction SilentlyContinue }
-    Get-Process -Name "roughcut-backend" -ErrorAction SilentlyContinue | Stop-Process -Force -ErrorAction SilentlyContinue
+    Get-Process -Name "ittybitty-backend" -ErrorAction SilentlyContinue | Stop-Process -Force -ErrorAction SilentlyContinue
     Remove-Item Env:VIDEOGEN_TAURI -ErrorAction SilentlyContinue
 }
 
@@ -68,7 +68,7 @@ try {
     Pop-Location
 }
 
-Remove-Item -Force "$Native\target\release\roughcut-backend.exe" -ErrorAction SilentlyContinue
+Remove-Item -Force "$Native\target\release\ittybitty-backend.exe" -ErrorAction SilentlyContinue
 
 Write-Host "[5/5] Staging release asset..." -ForegroundColor Green
 $installers = @(Get-ChildItem "$Native\target\release\bundle\nsis\*-setup.exe" -ErrorAction SilentlyContinue)
@@ -84,7 +84,7 @@ if (-not $installer) {
 
 $releaseDir = Join-Path $Root "dist"
 New-Item -ItemType Directory -Force -Path $releaseDir | Out-Null
-$releaseName = "roughcutvideos-$Version-x64-setup.exe"
+$releaseName = "ittybitty-$Version-x64-setup.exe"
 $releasePath = Join-Path $releaseDir $releaseName
 Copy-Item -Force $installer.FullName $releasePath
 

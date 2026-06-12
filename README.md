@@ -1,167 +1,102 @@
-# roughcutvideos
+# ittybitty
 
-**Topic or script in → short or mid-length video out.** Fleet-grade AI video generation with a React dashboard, SQLite depot, and optional local Wan 2.2 footage on your GPU.
+**Type a topic → get a narrated video.** Short clips for TikTok/Shorts, or longer explainers with chapters. Works as a Windows app or from source.
 
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
-[![FastMCP](https://img.shields.io/badge/FastMCP-3.2%2B-green.svg)](https://github.com/jlowin/fastmcp)
-[![Python](https://img.shields.io/badge/python-3.10%2B-blue.svg)](https://www.python.org/)
-
-**Repo folder:** `videogen-mcp` · **Python package:** `videogen_mcp` · **Product name:** roughcutvideos
 
 ---
 
-## Features
-
-- **Short pipeline** — 30–60 s vertical or landscape clips from a topic or custom script
-- **Mid-length pipeline** — 3–15 min chaptered videos with storyboard planning and videographer rules
-- **Stock footage** — Pexels (default), Google **Veo** / **Gemini Omni** (cloud), or LocalGen Wan 2.2 (local GPU)
-- **TTS & subtitles** — Edge TTS (default), CosyVoice optional; burned-in or sidecar SRT
-- **Depot** — SQLite-backed library of every render under `./output/` with posters and metadata
-- **Publish helpers** — Platform upload URLs and `#roughcutvideos` copy for YouTube, TikTok, Instagram
-- **MCP + REST** — FastMCP tools at `/mcp` and OpenAPI at `/docs` on port **11054**
-
----
-
-## Example output
-
-Real render from this repo (smoke test, 2026-06-12) — not a mockup.
-
-![Cat facts — 9:16 short generated with roughcutvideos](docs/examples/cats-facts-short-poster.jpg)
-
-<video src="docs/examples/cats-facts-short.mp4" controls width="280">
-  <a href="docs/examples/cats-facts-short.mp4">Download cats-facts-short.mp4</a>
-</video>
+## Contents
 
 | | |
 |---|---|
-| **Duration** | ~22 s |
-| **Format** | 1080×1920 vertical (9:16) |
-| **Footage** | Pexels — 6 B-roll clips |
-| **Narration** | Edge TTS |
-| **Script** | Custom text (no LLM) — same copy as the Generate page sample |
-
-> *"Cats are fascinating companions. They sleep up to sixteen hours a day and still find time to judge you…"*
-
-[Download MP4](docs/examples/cats-facts-short.mp4) · [Reproduce this demo](docs/examples/README.md) (`py scripts/smoke_render.py`)
+| [Get started](#get-started) | Install and first render |
+| [What you need](#what-you-need) | Keys and optional extras |
+| [Footage sources](#footage-sources) | Where B-roll comes from |
+| [More help](#more-help) | Detailed docs (config, dev, MCP, fixes) |
 
 ---
 
-## Quick start
+## Get started
 
-### Desktop (recommended)
+### Windows app (easiest)
+
+1. Download **`ittybitty-0.2.0-x64-setup.exe`** from [Releases](https://github.com/sandraschi/ittybitty/releases/latest)
+2. Install → open **ittybitty** from Start or your desktop shortcut
+3. **Settings** → add a [Pexels](https://www.pexels.com/api/) key (free), then **Generate** with a topic or paste a script
+
+Install folder: `%LOCALAPPDATA%\ittybitty\`
+
+### From source (developers)
 
 ```powershell
-cd D:\Dev\repos\videogen-mcp
+git clone https://github.com/sandraschi/ittybitty.git videogen-mcp
+cd videogen-mcp
 .\start.bat
 ```
 
-Open **http://127.0.0.1:11055** (Vite dev UI; `start.bat` starts backend + frontend). API and MCP stay on **11054**.
+Open **http://127.0.0.1:11055** (dashboard). API and MCP on **11054**.
 
-For a single-port build (Tauri / release): `just build-web`, then open **http://127.0.0.1:11054/**.
+Full install paths: [INSTALL.md](INSTALL.md)
 
-### Local AI footage (optional)
+---
 
-On a machine with ~24 GB VRAM and CUDA:
+## What you need
+
+| For | You need |
+|-----|----------|
+| **Most workflows** | [FFmpeg](https://ffmpeg.org/) on PATH + free **Pexels** API key |
+| **Topic → script** | DeepSeek or OpenAI key, or paste your own script |
+| **Home videos as B-roll** | Jellyfin or Plex URL + token ([Settings](docs/CONFIGURATION.md)) |
+| **Local AI clips (GPU)** | CUDA ~24 GB + `.\start-localgen.bat` |
+
+Everything else is optional. The in-app **Help** page walks through each step.
+
+---
+
+## Footage sources
+
+Pick one in **Settings → Footage**:
+
+- **Pexels** — free stock (default, no GPU)
+- **Jellyfin / Plex** — cut clips from your own library (vacation, pets, …)
+- **Veo / Omni** — Google cloud (see [config](docs/CONFIGURATION.md))
+- **LocalGen** — Wan 2.2 on your GPU
+
+Finished videos land in `./output/` and show up in **Depot**.
+
+---
+
+## Sample output
+
+Demo reel coming soon (GSD puppy short). Until then, run a quick test:
 
 ```powershell
-.\start-localgen.bat
+py scripts/smoke_render.py
 ```
 
-In **Settings**, set stock provider to **localgen** (or use Pexels for zero-GPU workflow).
+Details: [docs/examples/README.md](docs/examples/README.md)
 
 ---
 
-## Installation
+## More help
 
-See **[INSTALL.md](INSTALL.md)** for MCPB drag-and-drop, manual Claude config, developer setup, and verification.
-
-| Path | Use when |
-|------|----------|
-| [INSTALL.md](INSTALL.md) | First-time install |
-| [docs/CONFIGURATION.md](docs/CONFIGURATION.md) | API keys, providers, `.env` |
-| [docs/TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md) | Common failures |
-
----
-
-## Configuration (summary)
-
-| Variable | Required | Default | Description |
-|----------|----------|---------|-------------|
-| `PEXELS_API_KEY` | For Pexels stock | — | Free key from [pexels.com/api](https://www.pexels.com/api/) |
-| `DEEPSEEK_API_KEY` | For DeepSeek script mode | — | Cloud LLM for topic → script |
-| `OPENAI_API_KEY` | For OpenAI script mode | — | Alternative cloud LLM |
-| `VIDEOGEN_PORT` | No | `11054` | Backend + built webapp |
-| `VIDEOGEN_OUTPUT_DIR` | No | `./output` | Renders + `depot.db` |
-| `LOCALGEN_URL` | No | `http://127.0.0.1:8188` | LocalGen sidecar |
-
-Most settings can be edited in the webapp **Settings** page (writes `.env`). Full list: [docs/CONFIGURATION.md](docs/CONFIGURATION.md).
-
----
-
-## Documentation
-
-| Document | Description |
-|----------|-------------|
-| [INSTALL.md](INSTALL.md) | Install options (MCPB, source, dev) |
-| [docs/CONFIGURATION.md](docs/CONFIGURATION.md) | Environment variables and providers |
-| [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md) | Dev server, tests, packaging |
+| Doc | When to read it |
+|-----|-----------------|
+| [INSTALL.md](INSTALL.md) | MCPB, Claude/Cursor MCP, verification |
+| [docs/CONFIGURATION.md](docs/CONFIGURATION.md) | All env vars and providers |
+| [docs/TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md) | Something broke |
 | [docs/TOOLS.md](docs/TOOLS.md) | MCP tools and REST API |
-| [docs/TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md) | Fixes for common issues |
+| [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md) | Tests, Tauri installer, CI |
 | [SPEC.md](SPEC.md) | Architecture and roadmap |
 | [CHANGELOG.md](CHANGELOG.md) | Version history |
-| [AGENTS.md](AGENTS.md) | Notes for coding agents |
-| In-app **Help** | Tabbed guide at `/help` in the dashboard |
 
-Fleet registry: [mcp-central-docs/projects/roughcutvideos](https://github.com/sandraschi/mcp-central-docs/tree/main/projects/roughcutvideos)
+**MCP:** after the server is running, point your client at `http://127.0.0.1:11054/mcp`.
 
----
-
-## MCP usage
-
-Server runs as HTTP (not stdio). Point an MCP client at `http://127.0.0.1:11054/mcp` after `start.bat`, or see [INSTALL.md](INSTALL.md) for Claude Desktop patterns.
-
-Example prompts:
-
-- *"Generate a 45-second video about Vienna coffee culture using Pexels footage."*
-- *"Plan a 5-minute mid-length video on sourdough baking — show the storyboard first."*
-- *"What videogen providers are available?"*
-
-Tool reference: [docs/TOOLS.md](docs/TOOLS.md).
+**Fleet docs:** [mcp-central-docs/projects/ittybitty](https://github.com/sandraschi/mcp-central-docs/tree/main/projects/ittybitty)
 
 ---
 
-## Development
+MIT · [sandraschi](https://github.com/sandraschi) · v0.2.0
 
-```powershell
-pip install -e ".[dev]"
-py -m pytest
-```
-
-Webapp dev (hot reload on **11055**, API proxy to **11054**):
-
-```powershell
-cd webapp
-npm install
-npm run dev
-```
-
-Details: [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md).
-
-**CI:** `.github/workflows/ci.yml` — one Windows job (`ruff`, `pytest`, webapp build). The **roughcut** GitHub repo is private; fleet policy disables Actions on private repos ([GITHUB_ACTIONS_NO_PRIVATE_CI.md](../mcp-central-docs/standards/GITHUB_ACTIONS_NO_PRIVATE_CI.md)). Run the same checks locally:
-
-```powershell
-uv sync --extra dev
-uv run ruff check src tests
-uv run pytest -q
-cd webapp; npm ci; npm run build
-```
-
----
-
-## License
-
-MIT — see [LICENSE](LICENSE).
-
-**Status:** MVP (core pipelines + depot + LocalGen sidecar)  
-**Maintained by:** sandraschi  
-**Last updated:** 2026-06-12
+*Repo folder `videogen-mcp`, Python package `videogen_mcp` — names stay for MCP compatibility.*

@@ -1,4 +1,4 @@
-# Troubleshooting — roughcutvideos
+# Troubleshooting — ittybitty
 
 ---
 
@@ -131,5 +131,5 @@ VIDEOGEN_LOG_LEVEL=DEBUG
 ## Still stuck?
 
 1. In-app **Help** → **Troubleshooting** tab  
-2. [GitHub Issues](https://github.com/sandraschi/roughcut/issues)  
-3. Fleet doc: `mcp-central-docs/projects/roughcutvideos/`
+2. [GitHub Issues](https://github.com/sandraschi/ittybitty/issues)  
+3. Fleet doc: `mcp-central-docs/projects/ittybitty/`

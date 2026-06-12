@@ -39,9 +39,7 @@ class JellyfinStockProvider(StockProvider):
     async def download(self, clip: StockClip, dest: Path) -> Path:
         spec = parse_library_clip_url(clip.url)
         source = await resolve_jellyfin_source(spec.item_id)
-        return await asyncio.to_thread(
-            ffmpeg_extract_clip, source, dest, spec.start_sec, spec.duration_sec
-        )
+        return await asyncio.to_thread(ffmpeg_extract_clip, source, dest, spec.start_sec, spec.duration_sec)
 
     async def health_check(self) -> bool:
         ok, _ = await probe_jellyfin()
@@ -60,9 +58,7 @@ class PlexStockProvider(StockProvider):
     async def download(self, clip: StockClip, dest: Path) -> Path:
         spec = parse_library_clip_url(clip.url)
         source = await resolve_plex_source(spec.item_id)
-        return await asyncio.to_thread(
-            ffmpeg_extract_clip, source, dest, spec.start_sec, spec.duration_sec
-        )
+        return await asyncio.to_thread(ffmpeg_extract_clip, source, dest, spec.start_sec, spec.duration_sec)
 
     async def health_check(self) -> bool:
         ok, _ = await probe_plex()

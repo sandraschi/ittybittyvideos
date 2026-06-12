@@ -28,7 +28,7 @@ async def lifespan(app: FastAPI):
     yield
 
 
-app = FastAPI(title="roughcutvideos LocalGen", version="0.2.0", lifespan=lifespan)
+app = FastAPI(title="ittybitty LocalGen", version="0.2.0", lifespan=lifespan)
 
 
 class GenerateRequest(BaseModel):

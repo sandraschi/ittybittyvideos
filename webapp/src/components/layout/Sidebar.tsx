@@ -39,7 +39,7 @@ export default function Sidebar() {
       <div className="flex items-center gap-2 px-2 py-3 mb-2">
         <Clapperboard className="w-5 h-5 text-blue-500" />
         <div>
-          <p className="text-sm font-bold tracking-tight">roughcutvideos</p>
+          <p className="text-sm font-bold tracking-tight">ittybitty</p>
           <p className="text-[10px] text-zinc-500">videogen-mcp</p>
         </div>
       </div>
