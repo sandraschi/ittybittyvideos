@@ -111,3 +111,10 @@ Narrative structure presets before LLM calls. See [SPEC.md § R10](./SPEC.md#pha
 - [x] videogen_review tool (tool_count 7) + 14 tests (145 total)
 - [ ] Live VLM validation: ollama pull a qwen-vl vision model, run one plan_render with VIDEOGEN_SCREENING_PASSES=1, check critique_pass_1.json
 - [ ] Webapp: surface critique report on job detail page
+
+### Validation complete 2026-06-13 02:30 (Fable)
+
+- [x] R1/R2/R3 live-validated end to end (run a9e798ffba86: e4b flagged hook scene, replaced clip, recomposed)
+- [ ] Swap VLM default to gemma4:12b once pull completes (e4b works, 12b better; 26b does NOT fit 4090)
+- [ ] Known issue: scenes with empty narration (voice_006 gap) cause audio/video drift after that scene - subtitle offsets assume contiguous audio
+- [ ] Transient ffmpeg 'Conversion failed' under system load (round 5) - stderr now dumped to *.ffmpeg-error.log on failure

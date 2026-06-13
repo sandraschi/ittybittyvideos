@@ -63,6 +63,16 @@ Rules:
 - Match narration language to the requested language"""
 
 
+def _safe_enum(enum_cls, value, default):
+    """LLMs permute enum vocabularies (e.g. a SceneType lands in shot_type);
+    coerce gently instead of failing the whole storyboard."""
+    try:
+        return enum_cls(value)
+    except (ValueError, TypeError):
+        logger.debug(f"planner: invalid {enum_cls.__name__} {value!r}, using {default.value}")
+        return default
+
+
 def _planner_endpoint(settings) -> tuple[str, str, str]:
     """Resolve (api_key, base_url, model) from the configured LLM provider.
 
@@ -127,13 +137,15 @@ async def plan_video(request: PlanRequest) -> Storyboard:
         for s_data in ch_data.get("scenes", []):
             scenes.append(
                 Scene(
-                    scene_type=SceneType(s_data.get("scene_type", "explainer")),
+                    scene_type=_safe_enum(SceneType, s_data.get("scene_type", "explainer"), SceneType.EXPLAINER),
                     title=s_data.get("title", ""),
                     narration=s_data.get("narration", ""),
                     search_terms=s_data.get("search_terms", []),
-                    shot_type=ShotType(s_data.get("shot_type", "medium")),
+                    shot_type=_safe_enum(ShotType, s_data.get("shot_type", "medium"), ShotType.MEDIUM),
                     duration_target=float(s_data.get("duration_target", 10.0)),
-                    transition_out=TransitionType(s_data.get("transition_out", "cut")),
+                    transition_out=_safe_enum(
+                        TransitionType, s_data.get("transition_out", "cut"), TransitionType.CUT
+                    ),
                     notes=s_data.get("notes", ""),
                 )
             )

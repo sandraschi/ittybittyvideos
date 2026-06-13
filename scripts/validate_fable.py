@@ -17,8 +17,9 @@ BGM = Path(r"d:\dev\repos\temp\validate_bgm_120bpm.mp3")
 
 os.environ["VIDEOGEN_SUB_STYLE"] = "karaoke"
 os.environ["VIDEOGEN_VLM_URL"] = "http://localhost:11434/v1"
-os.environ["VIDEOGEN_VLM_MODEL"] = "gemma4:26b"
+os.environ["VIDEOGEN_VLM_MODEL"] = "gemma4:e4b"  # 26b doesn't fit 24GB VRAM with vision tower
 os.environ["VIDEOGEN_SCREENING_PASSES"] = "1"
+os.environ["VIDEOGEN_WHISPER_DEVICE"] = "cpu"  # cublas64_12 absent; auto's cuda-fail-retry path can wedge in threads
 
 from videogen_mcp.config import get_settings  # noqa: E402
 
@@ -110,7 +111,8 @@ async def main() -> int:
     if not BGM.exists():
         print(f"BGM track missing: {BGM}", flush=True)
         return 1
-    ok1 = await phase1_short()
+    phase2_only = "--phase2" in sys.argv
+    ok1 = True if phase2_only else await phase1_short()
     ok2 = await phase2_screening()
     banner(f"RESULT: phase1={'OK' if ok1 else 'FAIL'} phase2={'OK' if ok2 else 'FAIL'}")
     return 0 if (ok1 and ok2) else 1

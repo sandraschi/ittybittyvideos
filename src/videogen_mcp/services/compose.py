@@ -98,8 +98,11 @@ def compose_video(
     logger.info(f"FFmpeg compose: {len(footage_paths)} clips -> {output_path.name}")
     result = subprocess.run(cmd, capture_output=True, text=True, timeout=300)
     if result.returncode != 0:
-        logger.error(f"FFmpeg failed: {result.stderr[-500:]}")
-        raise RuntimeError(f"FFmpeg compose failed: {result.stderr[-300:]}")
+        # full stderr to disk -- the interesting line is rarely in the last 500 chars
+        err_log = output_path.with_suffix(".ffmpeg-error.log")
+        err_log.write_text("CMD: " + " ".join(cmd) + "\n\n" + result.stderr, encoding="utf-8")
+        logger.error(f"FFmpeg failed (full stderr: {err_log}): {result.stderr[-500:]}")
+        raise RuntimeError(f"FFmpeg compose failed, see {err_log.name}: {result.stderr[-300:]}")
 
     _cleanup_temp(concat_file, sub_file)
     logger.info(f"Video composed: {output_path} ({output_path.stat().st_size / 1024 / 1024:.1f} MB)")
