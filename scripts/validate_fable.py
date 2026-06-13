@@ -1,5 +1,8 @@
 """One-shot live validation for R1 (alignment/karaoke), R2 (beats/duck), R3 (screening).
 
+Named after Fable 5 (Anthropic frontier review agent) — not a videogen provider.
+See mcp-central-docs/adn-notes/ADN-2026-06-12-001-ittybitty-fable5-live-validation.md.
+
 Run: uv run python scripts/validate_fable.py
 Writes findings to stdout; artifacts land in ./output as normal jobs.
 """

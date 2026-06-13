@@ -91,8 +91,14 @@ async def _run_planned_pipeline(
                 scene_words.append([_offset(w, audio_offset) for w in (words or [])])
                 audio_offset += tts_result.duration
             else:
+                # FIX: insert silence matching scene duration to prevent audio/video drift
+                silence_path = work_dir / f"silence_{i:03d}.mp3"
+                silence_dur = scene.duration_target
+                await asyncio.to_thread(_generate_silence, silence_path, silence_dur)
+                scene_audio.append(silence_path)
                 scene_subs.append([])
                 scene_words.append([])
+                audio_offset += silence_dur
 
         job.update(JobStatus.COMPOSING, 90.0)
         _save(job)
@@ -102,7 +108,7 @@ async def _run_planned_pipeline(
         all_words = [w for ws in scene_words for w in ws]
 
         output_path = settings.videogen_output_dir / f"{job.job_id}.mp4"
-        clip_dur = max(s.duration_target for s in all_scenes)
+        per_scene_durations = [s.duration_target for s in all_scenes]
 
         async def _compose() -> None:
             await asyncio.to_thread(
@@ -113,7 +119,8 @@ async def _run_planned_pipeline(
                 output_path=output_path,
                 aspect=aspect,
                 fps=settings.videogen_default_fps,
-                clip_duration=clip_dur,
+                clip_duration=max(per_scene_durations),
+                clip_durations=per_scene_durations,
                 word_subtitles=all_words or None,
                 sub_style=settings.videogen_sub_style,
             )
@@ -121,8 +128,9 @@ async def _run_planned_pipeline(
         await _compose()
 
         # R3: Screening Room -- editor watches the dailies, mismatched footage gets re-fetched
+        clip_dur_max = max(per_scene_durations)
         for pass_n in range(1, settings.videogen_screening_passes + 1):
-            report = await critique_video(output_path, all_scenes, clip_dur, work_dir, pass_number=pass_n)
+            report = await critique_video(output_path, all_scenes, clip_dur_max, work_dir, pass_number=pass_n)
             if report is None:
                 break
             (work_dir / f"critique_pass_{pass_n}.json").write_text(report.model_dump_json(indent=2), encoding="utf-8")
@@ -197,6 +205,28 @@ async def _fetch_scene_footage(
         return downloaded
 
     raise RuntimeError(f"No footage found for scene: {scene.title} ({query})")
+
+
+def _generate_silence(output_path: Path, duration: float) -> Path:
+    """Generate a silent MP3 file of the given duration using FFmpeg."""
+    import subprocess
+
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    result = subprocess.run(
+        [
+            "ffmpeg", "-y",
+            "-f", "lavfi", "-i", "anullsrc=r=44100:cl=stereo",
+            "-t", str(duration),
+            "-c:a", "libmp3lame", "-q:a", "9",
+            str(output_path),
+        ],
+        capture_output=True,
+        text=True,
+        timeout=30,
+    )
+    if result.returncode != 0:
+        raise RuntimeError(f"Silence generation failed: {result.stderr[-200:]}")
+    return output_path
 
 
 async def _merge_audio(audio_paths: list[Path], output: Path) -> Path:
