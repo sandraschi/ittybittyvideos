@@ -49,7 +49,10 @@ def compose_video(
         str(audio_path),
     ]
 
-    filter_parts = [f"[0:v]scale={w}:{h}:force_original_aspect_ratio=increase,crop={w}:{h},setsar=1,fps={fps}[scaled]"]
+    filter_parts = [
+        f"[0:v]scale={w}:{h}:force_original_aspect_ratio=increase,"
+        f"crop={w}:{h},format=yuv420p,setsar=1,fps={fps}[scaled]"
+    ]
 
     if sub_file and use_karaoke:
         # .ass carries its own embedded style block (incl. karaoke colours)

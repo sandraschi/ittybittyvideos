@@ -130,7 +130,12 @@ Finished videos land in `./output/` and appear in **Depot**.
 
 ## Sample output
 
-Demo reel coming soon (GSD puppy short). Quick test render:
+![GSD puppy discovers snow](docs/examples/gsd-puppy-poster.jpg)
+
+*"German Shepherd puppy discovers snow for the first time"* -- generated in ~55 seconds.
+[Download full MP4 (17 MB)](https://github.com/sandraschi/ittybittyvideos/releases/download/v0.2.0/gsd-puppy-snow-demo.mp4)
+
+Quick test render:
 
 ```powershell
 py scripts/smoke_render.py
