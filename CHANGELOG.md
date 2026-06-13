@@ -17,7 +17,8 @@ Versioning tracks the Python package in `pyproject.toml`.
 - **MCP catalog:** `videogen_mcp.mcp_registry.MCP_TOOL_CATALOG` (16 tools) — single source for `/api/v1/tools`, `/health`, `/api/v1/status`.
 - **MCP tools:** `videogen_help`, `videogen_intros`, `videogen_credits`, `videogen_visual_look`, `videogen_depot`, `videogen_publish_pack`; `visual_style` / `visual_material` / `visual_tone` on generate and plan tools.
 - **MCP tests:** `tests/test_mcp.py`; shared `client` fixture in `tests/conftest.py`.
-- **Validation harness:** `scripts/validate_fable.py` for live pipeline checks.
+- **Validation harness:** `scripts/validate_fable.py` for live pipeline checks (named for Fable 5 review agent; see MCD ADN-2026-06-12-002).
+- **Live validation (Fable 5, 2026-06-13):** R1/R2/R3 passed end-to-end on run `a9e798ffba86` (screening flagged hook, clip replaced, recomposed).
 
 ### Changed
 
@@ -31,6 +32,12 @@ Versioning tracks the Python package in `pyproject.toml`.
 - **Whisper align:** CUDA → CPU fallback when `cublas64_12` (or GPU libs) are missing.
 - **Beat snap (`librosa` 0.11 / NumPy 2.4):** tempo ndarray handling in `snap_cut_durations`.
 - **Planner JSON:** tolerant parse for DeepSeek trailing commas in storyboard responses.
+- **Compose diagnostics:** ffmpeg failures under load dump stderr to `*.ffmpeg-error.log`.
+
+### Known issues (live validation)
+
+- Empty-narration scenes (`voice_006` gap) can cause A/V drift after that scene (subtitle timing assumes contiguous audio).
+- Default screening VLM: `gemma4:e4b` validated; prefer `gemma4:12b` when pulled (26b does not fit 4090).
 
 ---
 
