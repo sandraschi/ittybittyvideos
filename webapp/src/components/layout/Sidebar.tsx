@@ -16,6 +16,7 @@ import {
   Wrench,
   Code2,
   Activity,
+  Package,
 } from "lucide-react";
 
 const links = [
@@ -29,6 +30,7 @@ const links = [
   { to: "/tools", label: "Tools", icon: Wrench },
   { to: "/chat", label: "Chat", icon: MessageSquare },
   { to: "/status", label: "Status", icon: Activity },
+  { to: "/addons", label: "Addons", icon: Package },
   { to: "/settings", label: "Settings", icon: Settings },
   { to: "/logs", label: "Logs", icon: ScrollText },
   { to: "/api-docs", label: "API Docs", icon: Code2 },

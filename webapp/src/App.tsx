@@ -1,5 +1,6 @@
 import { Routes, Route } from "react-router-dom";
 import AppLayout from "@/components/layout/AppLayout";
+import AddonsPage from "@/pages/addons";
 import ApiDocs from "@/pages/api-docs";
 import Chat from "@/pages/chat";
 import Dashboard from "@/pages/dashboard";
@@ -29,6 +30,7 @@ export default function App() {
         <Route path="/tools" element={<Tools />} />
         <Route path="/chat" element={<Chat />} />
         <Route path="/status" element={<StatusPage />} />
+        <Route path="/addons" element={<AddonsPage />} />
         <Route path="/settings" element={<SettingsPage />} />
         <Route path="/api-docs" element={<ApiDocs />} />
         <Route path="/logs" element={<Logs />} />

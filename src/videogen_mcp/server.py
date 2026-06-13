@@ -25,11 +25,13 @@ except ImportError:
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    from videogen_mcp.services.addons import activate_installed_addons
     from videogen_mcp.services.job_store import init_db, scan_output_directory
     from videogen_mcp.services.logging_setup import install_activity_logging, log_api
 
     install_activity_logging()
     init_db()
+    activate_installed_addons()
     imported = scan_output_directory()
     logger.info(f"videogen-mcp v{__version__} starting on port {get_settings().videogen_port}")
     log_api("system", f"videogen-mcp v{__version__} started on port {get_settings().videogen_port}")
@@ -897,6 +899,45 @@ async def api_reveal_job(job_id: str):
         "message": "Reveal is Windows-only; use download or open path manually.",
         "path": str(path.resolve()),
     }
+
+
+@rest.get("/api/v1/addons")
+async def api_list_addons():
+    from videogen_mcp.services.addons import get_total_size_mb, list_addons
+
+    addons = list_addons()
+    installed = sum(1 for a in addons if a["installed"])
+    return {
+        "success": True,
+        "addons": addons,
+        "installed_count": installed,
+        "total_count": len(addons),
+        "total_size_mb": get_total_size_mb(),
+    }
+
+
+@rest.post("/api/v1/addons/install-all")
+async def api_install_all_addons():
+    from videogen_mcp.services.addons import install_all
+
+    result = await install_all()
+    return result
+
+
+@rest.post("/api/v1/addons/{addon_id}/install")
+async def api_install_addon(addon_id: str):
+    from videogen_mcp.services.addons import install_addon
+
+    result = await install_addon(addon_id)
+    return result
+
+
+@rest.delete("/api/v1/addons/{addon_id}")
+async def api_uninstall_addon(addon_id: str):
+    from videogen_mcp.services.addons import uninstall_addon
+
+    result = await uninstall_addon(addon_id)
+    return result
 
 
 if _webapp_dir:
