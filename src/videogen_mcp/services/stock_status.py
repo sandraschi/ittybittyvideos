@@ -1,4 +1,4 @@
-"""Stock footage provider readiness (Pexels, LocalGen, Google, Jellyfin, Plex)."""
+"""Stock footage provider readiness (free APIs, LocalGen, Google, Jellyfin, Plex)."""
 
 from __future__ import annotations
 
@@ -7,10 +7,14 @@ from videogen_mcp.services.google_video import google_backend_status
 from videogen_mcp.services.jellyfin_library import jellyfin_configured, probe_jellyfin
 from videogen_mcp.services.plex_library import plex_configured, probe_plex
 
+_FREE_STOCK = frozenset({"pexels", "pixabay", "coverr"})
+
 
 async def stock_footage_status() -> dict:
     settings = get_settings()
     pexels_ready = bool(settings.pexels_api_key.strip())
+    pixabay_ready = bool(settings.pixabay_api_key.strip())
+    coverr_ready = bool(settings.coverr_api_key.strip())
     cogvideo_ready = False
     cogvideo_error = ""
     cogvideo_model = ""
@@ -45,6 +49,8 @@ async def stock_footage_status() -> dict:
     active = settings.videogen_stock_provider
     ready_for_renders = (
         (active == "pexels" and pexels_ready)
+        or (active == "pixabay" and pixabay_ready)
+        or (active == "coverr" and coverr_ready)
         or (active in ("localgen", "cogvideo") and cogvideo_ready)
         or (active == "veo" and veo_status["ready"])
         or (active == "omni" and omni_status["ready"])
@@ -52,11 +58,17 @@ async def stock_footage_status() -> dict:
         or (active == "plex" and plex_ok)
     )
 
-    hint = "Pexels API key required for stock footage."
-    if active in ("localgen", "cogvideo"):
+    hint = "Free stock: set Pexels, Pixabay, or Coverr API key (Settings)."
+    if active == "pexels":
+        hint = "Pexels API key required — free at pexels.com/api."
+    elif active == "pixabay":
+        hint = "Pixabay API key required — free at pixabay.com/api/docs."
+    elif active == "coverr":
+        hint = "Coverr API key required — request at coverr.co/developers."
+    elif active in ("localgen", "cogvideo"):
         hint = (
             "LocalGen sidecar required (Wan 2.2 default). Start start-localgen.bat on RTX 4090. "
-            "Hybrid Pexels+fallback ships later."
+            "Hybrid multi-provider fallback ships later."
         )
         if cogvideo_ready:
             tier = cogvideo_hint or cogvideo_model or "Wan 2.2"
@@ -81,6 +93,9 @@ async def stock_footage_status() -> dict:
         "active_provider": active,
         "ready_for_renders": ready_for_renders,
         "pexels_ready": pexels_ready,
+        "pixabay_ready": pixabay_ready,
+        "coverr_ready": coverr_ready,
+        "free_stock_providers": sorted(_FREE_STOCK),
         "cogvideo_url": settings.cogvideo_url,
         "localgen_url": localgen_base,
         "cogvideo_ready": cogvideo_ready,

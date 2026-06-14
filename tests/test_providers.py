@@ -25,6 +25,16 @@ def test_pexels_registered():
     assert "pexels" in providers["stock"]
 
 
+def test_pixabay_registered():
+    providers = list_providers()
+    assert "pixabay" in providers["stock"]
+
+
+def test_coverr_registered():
+    providers = list_providers()
+    assert "coverr" in providers["stock"]
+
+
 def test_localgen_registered():
     providers = list_providers()
     assert "localgen" in providers["stock"]

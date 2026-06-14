@@ -11,6 +11,7 @@ Versioning tracks the Python package in `pyproject.toml`.
 
 ### Added
 
+- **Free stock parity (MPT):** `pixabay` and `coverr` stock providers — same plugin pattern as Pexels; Settings keys `PIXABAY_API_KEY`, `COVERR_API_KEY`.
 - Alpha release path: README badge + warning, marketing site banner, [docs/ALPHA-RELEASE-CHECKLIST.md](docs/ALPHA-RELEASE-CHECKLIST.md), GitHub Pages static site in `docs/` (`index.html`, `.nojekyll`).
 - R10 planning: [docs/PROMPT-DIRECTOR.md](docs/PROMPT-DIRECTOR.md) (mermaid), webapp **Prompt library** (`/prompts`) with sample topics + localStorage CRUD.
 - **Webapp Director UX:** collapsed **Director (optional)** panel with 8 curated recipes; full trope/intro pack lists behind “Show all packs”; **Length** presets (~15–50 s) on the default Generate path (`director-recipes.ts`, `DirectorOptions.tsx`, `short-length.ts`).
@@ -22,6 +23,8 @@ Versioning tracks the Python package in `pyproject.toml`.
 
 ### Changed
 
+- **Docs/TODO sync:** refreshed tracker, provider docs, and MPT free-stock comparison (3 free APIs).
+- **NSIS rebuild (2026-06-14):** `dist/ittybitty-0.2.0-x64-setup.exe` (33.2 MB) — Pixabay/Coverr + Director UX + 16 MCP tools.
 - **Rebrand:** product name **ittybitty** (was roughcutvideos); native binaries `ittybitty-native.exe` / `ittybitty-backend.exe`; Tauri identifier `ai.fleet.ittybitty`; GitHub repo `sandraschi/ittybitty`.
 - **MCP docs:** [docs/TOOLS.md](docs/TOOLS.md) lists all 16 tools; README points agents to `videogen_help` first.
 - Intro/credits MCP samples accept `intro:` / `credits:` prefixes and optional `seed`.

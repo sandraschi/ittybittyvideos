@@ -295,6 +295,10 @@ export interface AppSettings {
   videogen_stock_provider: string;
   pexels_api_key_set: boolean;
   pexels_api_key_hint: string;
+  pixabay_api_key_set: boolean;
+  pixabay_api_key_hint: string;
+  coverr_api_key_set: boolean;
+  coverr_api_key_hint: string;
   cogvideo_url: string;
   cogvideo_ready: boolean;
   cogvideo_error: string;
@@ -337,6 +341,8 @@ export interface SettingsSavePayload {
   ollama_base_url?: string;
   ollama_model?: string;
   pexels_api_key?: string;
+  pixabay_api_key?: string;
+  coverr_api_key?: string;
   cogvideo_url?: string;
   google_api_key?: string;
   google_cloud_project?: string;
@@ -374,6 +380,8 @@ export async function refreshStockStatus(): Promise<{
     active_provider: string;
     ready_for_renders: boolean;
     pexels_ready: boolean;
+    pixabay_ready?: boolean;
+    coverr_ready?: boolean;
     cogvideo_url: string;
     cogvideo_ready: boolean;
     cogvideo_error: string;

@@ -10,7 +10,7 @@ Canonical reference for everything pluggable in `videogen_mcp.providers`. Settin
 | Kind | Registry keys | Default (`settings.py`) |
 |------|---------------|-------------------------|
 | LLM | `deepseek`, `openai`, `ollama`, `lmstudio`, `qwen` | `videogen_llm_provider=openai` |
-| Stock | `pexels`, `veo`, `omni`, `localgen`, `cogvideo`* , `jellyfin`, `plex` | `videogen_stock_provider=pexels` |
+| Stock | `pexels`, `pixabay`, `coverr`, `veo`, `omni`, `localgen`, `cogvideo`* , `jellyfin`, `plex` | `videogen_stock_provider=pexels` |
 | TTS | `edge-tts`, `cosyvoice` | `videogen_tts_provider=edge-tts` |
 | Talker | `sadtalker` | `videogen_talker_provider=` (empty = off) |
 
@@ -46,6 +46,8 @@ Each scene gets a search query (from LLM or storyboard). Provider downloads or g
 | Key | Module | Env vars | Links |
 |-----|--------|----------|-------|
 | `pexels` | `stock_pexels.py` | `PEXELS_API_KEY` | [API docs](https://www.pexels.com/api/documentation/) · [Get key](https://www.pexels.com/api/new/) |
+| `pixabay` | `stock_pixabay.py` | `PIXABAY_API_KEY` | [API docs](https://pixabay.com/api/docs/) · [Get key](https://pixabay.com/accounts/register/) |
+| `coverr` | `stock_coverr.py` | `COVERR_API_KEY` | [Developers](https://coverr.co/developers) · [API docs](https://api.coverr.co/docs) |
 | `veo` | `stock_google.py` | `GOOGLE_AI_MCP_URL` or GCP keys, `GOOGLE_VEO_MODEL` | [Gemini API video](https://ai.google.dev/gemini-api/docs/video) |
 | `omni` | `stock_google.py` | Same bridge or direct keys, `GOOGLE_OMNI_MODEL` | [Google AI](https://ai.google.dev/) |
 | `localgen` | `stock_localgen.py` | `LOCALGEN_URL`, `LOCALGEN_BACKEND` | [Wan 2.2](https://github.com/Wan-Video/Wan2.2) · [Diffusers](https://huggingface.co/docs/diffusers) |
@@ -103,7 +105,9 @@ Not separate providers — pipeline features controlled by env:
 
 ---
 
-## MCP tools (7)
+## MCP tools (16)
+
+See [TOOLS.md](./TOOLS.md) for the full catalog (`videogen_help` first).
 
 | Tool | Pipeline |
 |------|----------|
@@ -114,6 +118,7 @@ Not separate providers — pipeline features controlled by env:
 | `videogen_list_jobs` | Recent jobs |
 | `videogen_providers` | Registry listing |
 | `videogen_review` | R3 VLM critique on finished MP4 |
+| … | + structures, intros, credits, visual look, depot, publish pack, help |
 
 REST mirrors generation, depot, settings, publish, logs, and `/api/v1/tools`.
 

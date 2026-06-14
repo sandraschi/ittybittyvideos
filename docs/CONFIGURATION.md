@@ -40,6 +40,8 @@ Health probes on Settings reflect whether each provider is reachable and keyed.
 | Variable | Default | Description |
 |----------|---------|-------------|
 | `PEXELS_API_KEY` | — | Required for **pexels** provider |
+| `PIXABAY_API_KEY` | — | Required for **pixabay** provider |
+| `COVERR_API_KEY` | — | Required for **coverr** provider |
 | `VIDEOGEN_STOCK_PROVIDER` | `pexels` | `pexels`, `veo`, `omni`, `localgen`, or `cogvideo` |
 | `LOCALGEN_URL` | `http://127.0.0.1:8188` | LocalGen sidecar base URL |
 | `LOCALGEN_BACKEND` | `wan22-14b` | `wan22-14b`, `wan22-5b`, `cogvideo-2b` (legacy) |

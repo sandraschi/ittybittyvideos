@@ -40,7 +40,7 @@ Best if you just want to make videos.
 
 1. Download the latest **pre-release** installer from [Releases](https://github.com/sandraschi/ittybittyvideos/releases) (tag `v0.2.0-alpha.*` or newer)
 2. Run the installer → launch **ittybitty** from Start or your desktop shortcut
-3. In **Settings**, add a free [Pexels](https://www.pexels.com/api/) key → **Generate** with a topic or paste a script
+3. In **Settings**, add a free stock API key ([Pexels](https://www.pexels.com/api/), [Pixabay](https://pixabay.com/api/docs/), or [Coverr](https://coverr.co/developers)) → **Generate** with a topic or paste a script
 
 The installer bundles the **web dashboard** and **Python backend** — no separate Python or Node install.
 
@@ -86,7 +86,7 @@ Tool list and REST API: [docs/TOOLS.md](docs/TOOLS.md) (16 MCP tools; catalog at
 
 | For | You need |
 |-----|----------|
-| **Most workflows** | [FFmpeg](https://ffmpeg.org/) on PATH + free **Pexels** API key |
+| **Most workflows** | [FFmpeg](https://ffmpeg.org/) on PATH + free stock API key (**Pexels**, **Pixabay**, or **Coverr**) |
 | **Topic → script** | DeepSeek or OpenAI key, or paste your own script |
 | **Home videos as B-roll** | Jellyfin or Plex URL + token ([Settings](docs/CONFIGURATION.md)) |
 | **Local AI clips (GPU)** | CUDA ~24 GB + `.\start-localgen.bat` |
@@ -97,9 +97,11 @@ The in-app **Help** page walks through each step.
 
 ## Footage sources
 
-Pick one in **Settings → Footage**:
+Pick one in **Settings → Footage** (free tier = no GPU):
 
-- **Pexels** — free stock (default, no GPU)
+- **Pexels** — free stock (default)
+- **Pixabay** — free stock (MPT parity)
+- **Coverr** — free stock (MPT parity; attribution required per Coverr terms)
 - **Jellyfin / Plex** — cut clips from your library (vacation, pets, …)
 - **Veo / Omni** — Google cloud ([config](docs/CONFIGURATION.md))
 - **LocalGen** — Wan 2.2 on your GPU
@@ -116,7 +118,7 @@ Finished videos land in `./output/` and appear in **Depot**.
 |--|-------------------|-------------------|
 | **How you run it** | Web UI | **Windows app** + web dashboard + **HTTP MCP** |
 | **Length** | Mostly shorts (~60s) | Shorts + **3–15 min** chapters (planner + videographer rules) |
-| **Footage** | Stock APIs | Pexels + **Jellyfin/Plex** + **LocalGen (Wan 2.2)** + Veo/Omni |
+| **Footage** | Pexels, Pixabay, Coverr (free APIs) | Same three **+ Jellyfin/Plex + LocalGen + Veo/Omni** |
 | **Agents** | — | **`videogen_*` tools** for Cursor, Claude, fleet MCP clients |
 | **Library & jobs** | — | **SQLite depot**, job history, publish handoff |
 | **Edit intelligence** | Assembly / concat | **Hook, pacing, B-roll, transitions**; R1 karaoke subs; R2 beat snap + ducking; R3 screening (experimental) |

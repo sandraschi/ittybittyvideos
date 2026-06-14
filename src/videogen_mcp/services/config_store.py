@@ -25,6 +25,8 @@ ENV_KEYS_ORDER = [
     "OLLAMA_MODEL",
     "VIDEOGEN_STOCK_PROVIDER",
     "PEXELS_API_KEY",
+    "PIXABAY_API_KEY",
+    "COVERR_API_KEY",
     "COGVIDEO_URL",
     "LOCALGEN_URL",
     "GOOGLE_API_KEY",
@@ -54,6 +56,8 @@ SECRET_KEYS = frozenset(
         "OPENAI_API_KEY",
         "DEEPSEEK_API_KEY",
         "PEXELS_API_KEY",
+        "PIXABAY_API_KEY",
+        "COVERR_API_KEY",
         "LMSTUDIO_API_KEY",
         "GOOGLE_API_KEY",
         "JELLYFIN_API_KEY",
@@ -87,6 +91,10 @@ class SettingsPublic(BaseModel):
     videogen_stock_provider: str
     pexels_api_key_set: bool
     pexels_api_key_hint: str
+    pixabay_api_key_set: bool
+    pixabay_api_key_hint: str
+    coverr_api_key_set: bool
+    coverr_api_key_hint: str
     cogvideo_url: str
     cogvideo_ready: bool
     cogvideo_error: str
@@ -122,6 +130,8 @@ class SettingsUpdate(BaseModel):
     ollama_base_url: str | None = None
     ollama_model: str | None = None
     pexels_api_key: str | None = None
+    pixabay_api_key: str | None = None
+    coverr_api_key: str | None = None
     cogvideo_url: str | None = None
     google_api_key: str | None = None
     google_cloud_project: str | None = None
@@ -215,6 +225,8 @@ def settings_update_to_env(payload: SettingsUpdate) -> dict[str, str | None]:
         "ollama_base_url": "OLLAMA_BASE_URL",
         "ollama_model": "OLLAMA_MODEL",
         "pexels_api_key": "PEXELS_API_KEY",
+        "pixabay_api_key": "PIXABAY_API_KEY",
+        "coverr_api_key": "COVERR_API_KEY",
         "cogvideo_url": "COGVIDEO_URL",
         "google_api_key": "GOOGLE_API_KEY",
         "google_cloud_project": "GOOGLE_CLOUD_PROJECT",

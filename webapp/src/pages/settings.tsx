@@ -84,6 +84,8 @@ export default function SettingsPage() {
   });
   const [discoveries, setDiscoveries] = useState<LlmDiscovery[]>([]);
   const [pexelsKey, setPexelsKey] = useState("");
+  const [pixabayKey, setPixabayKey] = useState("");
+  const [coverrKey, setCoverrKey] = useState("");
   const [stockProvider, setStockProvider] = useState("pexels");
   const [cogvideoUrl, setCogvideoUrl] = useState("http://localhost:8188");
   const [googleApiKey, setGoogleApiKey] = useState("");
@@ -111,6 +113,8 @@ export default function SettingsPage() {
     setGoogleApiKey(data.settings.google_api_key_set ? SECRET_MASK : "");
     setEdgeVoice(data.settings.edge_tts_voice);
     setPexelsKey(data.settings.pexels_api_key_set ? SECRET_MASK : "");
+    setPixabayKey(data.settings.pixabay_api_key_set ? SECRET_MASK : "");
+    setCoverrKey(data.settings.coverr_api_key_set ? SECRET_MASK : "");
     setDiscoveries(data.models);
 
     const next: Record<ProviderId, ProviderForm> = {
@@ -166,6 +170,8 @@ export default function SettingsPage() {
       const s = res.stock;
       const parts: string[] = [];
       if (s.pexels_ready) parts.push("Pexels OK");
+      if (s.pixabay_ready) parts.push("Pixabay OK");
+      if (s.coverr_ready) parts.push("Coverr OK");
       if (s.cogvideo_ready) parts.push(`LocalGen @ ${s.cogvideo_url}`);
       if (s.veo_ready) parts.push("Veo ready");
       if (s.omni_ready) parts.push("Omni ready");
@@ -226,6 +232,12 @@ export default function SettingsPage() {
     }
     if (pexelsKey && pexelsKey !== SECRET_MASK) {
       payload.pexels_api_key = pexelsKey;
+    }
+    if (pixabayKey && pixabayKey !== SECRET_MASK) {
+      payload.pixabay_api_key = pixabayKey;
+    }
+    if (coverrKey && coverrKey !== SECRET_MASK) {
+      payload.coverr_api_key = coverrKey;
     }
     if (googleApiKey && googleApiKey !== SECRET_MASK) {
       payload.google_api_key = googleApiKey;
@@ -399,7 +411,9 @@ export default function SettingsPage() {
             value={stockProvider}
             onChange={(e) => setStockProvider(e.target.value)}
           >
-            <option value="pexels">Pexels (cloud stock)</option>
+            <option value="pexels">Pexels (free stock)</option>
+            <option value="pixabay">Pixabay (free stock)</option>
+            <option value="coverr">Coverr (free stock)</option>
             <option value="veo">Google Veo 3.x (cloud AI)</option>
             <option value="omni">Gemini Omni Flash (cloud AI)</option>
             <option value="localgen">LocalGen — Wan 2.2 (2026)</option>
@@ -432,6 +446,36 @@ export default function SettingsPage() {
               value={pexelsKey}
               onChange={setPexelsKey}
               placeholder={data?.settings.pexels_api_key_set ? SECRET_MASK : "Pexels key"}
+            />
+          </label>
+        )}
+
+        {stockProvider === "pixabay" && (
+          <label className="block text-sm">
+            <span className="text-zinc-500">
+              Pixabay API key{" "}
+              {data?.settings.pixabay_api_key_hint ? `(current ${data.settings.pixabay_api_key_hint})` : ""}
+            </span>
+            <SecretInput
+              inputClassName="w-full max-w-lg rounded-md bg-zinc-950 border border-zinc-700 px-3 py-2 pr-10 text-sm font-mono"
+              value={pixabayKey}
+              onChange={setPixabayKey}
+              placeholder={data?.settings.pixabay_api_key_set ? SECRET_MASK : "Pixabay key"}
+            />
+          </label>
+        )}
+
+        {stockProvider === "coverr" && (
+          <label className="block text-sm">
+            <span className="text-zinc-500">
+              Coverr API key{" "}
+              {data?.settings.coverr_api_key_hint ? `(current ${data.settings.coverr_api_key_hint})` : ""}
+            </span>
+            <SecretInput
+              inputClassName="w-full max-w-lg rounded-md bg-zinc-950 border border-zinc-700 px-3 py-2 pr-10 text-sm font-mono"
+              value={coverrKey}
+              onChange={setCoverrKey}
+              placeholder={data?.settings.coverr_api_key_set ? SECRET_MASK : "Coverr key"}
             />
           </label>
         )}

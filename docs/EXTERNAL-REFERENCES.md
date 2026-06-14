@@ -32,6 +32,8 @@ Curated links for every provider and dependency ittybitty integrates with. The w
 | Key | Sign up / homepage | API / docs | Notes |
 |-----|-------------------|------------|-------|
 | `pexels` | [pexels.com](https://www.pexels.com/) | [API documentation](https://www.pexels.com/api/documentation/) · [Get API key](https://www.pexels.com/api/new/) | Free; default provider |
+| `pixabay` | [pixabay.com](https://pixabay.com/) | [API docs](https://pixabay.com/api/docs/) | Free; MPT parity |
+| `coverr` | [coverr.co](https://coverr.co/) | [API docs](https://api.coverr.co/docs) · [Get key](https://coverr.co/developers) | Free; attribution required |
 | `veo` | [Google AI Studio](https://aistudio.google.com/) | [Veo in Gemini API](https://ai.google.dev/gemini-api/docs/video) | Cloud AI clips |
 | `veo` (Vertex) | [Google Cloud](https://cloud.google.com/) | [Vertex video generation](https://cloud.google.com/vertex-ai/generative-ai/docs/video/generate-videos-from-text) | `GOOGLE_CLOUD_PROJECT` path |
 | `omni` | Same as Veo | [Gemini API](https://ai.google.dev/gemini-api/docs) | Multimodal / Omni models |

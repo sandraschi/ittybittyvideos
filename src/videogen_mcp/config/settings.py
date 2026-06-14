@@ -29,6 +29,8 @@ class Settings(BaseSettings):
     ollama_model: str = "llama3.2:3b"
 
     pexels_api_key: str = ""
+    pixabay_api_key: str = ""
+    coverr_api_key: str = ""
 
     cogvideo_url: str = "http://localhost:8188"
     localgen_url: str = ""

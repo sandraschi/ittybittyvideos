@@ -4,7 +4,7 @@
 **Date**: 2026-06-13
 **Repo**: https://github.com/sandraschi/ittybittyvideos
 **Version**: 0.2.0+
-**Tests**: 181 passing | **Lint**: clean | **Port**: 11054
+**Tests**: 193+ passing | **Lint**: clean | **Port**: 11054
 
 ---
 
@@ -57,12 +57,13 @@ Topic --> Trope Director --> LLM Storyboard --> Videographer Rules
 - `deepseek` -- DeepSeek API
 - `lmstudio` -- LM Studio local server
 
-### Stock Footage (5)
+### Stock Footage (9 registry keys)
 - `pexels` -- Pexels video API (free tier)
-- `localgen` -- Local AI video generation (CogVideoX pipeline)
-- `google-veo` -- Google Veo 3.1 (cloud, via google-ai-mcp bridge)
-- `google-omni` -- Gemini Omni multimodal video (cloud)
-- `library` -- Jellyfin/Plex media server scan (your own library as B-roll)
+- `pixabay` -- Pixabay video API (free tier)
+- `coverr` -- Coverr video API (free tier)
+- `localgen` / `cogvideo` -- Local AI video (Wan 2.2 sidecar)
+- `veo` / `omni` -- Google cloud AI footage
+- `jellyfin` / `plex` -- Home library B-roll
 
 ### TTS (2)
 - `edge-tts` -- Microsoft Edge TTS (free, no API key)
@@ -72,14 +73,14 @@ Topic --> Trope Director --> LLM Storyboard --> Videographer Rules
 
 | Capability | MPT | ittybittyvideos |
 |-----------|-----|-----------------|
-| Tests | 0 | 181 |
+| Tests | 0 | 193+ |
 | Max video length | ~60s | 15 min (chaptered storyboard) |
 | Scene planning | None | LLM storyboard + videographer rules engine |
 | Creative direction | Raw LLM prompt | Trope director + viral pattern library + intro contrast packs |
 | Self-review | None | VLM screening room (AI watches and critiques its own output) |
 | Subtitle precision | Edge TTS timestamps | faster-whisper forced alignment + karaoke ASS |
 | Audio editing | None | Beat-snap cuts + ducking |
-| Stock sources | 3 (Pexels, Pixabay, Coverr) | 5 (Pexels, Veo, CogVideoX, Omni, Jellyfin/Plex library) |
+| Stock sources | 3 free APIs (Pexels, Pixabay, Coverr) | Same 3 **+ Veo, Omni, LocalGen, Jellyfin/Plex** |
 | LLM architecture | 2000-line monolith router | Plugin registry + auto-resolver |
 | Config | TOML file, secrets in plaintext | 12-factor env vars, runtime .env mutation from UI |
 | Persistence | None (in-memory) | SQLite job store, depot, config store |
@@ -143,14 +144,15 @@ git clone → just go
 ## Remaining Work
 
 - Gitee mirror with Mandarin community
-- Fable 5 integration (free until June 22)
-- CI-built Tauri installer (currently manual `just build-native`)
+- CI-built Tauri installer (currently manual `native/build.ps1`)
+- Hybrid free-stock fallback (try Pexels → Pixabay → Coverr per scene)
 - E2E Playwright tests for webapp
 - Production demo videos showcasing mid-length output
+- Upload post-rebrand NSIS to GitHub Release
 
 ## Verdict
 
-Architecturally superior to MoneyPrinterTurbo. Creatively more ambitious (trope director, screening room, intro contrast packs). The plugin system held through 12 providers without any architectural strain. 181 tests from a repo that started as an afternoon project.
+Architecturally superior to MoneyPrinterTurbo. Creatively more ambitious (trope director, screening room, intro contrast packs). The plugin system held through 14+ providers without architectural strain. 193+ tests from a repo that started as an afternoon project.
 
 The question is not whether it's good enough. The question is whether discovery finds it.
 

@@ -63,7 +63,9 @@ def get_stock(name: str | None = None) -> StockProvider:
     import videogen_mcp.providers.stock_google  # noqa: F401
     import videogen_mcp.providers.stock_library  # noqa: F401
     import videogen_mcp.providers.stock_localgen  # noqa: F401
+    import videogen_mcp.providers.stock_coverr  # noqa: F401
     import videogen_mcp.providers.stock_pexels  # noqa: F401
+    import videogen_mcp.providers.stock_pixabay  # noqa: F401
     from videogen_mcp.config import get_settings
 
     if "cogvideo" not in _stock_registry and "localgen" in _stock_registry:
@@ -106,8 +108,10 @@ def list_providers() -> dict[str, list[str]]:
     import videogen_mcp.providers.llm_qwen  # noqa: F401
     import videogen_mcp.providers.stock_google  # noqa: F401
     import videogen_mcp.providers.stock_library  # noqa: F401
+    import videogen_mcp.providers.stock_coverr  # noqa: F401
     import videogen_mcp.providers.stock_localgen  # noqa: F401
     import videogen_mcp.providers.stock_pexels  # noqa: F401
+    import videogen_mcp.providers.stock_pixabay  # noqa: F401
     import videogen_mcp.providers.talker_sadtalker  # noqa: F401
     import videogen_mcp.providers.tts_cosyvoice  # noqa: F401
     import videogen_mcp.providers.tts_edge  # noqa: F401
