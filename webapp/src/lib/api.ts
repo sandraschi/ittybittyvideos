@@ -381,7 +381,8 @@ export async function refreshStockStatus(): Promise<{
     ready_for_renders: boolean;
     pexels_ready: boolean;
     pixabay_ready?: boolean;
-    coverr_ready?: boolean;
+    mixkit_ready?: boolean;
+    nasa_ready?: boolean;
     cogvideo_url: string;
     cogvideo_ready: boolean;
     cogvideo_error: string;

@@ -35,6 +35,16 @@ def test_coverr_registered():
     assert "coverr" in providers["stock"]
 
 
+def test_mixkit_registered():
+    providers = list_providers()
+    assert "mixkit" in providers["stock"]
+
+
+def test_nasa_registered():
+    providers = list_providers()
+    assert "nasa" in providers["stock"]
+
+
 def test_localgen_registered():
     providers = list_providers()
     assert "localgen" in providers["stock"]

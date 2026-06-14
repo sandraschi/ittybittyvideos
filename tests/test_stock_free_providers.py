@@ -1,5 +1,20 @@
 from videogen_mcp.providers.stock_coverr import _pick_mp4_url
+from videogen_mcp.providers.stock_mixkit import _slugify
+from videogen_mcp.providers.stock_nasa import _pick_mp4_href
 from videogen_mcp.providers.stock_pixabay import _pick_video_file
+
+
+def test_mixkit_slugify():
+    assert _slugify("German Shepherd") == "german-shepherd"
+    assert _slugify("") == "nature"
+
+
+def test_nasa_pick_mp4():
+    hrefs = [
+        "https://images-assets.nasa.gov/video/x/x~orig.mov",
+        "https://images-assets.nasa.gov/video/x/x~medium.mp4",
+    ]
+    assert _pick_mp4_href(hrefs).endswith("~medium.mp4")
 
 
 def test_pixabay_pick_portrait_prefers_tall():

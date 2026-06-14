@@ -172,6 +172,8 @@ export default function SettingsPage() {
       if (s.pexels_ready) parts.push("Pexels OK");
       if (s.pixabay_ready) parts.push("Pixabay OK");
       if (s.coverr_ready) parts.push("Coverr OK");
+      if (s.mixkit_ready) parts.push("Mixkit OK");
+      if (s.nasa_ready) parts.push("NASA OK");
       if (s.cogvideo_ready) parts.push(`LocalGen @ ${s.cogvideo_url}`);
       if (s.veo_ready) parts.push("Veo ready");
       if (s.omni_ready) parts.push("Omni ready");
@@ -414,6 +416,8 @@ export default function SettingsPage() {
             <option value="pexels">Pexels (free stock)</option>
             <option value="pixabay">Pixabay (free stock)</option>
             <option value="coverr">Coverr (free stock)</option>
+            <option value="mixkit">Mixkit (free, no key)</option>
+            <option value="nasa">NASA (free, no key)</option>
             <option value="veo">Google Veo 3.x (cloud AI)</option>
             <option value="omni">Gemini Omni Flash (cloud AI)</option>
             <option value="localgen">LocalGen — Wan 2.2 (2026)</option>

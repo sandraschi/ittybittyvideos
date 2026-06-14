@@ -11,7 +11,7 @@ Versioning tracks the Python package in `pyproject.toml`.
 
 ### Added
 
-- **Free stock parity (MPT):** `pixabay` and `coverr` stock providers — same plugin pattern as Pexels; Settings keys `PIXABAY_API_KEY`, `COVERR_API_KEY`.
+- **Free stock beyond MPT:** `mixkit` and `nasa` providers — no API key; MPT parity on Pexels/Pixabay/Coverr plus two extra free sources.
 - Alpha release path: README badge + warning, marketing site banner, [docs/ALPHA-RELEASE-CHECKLIST.md](docs/ALPHA-RELEASE-CHECKLIST.md), GitHub Pages static site in `docs/` (`index.html`, `.nojekyll`).
 - R10 planning: [docs/PROMPT-DIRECTOR.md](docs/PROMPT-DIRECTOR.md) (mermaid), webapp **Prompt library** (`/prompts`) with sample topics + localStorage CRUD.
 - **Webapp Director UX:** collapsed **Director (optional)** panel with 8 curated recipes; full trope/intro pack lists behind “Show all packs”; **Length** presets (~15–50 s) on the default Generate path (`director-recipes.ts`, `DirectorOptions.tsx`, `short-length.ts`).

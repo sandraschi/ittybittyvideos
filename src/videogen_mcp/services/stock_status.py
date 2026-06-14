@@ -7,7 +7,8 @@ from videogen_mcp.services.google_video import google_backend_status
 from videogen_mcp.services.jellyfin_library import jellyfin_configured, probe_jellyfin
 from videogen_mcp.services.plex_library import plex_configured, probe_plex
 
-_FREE_STOCK = frozenset({"pexels", "pixabay", "coverr"})
+_FREE_STOCK = frozenset({"pexels", "pixabay", "coverr", "mixkit", "nasa"})
+_NO_KEY_STOCK = frozenset({"mixkit", "nasa"})
 
 
 async def stock_footage_status() -> dict:
@@ -51,6 +52,7 @@ async def stock_footage_status() -> dict:
         (active == "pexels" and pexels_ready)
         or (active == "pixabay" and pixabay_ready)
         or (active == "coverr" and coverr_ready)
+        or active in _NO_KEY_STOCK
         or (active in ("localgen", "cogvideo") and cogvideo_ready)
         or (active == "veo" and veo_status["ready"])
         or (active == "omni" and omni_status["ready"])
@@ -58,8 +60,12 @@ async def stock_footage_status() -> dict:
         or (active == "plex" and plex_ok)
     )
 
-    hint = "Free stock: set Pexels, Pixabay, or Coverr API key (Settings)."
-    if active == "pexels":
+    hint = "Free stock: Pexels/Pixabay/Coverr (API key) or Mixkit/NASA (no key)."
+    if active == "mixkit":
+        hint = "Mixkit — no API key; free 1080p clips (category search by keyword)."
+    elif active == "nasa":
+        hint = "NASA Images API — no key required; public-domain space/science footage."
+    elif active == "pexels":
         hint = "Pexels API key required — free at pexels.com/api."
     elif active == "pixabay":
         hint = "Pixabay API key required — free at pixabay.com/api/docs."
@@ -95,6 +101,8 @@ async def stock_footage_status() -> dict:
         "pexels_ready": pexels_ready,
         "pixabay_ready": pixabay_ready,
         "coverr_ready": coverr_ready,
+        "mixkit_ready": True,
+        "nasa_ready": True,
         "free_stock_providers": sorted(_FREE_STOCK),
         "cogvideo_url": settings.cogvideo_url,
         "localgen_url": localgen_base,

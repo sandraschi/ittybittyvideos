@@ -31,6 +31,7 @@ class Settings(BaseSettings):
     pexels_api_key: str = ""
     pixabay_api_key: str = ""
     coverr_api_key: str = ""
+    nasa_api_key: str = ""
 
     cogvideo_url: str = "http://localhost:8188"
     localgen_url: str = ""

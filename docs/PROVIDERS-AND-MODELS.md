@@ -10,7 +10,7 @@ Canonical reference for everything pluggable in `videogen_mcp.providers`. Settin
 | Kind | Registry keys | Default (`settings.py`) |
 |------|---------------|-------------------------|
 | LLM | `deepseek`, `openai`, `ollama`, `lmstudio`, `qwen` | `videogen_llm_provider=openai` |
-| Stock | `pexels`, `pixabay`, `coverr`, `veo`, `omni`, `localgen`, `cogvideo`* , `jellyfin`, `plex` | `videogen_stock_provider=pexels` |
+| Stock | `pexels`, `pixabay`, `coverr`, `mixkit`, `nasa`, `veo`, `omni`, `localgen`, `cogvideo`* , `jellyfin`, `plex` | `videogen_stock_provider=pexels` |
 | TTS | `edge-tts`, `cosyvoice` | `videogen_tts_provider=edge-tts` |
 | Talker | `sadtalker` | `videogen_talker_provider=` (empty = off) |
 
@@ -48,6 +48,8 @@ Each scene gets a search query (from LLM or storyboard). Provider downloads or g
 | `pexels` | `stock_pexels.py` | `PEXELS_API_KEY` | [API docs](https://www.pexels.com/api/documentation/) · [Get key](https://www.pexels.com/api/new/) |
 | `pixabay` | `stock_pixabay.py` | `PIXABAY_API_KEY` | [API docs](https://pixabay.com/api/docs/) · [Get key](https://pixabay.com/accounts/register/) |
 | `coverr` | `stock_coverr.py` | `COVERR_API_KEY` | [Developers](https://coverr.co/developers) · [API docs](https://api.coverr.co/docs) |
+| `mixkit` | `stock_mixkit.py` | (none) | [mixkit.co](https://mixkit.co/free-stock-video/) — category HTML fetch |
+| `nasa` | `stock_nasa.py` | `NASA_API_KEY` optional | [images.nasa.gov API](https://images.nasa.gov/docs/images.nasa.gov_api_docs.pdf) |
 | `veo` | `stock_google.py` | `GOOGLE_AI_MCP_URL` or GCP keys, `GOOGLE_VEO_MODEL` | [Gemini API video](https://ai.google.dev/gemini-api/docs/video) |
 | `omni` | `stock_google.py` | Same bridge or direct keys, `GOOGLE_OMNI_MODEL` | [Google AI](https://ai.google.dev/) |
 | `localgen` | `stock_localgen.py` | `LOCALGEN_URL`, `LOCALGEN_BACKEND` | [Wan 2.2](https://github.com/Wan-Video/Wan2.2) · [Diffusers](https://huggingface.co/docs/diffusers) |

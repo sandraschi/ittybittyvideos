@@ -10,6 +10,7 @@
 | Priority | Item | Status |
 |----------|------|--------|
 | P0 | Free stock parity (Pexels + Pixabay + Coverr) | ✅ 2026-06-14 |
+| P0 | Free stock beyond MPT (Mixkit + NASA, no key) | ✅ 2026-06-14 |
 | P0 | Rebuild NSIS installer post-rebrand | ✅ 2026-06-14 → `dist/ittybitty-0.2.0-x64-setup.exe` (33.2 MB) |
 | P0 | GSD puppy demo (poster + optional release MP4) | ⬜ script: `render_gsd_demo.ps1` |
 | P1 | Upload fresh NSIS to GitHub Release `v0.2.0` | ⬜ after local build |

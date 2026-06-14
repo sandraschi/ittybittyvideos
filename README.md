@@ -101,7 +101,8 @@ Pick one in **Settings → Footage** (free tier = no GPU):
 
 - **Pexels** — free stock (default)
 - **Pixabay** — free stock (MPT parity)
-- **Coverr** — free stock (MPT parity; attribution required per Coverr terms)
+- **Mixkit** — free 1080p clips, no API key
+- **NASA** — public-domain space/science footage, no API key
 - **Jellyfin / Plex** — cut clips from your library (vacation, pets, …)
 - **Veo / Omni** — Google cloud ([config](docs/CONFIGURATION.md))
 - **LocalGen** — Wan 2.2 on your GPU
@@ -118,7 +119,7 @@ Finished videos land in `./output/` and appear in **Depot**.
 |--|-------------------|-------------------|
 | **How you run it** | Web UI | **Windows app** + web dashboard + **HTTP MCP** |
 | **Length** | Mostly shorts (~60s) | Shorts + **3–15 min** chapters (planner + videographer rules) |
-| **Footage** | Pexels, Pixabay, Coverr (free APIs) | Same three **+ Jellyfin/Plex + LocalGen + Veo/Omni** |
+| **Footage** | Pexels, Pixabay, Coverr (+ local/social) | Same three **+ Mixkit + NASA (no key) + Jellyfin/Plex + LocalGen + Veo/Omni** |
 | **Agents** | — | **`videogen_*` tools** for Cursor, Claude, fleet MCP clients |
 | **Library & jobs** | — | **SQLite depot**, job history, publish handoff |
 | **Edit intelligence** | Assembly / concat | **Hook, pacing, B-roll, transitions**; R1 karaoke subs; R2 beat snap + ducking; R3 screening (experimental) |

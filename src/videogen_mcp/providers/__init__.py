@@ -64,6 +64,8 @@ def get_stock(name: str | None = None) -> StockProvider:
     import videogen_mcp.providers.stock_library  # noqa: F401
     import videogen_mcp.providers.stock_localgen  # noqa: F401
     import videogen_mcp.providers.stock_coverr  # noqa: F401
+    import videogen_mcp.providers.stock_mixkit  # noqa: F401
+    import videogen_mcp.providers.stock_nasa  # noqa: F401
     import videogen_mcp.providers.stock_pexels  # noqa: F401
     import videogen_mcp.providers.stock_pixabay  # noqa: F401
     from videogen_mcp.config import get_settings
@@ -110,6 +112,8 @@ def list_providers() -> dict[str, list[str]]:
     import videogen_mcp.providers.stock_library  # noqa: F401
     import videogen_mcp.providers.stock_coverr  # noqa: F401
     import videogen_mcp.providers.stock_localgen  # noqa: F401
+    import videogen_mcp.providers.stock_mixkit  # noqa: F401
+    import videogen_mcp.providers.stock_nasa  # noqa: F401
     import videogen_mcp.providers.stock_pexels  # noqa: F401
     import videogen_mcp.providers.stock_pixabay  # noqa: F401
     import videogen_mcp.providers.talker_sadtalker  # noqa: F401
