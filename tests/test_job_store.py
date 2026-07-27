@@ -1,5 +1,6 @@
 """Tests for SQLite job depot persistence."""
 
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 import pytest
@@ -32,8 +33,9 @@ def test_upsert_and_get():
 
 
 def test_list_jobs_order():
-    a = JobInfo(topic="A")
-    b = JobInfo(topic="B")
+    now = datetime.now(timezone.utc)
+    a = JobInfo(topic="A", created_at=now - timedelta(seconds=2), updated_at=now - timedelta(seconds=2))
+    b = JobInfo(topic="B", created_at=now, updated_at=now)
     job_store.upsert_job(a)
     job_store.upsert_job(b)
     jobs = job_store.list_jobs(10)
