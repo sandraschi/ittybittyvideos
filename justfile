@@ -1,6 +1,8 @@
+set windows-shell := ["powershell.exe", "-NoProfile", "-Command"]
+
 import 'scripts/just/fleet.just'
 
-set shell := ["pwsh", "-NoProfile", "-Command"]
+set shell := ["powershell.exe", "-NoProfile", "-Command"]
 
 # One command: dev stack (Vite :11055 + API :11054)
 go:
@@ -59,22 +61,18 @@ check: lint typecheck test
 
 # Build Tauri NSIS installer → dist/ittybitty-{version}-x64-setup.exe
 build-native:
-    pwsh -NoLogo -File "{{justfile_directory()}}\native\build.ps1"
+    powershell.exe -NoProfile -File "{{justfile_directory()}}\native\build.ps1"
 
 # Local GitHub release upload (NSIS + wheel)
 publish-release tag="":
     $tag = if ("{{tag}}") { "{{tag}}" } else { "v$((Select-String -Path pyproject.toml -Pattern '^version = \"(.+)\"').Matches.Groups[1].Value)" }
-    pwsh -NoLogo -File "{{justfile_directory()}}\scripts\publish-release-local.ps1" -Tag $tag
+    powershell.exe -NoProfile -File "{{justfile_directory()}}\scripts\publish-release-local.ps1" -Tag $tag
 
 # Build Tauri native app (debug, skip PyInstaller)
 build-native-debug:
     Set-Location "{{justfile_directory()}}\native"
     $env:Path = "$env:USERPROFILE\.cargo\bin;$env:Path"
     npx @tauri-apps/cli build --debug
-
-# Run CUA-NSIS smoke test against installed NSIS app
-cua-nsis-test:
-    uv run python scripts/cua-smoke.py
 
 # Sync with feature extras (plain 'uv sync' silently drops align/beats - use this instead)
 sync:
