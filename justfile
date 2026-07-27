@@ -1,3 +1,5 @@
+import 'scripts/just/fleet.just'
+
 set shell := ["pwsh", "-NoProfile", "-Command"]
 
 # One command: dev stack (Vite :11055 + API :11054)
@@ -69,6 +71,10 @@ build-native-debug:
     Set-Location "{{justfile_directory()}}\native"
     $env:Path = "$env:USERPROFILE\.cargo\bin;$env:Path"
     npx @tauri-apps/cli build --debug
+
+# Run CUA-NSIS smoke test against installed NSIS app
+cua-nsis-test:
+    uv run python scripts/cua-smoke.py
 
 # Sync with feature extras (plain 'uv sync' silently drops align/beats - use this instead)
 sync:

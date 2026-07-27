@@ -11,6 +11,10 @@ dist/
 build/
 *.spec
 server_err.log
+*.log
+pywinauto-mcp.log
+cua-reports/
+webapp/.vite/
 .ruff_cache/
 .pytest_cache/
 .pyright/

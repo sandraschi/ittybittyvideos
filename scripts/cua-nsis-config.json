@@ -1,0 +1,14 @@
+{
+  "product_name": "ittybitty",
+  "install_dir": "%LOCALAPPDATA%\\ittybitty",
+  "operator_exe": "ittybitty-native.exe",
+  "backend_process_names": ["ittybitty-native", "ittybitty-backend"],
+  "backend_port": 11054,
+  "health_path": "/health",
+  "diagnostics_path": "/api/v1/diagnostics",
+  "feature_smoke_path": "/api/v1/providers",
+  "window_title_re": "ittybitty",
+  "nsis_glob": "native/target/release/bundle/nsis/ittybitty_*_x64-setup.exe",
+  "bridge_ok_text": "ittybitty",
+  "uninstall_registry_filter": "*ittybitty*"
+}

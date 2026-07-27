@@ -2,11 +2,12 @@
   "productName": "ittybitty",
   "version": "0.2.0",
   "identifier": "ai.fleet.ittybitty",
-  "build": {
-    "frontendDist": "../webapp/dist",
-    "devUrl": "http://localhost:11055",
-    "beforeDevCommand": "npm --prefix ../webapp run dev -- --port 11055 --host 127.0.0.1"
-  },
+    "build": {
+        "frontendDist": "../webapp/dist",
+        "devUrl": "http://localhost:11055",
+        "beforeDevCommand": "npm --prefix ../webapp run dev -- --port 11055 --host 127.0.0.1",
+        "beforeBuildCommand": "pwsh -NoProfile -Command \"$env:VITE_API_BASE='http://127.0.0.1:11054'; npm --prefix ../webapp run build\""
+    },
   "app": {
     "windows": [
       {
@@ -27,7 +28,8 @@
     "active": true,
     "targets": ["nsis"],
     "icon": ["icons/icon.ico", "icons/icon.png"],
-    "resources": ["resources/ittybitty-backend.exe"],
+    "resources": ["resources/ittybitty-backend.exe",
+            "resources/.env"],
     "windows": {
       "webviewInstallMode": {
         "type": "skip"
@@ -39,3 +41,4 @@
     }
   }
 }
+

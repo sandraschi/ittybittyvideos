@@ -1,5 +1,6 @@
 const API_ROOT = (import.meta.env.VITE_API_BASE as string | undefined)?.replace(/\/$/, "") ?? "";
 const BASE = `${API_ROOT}/api/v1`;
+export const API_BASE = API_ROOT || "http://127.0.0.1:11054";
 
 export interface StatusResponse {
   status: string;
@@ -460,26 +461,26 @@ function logsQueryString(params: LogQueryParams): string {
 }
 
 export async function queryLogs(params: LogQueryParams = {}): Promise<LogQueryResult> {
-  const res = await fetch(`/api/logs${logsQueryString(params)}`);
+  const res = await fetch(API_BASE + `/api/logs${logsQueryString(params)}`);
   if (!res.ok) throw new Error(`Logs ${res.status}`);
   return res.json();
 }
 
 export async function getLogStats(): Promise<Record<string, unknown>> {
-  const res = await fetch("/api/logs/stats");
+  const res = await fetch(API_BASE + "/api/logs/stats");
   if (!res.ok) throw new Error(`Log stats ${res.status}`);
   return res.json();
 }
 
 export async function clearLogs(): Promise<void> {
-  const res = await fetch("/api/logs", { method: "DELETE" });
+  const res = await fetch(API_BASE + "/api/logs", { method: "DELETE" });
   if (!res.ok) throw new Error(`Clear logs ${res.status}`);
 }
 
 export async function exportLogsJson(params: LogQueryParams = {}): Promise<void> {
   const extra = logsQueryString(params);
   const join = extra ? `${extra}&format=json` : "?format=json";
-  const res = await fetch(`/api/logs/export${join}`);
+  const res = await fetch(API_BASE + `/api/logs/export${join}`);
   if (!res.ok) throw new Error(`Export logs ${res.status}`);
   const blob = await res.blob();
   const url = URL.createObjectURL(blob);

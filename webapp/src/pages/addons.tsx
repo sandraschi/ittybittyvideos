@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { API_BASE } from "@/lib/api";
 
 interface Addon {
   id: string;
@@ -16,7 +17,7 @@ export default function AddonsPage() {
 
   const fetchAddons = async () => {
     try {
-      const res = await fetch("/api/v1/addons");
+      const res = await fetch(API_BASE + "/api/v1/addons");
       const data = await res.json();
       if (data.success) setAddons(data.addons);
     } catch (e) {
@@ -31,7 +32,7 @@ export default function AddonsPage() {
   const installAll = async () => {
     setInstalling("all");
     try {
-      await fetch("/api/v1/addons/install-all", { method: "POST" });
+      await fetch(API_BASE + "/api/v1/addons/install-all", { method: "POST" });
       await fetchAddons();
     } finally {
       setInstalling(null);
@@ -41,7 +42,7 @@ export default function AddonsPage() {
   const installOne = async (id: string) => {
     setInstalling(id);
     try {
-      await fetch(`/api/v1/addons/${id}/install`, { method: "POST" });
+      await fetch(API_BASE + `/api/v1/addons/${id}/install`, { method: "POST" });
       await fetchAddons();
     } finally {
       setInstalling(null);
@@ -51,7 +52,7 @@ export default function AddonsPage() {
   const uninstallOne = async (id: string) => {
     setInstalling(id);
     try {
-      await fetch(`/api/v1/addons/${id}`, { method: "DELETE" });
+      await fetch(API_BASE + `/api/v1/addons/${id}`, { method: "DELETE" });
       await fetchAddons();
     } finally {
       setInstalling(null);
