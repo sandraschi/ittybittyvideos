@@ -143,9 +143,7 @@ async def plan_video(request: PlanRequest) -> Storyboard:
                     search_terms=s_data.get("search_terms", []),
                     shot_type=_safe_enum(ShotType, s_data.get("shot_type", "medium"), ShotType.MEDIUM),
                     duration_target=float(s_data.get("duration_target", 10.0)),
-                    transition_out=_safe_enum(
-                        TransitionType, s_data.get("transition_out", "cut"), TransitionType.CUT
-                    ),
+                    transition_out=_safe_enum(TransitionType, s_data.get("transition_out", "cut"), TransitionType.CUT),
                     notes=s_data.get("notes", ""),
                 )
             )

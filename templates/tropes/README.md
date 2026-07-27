@@ -15,7 +15,7 @@ Curated **viral Short structures** with optional **mid-length expansion** chapte
 | [absurd-credits-roll.yaml](./absurd-credits-roll.yaml) | Pixar absurd credits + post-credits | Comedy class |
 | [contrast-intro-sequence.yaml](./contrast-intro-sequence.yaml) | Wholesome × wrong-audio intro | Comedy class |
 
-**Credits packs:** [../credits/absurd-pixar.yaml](../credits/absurd-pixar.yaml)  
+**Credits packs:** [../credits/absurd-pixar.yaml](../credits/absurd-pixar.yaml)
 **Intro packs:** [../intros/](../intros/) — `bluey-horror-contrast`, `documentary-gravitas`, etc.
 
 **Research:** [docs/EXEMPLARS-RESEARCH.md](../../docs/EXEMPLARS-RESEARCH.md)

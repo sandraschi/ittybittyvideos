@@ -29,7 +29,7 @@ After winget installs, **close and reopen PowerShell** so PATH updates apply.
 
 Download **`ittybitty-0.2.0-x64-setup.exe`** from [Releases](https://github.com/sandraschi/ittybitty/releases) and run it. Single-file NSIS, current-user install, bundles the dashboard + Python backend sidecar.
 
-Build locally: `just build-native` → `dist/ittybitty-{version}-x64-setup.exe`  
+Build locally: `just build-native` → `dist/ittybitty-{version}-x64-setup.exe`
 Upload release: `just publish-release` or `scripts/publish-release-local.ps1 -SkipBuild`
 
 ### From source (dev stack)
@@ -164,4 +164,4 @@ npm run build
 Pop-Location
 ```
 
-GitHub Actions are **disabled on private repos** per fleet policy — see [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md#continuous-integration).
+GitHub Actions CI runs on **`v*`** tags — see [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md#continuous-integration).

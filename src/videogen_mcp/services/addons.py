@@ -62,8 +62,7 @@ ADDON_REGISTRY: list[AddonInfo] = [
         id="beat-pack",
         name="Beat Detection",
         description=(
-            "Audio-reactive editing. Beat-snap cuts sync footage to music drops."
-            " Ducking lowers music under narration."
+            "Audio-reactive editing. Beat-snap cuts sync footage to music drops. Ducking lowers music under narration."
         ),
         size_mb=120,
         features=["beat-snap cuts", "audio ducking", "BPM detection"],
@@ -73,8 +72,7 @@ ADDON_REGISTRY: list[AddonInfo] = [
         id="whisper-pack",
         name="Word-Level Subtitles",
         description=(
-            "Precision subtitle alignment using AI speech recognition."
-            " Enables karaoke-style word highlighting."
+            "Precision subtitle alignment using AI speech recognition. Enables karaoke-style word highlighting."
         ),
         size_mb=500,
         features=["word-level timing", "karaoke ASS captions", "multi-language alignment"],
@@ -84,8 +82,7 @@ ADDON_REGISTRY: list[AddonInfo] = [
         id="vision-pack",
         name="Screening Room",
         description=(
-            "AI watches your video and suggests improvements."
-            " Flags bad clips, pacing issues, and mismatched footage."
+            "AI watches your video and suggests improvements. Flags bad clips, pacing issues, and mismatched footage."
         ),
         size_mb=4000,
         features=["VLM self-critique", "auto clip replacement", "quality scoring"],
@@ -173,8 +170,7 @@ async def install_addon(addon_id: str, progress_callback=None) -> dict:
                     return {
                         "success": True,
                         "message": (
-                            f"{addon.name} registered"
-                            " (addon pack not yet available for download -- coming in v0.3)"
+                            f"{addon.name} registered (addon pack not yet available for download -- coming in v0.3)"
                         ),
                         "placeholder": True,
                     }

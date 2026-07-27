@@ -2,7 +2,7 @@
 
 All notable changes to **ittybitty** (`videogen-mcp`) are documented here.
 
-Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).  
+Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 Versioning tracks the Python package in `pyproject.toml`.
 
 ---
@@ -22,6 +22,8 @@ Versioning tracks the Python package in `pyproject.toml`.
 
 ### Added
 
+- **Pre-commit:** `.pre-commit-config.yaml` (Ruff + hygiene); `just bootstrap` installs git hooks.
+- **CI:** single Windows job on `main`/PRs/`v*` tags — pre-commit, pyright (non-blocking), pytest, webapp `tsc` + build.
 - **MCPB packaging:** `mcpb/` bundle layout, `.mcpbignore`, `scripts/mcpb-pack.ps1`, `just mcpb-pack` (`scripts/just/fleet.just`).
 - **CUA-NSIS smoke:** `scripts/cua-smoke.py`, `scripts/cua-nsis-config.json`, `just cua-nsis-test` (11 phases; local cert 2026-06-14).
 - **Free stock beyond MPT:** `mixkit` and `nasa` providers — no API key; MPT parity on Pexels/Pixabay/Coverr plus two extra free sources.
@@ -89,5 +91,3 @@ Versioning tracks the Python package in `pyproject.toml`.
 - FastMCP 3.2 + FastAPI backend on port **11054**; React/Vite webapp on **11055** (dev).
 - MCP tools: `videogen_generate`, `videogen_plan`, `videogen_plan_render`, `videogen_status`, `videogen_list_jobs`, `videogen_providers`.
 - Publish handoff API and SOTA dashboard (Generate, Jobs, Plan, Publish, Tools, Chat, Status).
-
-

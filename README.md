@@ -44,7 +44,7 @@ Best if you just want to make videos.
 
 The installer bundles the **web dashboard** and **Python backend** — no separate Python or Node install.
 
-Install folder: `%LOCALAPPDATA%\ittybitty\`  
+Install folder: `%LOCALAPPDATA%\ittybitty\`
 If the backend fails to start: `%LOCALAPPDATA%\ai.fleet.ittybitty\logs\backend-spawn.log`
 
 ---

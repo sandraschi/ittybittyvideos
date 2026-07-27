@@ -51,7 +51,7 @@ This uses **Diffusers** pipelines inside the repo — not the external `wan-vide
 
 ## Fleet external: `externals/wan-video`
 
-**Path:** `D:\Dev\repos\externals\wan-video`  
+**Path:** `D:\Dev\repos\externals\wan-video`
 **Upstream:** [Wan-Video/Wan2.2](https://github.com/Wan-Video/Wan2.2) (Apache 2.0)
 
 Sandra’s fleet clone adds MCP/uv packaging (`start.ps1` → `uv run -m wan`). It exposes the **full upstream surface**:
@@ -79,7 +79,7 @@ See that repo’s [README](file:///D:/Dev/repos/externals/wan-video/README.md) f
 
 ## Fleet external: `externals/hunyuan-worldplay`
 
-**Path:** `D:\Dev\repos\externals\hunyuan-worldplay`  
+**Path:** `D:\Dev\repos\externals\hunyuan-worldplay`
 **Upstream:** Tencent **HY-World 1.5 (WorldPlay)** — [project page](https://3d-models.hunyuan.tencent.com/world/) · [Hugging Face](https://huggingface.co/tencent/HY-WorldPlay) · [paper](https://arxiv.org/abs/2512.14614)
 
 Interactive **streaming world** model (keyboard/mouse actions, 24 FPS chunks, long-horizon consistency). Includes:
@@ -113,7 +113,7 @@ Interactive **streaming world** model (keyboard/mouse actions, 24 FPS chunks, lo
 
 ## Related docs
 
-- [CONFIGURATION.md](./CONFIGURATION.md) — `LOCALGEN_*` env vars  
-- [EXTERNAL-REFERENCES.md](./EXTERNAL-REFERENCES.md) — official Wan / Hugging Face links  
-- [TROUBLESHOOTING.md](./TROUBLESHOOTING.md) — LocalGen OOM, health checks  
+- [CONFIGURATION.md](./CONFIGURATION.md) — `LOCALGEN_*` env vars
+- [EXTERNAL-REFERENCES.md](./EXTERNAL-REFERENCES.md) — official Wan / Hugging Face links
+- [TROUBLESHOOTING.md](./TROUBLESHOOTING.md) — LocalGen OOM, health checks
 - Marketing overview: [website/index.html](../website/index.html)

@@ -1,6 +1,6 @@
 # Viral exemplar library — research & expansion playbook
 
-Research for **R10 prompt director**, **GSD demo**, and mid-length **videographer** chapters.  
+Research for **R10 prompt director**, **GSD demo**, and mid-length **videographer** chapters.
 We emulate **structure**, not proprietary footage — use **Jellyfin/home clips** or licensed stock.
 
 **Trope files:** [`templates/tropes/`](../templates/tropes/) · **Prompt library:** webapp `/prompts`
@@ -54,11 +54,11 @@ We emulate **structure**, not proprietary footage — use **Jellyfin/home clips*
 
 **Short beat sheet**
 
-1. Tray of treats — split screen or sequential  
-2. Hand offers morsel → **Dog A** munch → floating **“Yummy”**  
-3. Same morsel → **Dog B** head tilt → **“Whazzat?”**  
-4. Repeat 3–5× — escalate weird food  
-5. Punchline: picky dog loves last item OR sibling swap  
+1. Tray of treats — split screen or sequential
+2. Hand offers morsel → **Dog A** munch → floating **“Yummy”**
+3. Same morsel → **Dog B** head tilt → **“Whazzat?”**
+4. Repeat 3–5× — escalate weird food
+5. Punchline: picky dog loves last item OR sibling swap
 
 **Mid-length expansion (5 chapters, ~4 min)**
 
@@ -118,11 +118,11 @@ flowchart LR
 
 When `videogen_plan` with a trope id:
 
-1. **Each Short beat → one chapter** (planner already outputs chapters).  
-2. **Insert B-roll** every 3 A-roll scenes (videographer rule — already shipped).  
-3. **Widen shots** on chapter open (wide/aerial); **close** on emotional beat.  
-4. **R2 beat snap** on montage chapters; duck VO under BGM on recap.  
-5. **R3 screening** flags mismatched stock vs narration on longform.  
+1. **Each Short beat → one chapter** (planner already outputs chapters).
+2. **Insert B-roll** every 3 A-roll scenes (videographer rule — already shipped).
+3. **Widen shots** on chapter open (wide/aerial); **close** on emotional beat.
+4. **R2 beat snap** on montage chapters; duck VO under BGM on recap.
+5. **R3 screening** flags mismatched stock vs narration on longform.
 6. **Duration rebalancing** — target 4–6 min unless user asks 15 min documentary.
 
 **Example mapping** (`pet-food-duo-review`):
@@ -152,10 +152,10 @@ Pixar’s **~2,000-name scroll** is the joke — baby names, fake departments, h
 
 Also: departments (*Canine Morale*, *Bork Foley*), joke pool (*Three Raccoons in a Trenchcoat*), numbered filler (*Treat Wrangler #47*), and **post-credits stingers**.
 
-**Short:** main bit → tease credits → scroll segment → stinger after “THE END”.  
+**Short:** main bit → tease credits → scroll segment → stinger after “THE END”.
 **Mid:** fake ending → credits I (featured) → credits II (filler army) → post-credits scene.
 
-**API:** `GET /api/v1/credits/sample?pack=absurd-pixar` · MCP `videogen_credits_sample`.  
+**API:** `GET /api/v1/credits/sample?pack=absurd-pixar` · MCP `videogen_credits_sample`.
 **Future:** FFmpeg scroll card (R7 visual template) — today = LLM narration + scene notes.
 
 ---
@@ -176,8 +176,8 @@ Opens can be **serious** or **hilarious** — especially **visual × audio contr
 | `intro:epic-trailer` | epic | BRAAAM, quick cuts, "In a world…" |
 | `intro:deadpan-corporate` | hilarious | HR muzak VO, visuals go feral |
 
-**Trope:** `trope:contrast-intro-sequence` — intro beats → hook → main.  
-**Stack:** any trope + separate `intro` param (intro wins over trope default).  
+**Trope:** `trope:contrast-intro-sequence` — intro beats → hook → main.
+**Stack:** any trope + separate `intro` param (intro wins over trope default).
 **API:** `GET /api/v1/intros/sample?pack=bluey-horror-contrast` · MCP `videogen_intro_sample`.
 
 **Not yet:** auto BGM/SFX layer from pack tags — today = LLM notes + `bgm_url` manual.
@@ -186,29 +186,29 @@ Opens can be **serious** or **hilarious** — especially **visual × audio contr
 
 ## Legal & ethics
 
-- Do **not** re-upload Jade, Shiba Diva, or Clark source videos.  
-- **Structure + original footage** only.  
-- AI-generated dog clips: disclose if publishing; avoid impersonating real creator pets.  
+- Do **not** re-upload Jade, Shiba Diva, or Clark source videos.
+- **Structure + original footage** only.
+- AI-generated dog clips: disclose if publishing; avoid impersonating real creator pets.
 - “Yummy / Whazzat” = generic meme captions, not brand assets.
 
 ---
 
 ## ittybitty checklist
 
-- [x] Trope YAML seeds in `templates/tropes/`  
-- [x] Prompt library structure presets (`trope:*`)  
-- [x] Wire `structure` → `prompt_director.py` (R10 backend)  
-- [ ] GSD demo render from Jellyfin + `pet-food-duo-review`  
-- [ ] Mid-length test: same trope at 300s with chapter previews  
+- [x] Trope YAML seeds in `templates/tropes/`
+- [x] Prompt library structure presets (`trope:*`)
+- [x] Wire `structure` → `prompt_director.py` (R10 backend)
+- [ ] GSD demo render from Jellyfin + `pet-food-duo-review`
+- [ ] Mid-length test: same trope at 300s with chapter previews
 
 ---
 
 ## References
 
-- [Jade — 3 German Shepherds Review Foods](https://www.youtube.com/watch?v=sozQOCq5J7g)  
-- [Shiba Diva — two dogs snacks](https://www.youtube.com/watch?v=mlQvkFVGEJY)  
-- [Ultimate Dog Tease](https://www.youtube.com/watch?v=nGeKSiCQkPw)  
-- [Laughing Squid — Jade coverage](https://laughingsquid.com/three-german-shepherds-review-foods/)  
-- [Viral Shorts dataset patterns](https://theviralsauce.com/playbooks/viral-youtube-shorts-dataset-analysis)  
-- [Retention curve playbook](https://aibrify.com/blog/youtube-shorts-retention-curve-playbook)  
+- [Jade — 3 German Shepherds Review Foods](https://www.youtube.com/watch?v=sozQOCq5J7g)
+- [Shiba Diva — two dogs snacks](https://www.youtube.com/watch?v=mlQvkFVGEJY)
+- [Ultimate Dog Tease](https://www.youtube.com/watch?v=nGeKSiCQkPw)
+- [Laughing Squid — Jade coverage](https://laughingsquid.com/three-german-shepherds-review-foods/)
+- [Viral Shorts dataset patterns](https://theviralsauce.com/playbooks/viral-youtube-shorts-dataset-analysis)
+- [Retention curve playbook](https://aibrify.com/blog/youtube-shorts-retention-curve-playbook)
 - [PROMPT-DIRECTOR.md](./PROMPT-DIRECTOR.md) · [SPEC.md § R10](../SPEC.md)

@@ -165,8 +165,7 @@ async def critique_video(
 
     report = CritiqueReport(pass_number=pass_number, model=settings.videogen_vlm_model, scenes=critiques)
     logger.info(
-        f"critic: pass {pass_number}: {len(report.flagged)}/{len(scenes)} flagged "
-        f"({len(report.footage_flags)} footage)"
+        f"critic: pass {pass_number}: {len(report.flagged)}/{len(scenes)} flagged ({len(report.footage_flags)} footage)"
     )
     return report
 

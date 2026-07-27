@@ -90,9 +90,7 @@ class PlanRequest(BaseModel):
     language: str = "en"
     chapters: Annotated[int, Field(description="Number of chapters/sections.", ge=1, le=12)] = 4
     style_notes: str = ""
-    structure: Annotated[
-        str, Field(description="R10 narrative preset, e.g. trope:pet-food-duo-review.")
-    ] = ""
+    structure: Annotated[str, Field(description="R10 narrative preset, e.g. trope:pet-food-duo-review.")] = ""
     intro: Annotated[str, Field(description="Intro pack preset, e.g. intro:bluey-horror-contrast.")] = ""
     visual_style: str = ""
     visual_material: str = ""

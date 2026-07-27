@@ -1,9 +1,8 @@
 """One-shot short video render (custom script = no LLM key required)."""
+
 from __future__ import annotations
 
 import asyncio
-import sys
-import time
 
 from videogen_mcp.models.schema import GenerateRequest, JobStatus, VideoAspect
 from videogen_mcp.services.pipeline import generate_video, get_job

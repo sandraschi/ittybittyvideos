@@ -1,10 +1,10 @@
 # videogen-mcp ("ittybitty") — AI Video Generation MCP Server
 
-**Version**: 0.2.0  
-**Port**: 11054 (backend) / 11055 (Vite dev)  
+**Version**: 0.2.0
+**Port**: 11054 (backend) / 11055 (Vite dev)
 **Status**: MVP+ — pipelines, depot, webapp, NSIS desktop, Jellyfin/Plex stock
 
-**Agent docs:** [ASSESSMENT-BY-CURSOR.md](./ASSESSMENT-BY-CURSOR.md) · [TODO.md](./TODO.md) · [docs/GITIGNORE-ASSESSMENT.md](./docs/GITIGNORE-ASSESSMENT.md)  
+**Agent docs:** [ASSESSMENT-BY-CURSOR.md](./ASSESSMENT-BY-CURSOR.md) · [TODO.md](./TODO.md) · [docs/GITIGNORE-ASSESSMENT.md](./docs/GITIGNORE-ASSESSMENT.md)
 **Fleet docs:** [MCD project page](../mcp-central-docs/projects/ittybitty/README.md) · [Competition analysis](../mcp-central-docs/projects/ittybitty/COMPETITIVE_ANALYSIS.md)
 
 ## Problem
@@ -260,9 +260,9 @@ Topic + video_type + optional trope_id / genre
 ### Phase 4 — Community + fleet (v0.5, ~2 days)
 
 **R7. Templates as data**
-`templates/*.json` style presets: fonts, color grade (FFmpeg LUT/eq), 
+`templates/*.json` style presets: fonts, color grade (FFmpeg LUT/eq),
 transition pack, music genre tags, pacing profile. Ship 4-5 presets
-(e.g. "documentary", "tutorial-clean", "hype-short", "lo-fi"). 
+(e.g. "documentary", "tutorial-clean", "hype-short", "lo-fi").
 `videogen_templates` tool returns from Planned (list/apply).
 Contribution surface: "add a template" = perfect first PR.
 - Acceptance: same topic rendered with two templates produces visibly

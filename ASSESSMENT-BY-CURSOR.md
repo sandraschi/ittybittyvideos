@@ -1,23 +1,23 @@
 # ittybitty / videogen-mcp — Assessment by Cursor
 
-**Date:** 2026-06-12 (rev 4)  
-**Assessed by:** Cursor (Composer)  
-**Audience:** Continuing agents (Fable, DeepSeek, Sandra)  
-**Repo path:** `D:\Dev\repos\videogen-mcp`  
-**GitHub remote:** `https://github.com/sandraschi/ittybittyvideos.git` (private)  
-**Product:** **ittybitty**  
-**Version:** **0.2.0** (`pyproject.toml`)  
-**HEAD (local):** `191abbe` — `feat(R3): Screening Room` (+ 2 unpushed commits below)  
-**Working tree:** Fable WIP — uncommitted `align.py`, `audio.py`, `planner.py`, `scripts/validate_fable.py`  
+**Date:** 2026-06-12 (rev 4)
+**Assessed by:** Cursor (Composer)
+**Audience:** Continuing agents (Fable, DeepSeek, Sandra)
+**Repo path:** `D:\Dev\repos\videogen-mcp`
+**GitHub remote:** `https://github.com/sandraschi/ittybittyvideos.git` (**public**)
+**Product:** **ittybitty**
+**Version:** **0.2.0** (`pyproject.toml`)
+**HEAD (local):** `191abbe` — `feat(R3): Screening Room` (+ 2 unpushed commits below)
+**Working tree:** Fable WIP — uncommitted `align.py`, `audio.py`, `planner.py`, `scripts/validate_fable.py`
 **Supersedes:** rev 3 (stale: 113 tests, R2 unwired)
 
 ---
 
 ## Read this first
 
-1. **Naming is settled** — product **ittybitty**; Python stays `videogen_mcp`; env `VIDEOGEN_*`; native `ittybitty-native.exe` / `ittybitty-backend.exe`; Tauri id `ai.fleet.ittybitty`. Do not reopen.  
-2. **User docs vs agent docs** — [README.md](./README.md) is short/end-user facing. This file, [TODO.md](./TODO.md), [docs/GITIGNORE-ASSESSMENT.md](./docs/GITIGNORE-ASSESSMENT.md), [SPEC.md](./SPEC.md) are for agents.  
-3. **Before `src/` batch edits** — `git log -1` exists; run `uv run pytest -q` after Python changes.  
+1. **Naming is settled** — product **ittybitty**; Python stays `videogen_mcp`; env `VIDEOGEN_*`; native `ittybitty-native.exe` / `ittybitty-backend.exe`; Tauri id `ai.fleet.ittybitty`. Do not reopen.
+2. **User docs vs agent docs** — [README.md](./README.md) is short/end-user facing. This file, [TODO.md](./TODO.md), [docs/GITIGNORE-ASSESSMENT.md](./docs/GITIGNORE-ASSESSMENT.md), [SPEC.md](./SPEC.md) are for agents.
+3. **Before `src/` batch edits** — `git log -1` exists; run `uv run pytest -q` after Python changes.
 4. **Append to agent log** (§ Agent log) when closing P0/P1 items.
 
 ---
@@ -149,10 +149,10 @@ tests/                      145 passed · webapp/e2e Playwright smoke (Cursor re
 
 ## P2 — Hygiene
 
-- Sync [mcp-central-docs/projects/ittybitty](../mcp-central-docs/projects/ittybitty/) version row to **0.2.0** when cutting release notes  
-- `webapp/dist/` stays gitignored; Tauri/`just build-native` builds it  
-- `native/resources/*.exe` gitignored via `native/.gitignore` — build sidecar before Tauri  
-- No GitHub Actions on private repo (fleet policy) — workflow file is template only  
+- Sync [mcp-central-docs/projects/ittybitty](../mcp-central-docs/projects/ittybitty/) version row to **0.2.0** when cutting release notes
+- `webapp/dist/` stays gitignored; Tauri/`just build-native` builds it
+- `native/resources/*.exe` gitignored via `native/.gitignore` — build sidecar before Tauri
+- GitHub Actions CI on **`v*`** tags (public repo; Windows single job)
 
 ---
 

@@ -103,7 +103,9 @@ async def phase2_screening() -> bool:
     for c in critiques:
         data = json.loads(c.read_text(encoding="utf-8"))
         flags = [s for s in data["scenes"] if s["verdict"] == "flag"]
-        print(f"phase2: {c.name}: model={data['model']}, {len(data['scenes'])} scenes, {len(flags)} flagged", flush=True)
+        print(
+            f"phase2: {c.name}: model={data['model']}, {len(data['scenes'])} scenes, {len(flags)} flagged", flush=True
+        )
         for s in flags:
             print(f"  - scene {s['scene_index']}: {s['issues']} hint={s['fix_hint']!r}", flush=True)
     return True

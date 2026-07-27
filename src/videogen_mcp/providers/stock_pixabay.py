@@ -82,11 +82,7 @@ def _pick_video_file(videos: dict, aspect: str) -> dict | None:
     want_portrait = aspect == "9:16"
     want_landscape = aspect == "16:9"
     if want_portrait or want_landscape:
-        oriented = [
-            v
-            for v in candidates
-            if (v.get("height", 0) > v.get("width", 0)) == want_portrait
-        ]
+        oriented = [v for v in candidates if (v.get("height", 0) > v.get("width", 0)) == want_portrait]
         if oriented:
             candidates = oriented
     hd = [v for v in candidates if (v.get("height") or 0) >= 720]

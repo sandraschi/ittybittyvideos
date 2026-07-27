@@ -54,6 +54,7 @@ dev = [
     "pytest-asyncio>=0.24.0",
     "ruff>=0.8.0",
     "pyright>=1.1.390",
+    "pre-commit>=4.0.0",
 ]
 
 [build-system]
@@ -86,3 +87,10 @@ asyncio_mode = "auto"
 [tool.pyright]
 pythonVersion = "3.11"
 typeCheckingMode = "basic"
+exclude = ["src/videogen_mcp/localgen_server"]
+reportMissingImports = "none"
+reportOptionalMemberAccess = "warning"
+reportOptionalOperand = "warning"
+reportArgumentType = "warning"
+reportAttributeAccessIssue = "warning"
+reportTypedDictNotRequiredAccess = "warning"

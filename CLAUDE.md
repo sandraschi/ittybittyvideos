@@ -14,7 +14,7 @@ uv sync --extra dev
 
 Dashboard: http://127.0.0.1:11055 · API/MCP: http://127.0.0.1:11054
 
-**User docs:** [README.md](README.md) · [INSTALL.md](INSTALL.md)  
+**User docs:** [README.md](README.md) · [INSTALL.md](INSTALL.md)
 **Agent docs:** [TODO.md](TODO.md) · [SPEC.md](SPEC.md) · [docs/GITIGNORE-ASSESSMENT.md](docs/GITIGNORE-ASSESSMENT.md)
 
 **Tests:** `uv run pytest -q`

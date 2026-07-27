@@ -1,6 +1,6 @@
 # ittybitty — TODO (agent tracker)
 
-**Product:** ittybitty · **Repo folder:** `videogen-mcp` · **Version:** 0.2.0  
+**Product:** ittybitty · **Repo folder:** `videogen-mcp` · **Version:** 0.2.0
 **Assessment:** [ASSESSMENT.md](./ASSESSMENT.md) · **Roadmap:** [SPEC.md](./SPEC.md)
 
 ---
@@ -35,6 +35,8 @@
 - ✅ Windows NSIS + Tauri (CORS `tauri://localhost`)
 - ✅ Release notes + `ittybitty-0.2.0-x64-setup.exe` on GitHub
 - ✅ **197 tests**
+- ✅ Pre-commit hooks + `just bootstrap`
+- ✅ GitHub Actions CI (Windows: pre-commit, pyright*, pytest, webapp tsc/build)
 - ✅ MCPB layout + `just mcpb-pack`
 - ✅ CUA-NSIS smoke harness + `just cua-nsis-test`
 

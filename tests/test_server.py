@@ -7,6 +7,8 @@ from videogen_mcp.server import rest
 @pytest.fixture
 def client():
     return TestClient(rest)
+
+
 def test_health(client):
     resp = client.get("/health")
     assert resp.status_code == 200

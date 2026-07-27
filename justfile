@@ -12,9 +12,11 @@ go:
 backend:
     & "{{justfile_directory()}}\start.ps1" -BackendOnly
 
-# Bootstrap only (no launch)
+# Bootstrap deps + git pre-commit hooks
 bootstrap:
     uv sync --extra dev
+    uv run pre-commit install
+    Write-Host "Pre-commit hooks installed." -ForegroundColor Green
 
 # Run backend only (same as backend recipe)
 dev:

@@ -1,7 +1,7 @@
 # .gitignore assessment — ittybitty (`videogen-mcp`)
 
-**Date:** 2026-06-12  
-**Audience:** Agents and maintainers  
+**Date:** 2026-06-12
+**Audience:** Agents and maintainers
 **Fleet standard:** [mcp-central-docs/standards/GITIGNORE_STANDARDS.md](../../mcp-central-docs/standards/GITIGNORE_STANDARDS.md)
 
 ---
@@ -91,9 +91,9 @@ Follow [GITIGNORE_STANDARDS.md](../../mcp-central-docs/standards/GITIGNORE_STAND
 
 ## Suggested follow-up (optional)
 
-1. Add to root `.gitignore`: `docs/examples/*.mp4` (keep `!docs/examples/README.md`)  
-2. Document demo asset location in [examples/README.md](./examples/README.md)  
-3. Never commit `%LOCALAPPDATA%\ittybitty\` or user `.env` from installed app  
+1. Add to root `.gitignore`: `docs/examples/*.mp4` (keep `!docs/examples/README.md`)
+2. Document demo asset location in [examples/README.md](./examples/README.md)
+3. Never commit `%LOCALAPPDATA%\ittybitty\` or user `.env` from installed app
 
 ---
 

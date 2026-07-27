@@ -35,10 +35,7 @@ def _overlay_filter(corner: str, scale: float) -> str:
     margin = f"main_h*{_MARGIN_FRAC:.2f}"
     x = x_t.format(m=margin).replace("W", "main_w").replace("H", "main_h")
     y = y_t.format(m=margin).replace("W", "main_w").replace("H", "main_h")
-    return (
-        f"[1:v][0:v]scale2ref=w=oh*mdar:h=ih*{scale}[head][base];"
-        f"[base][head]overlay=x={x}:y={y}:shortest=0[out]"
-    )
+    return f"[1:v][0:v]scale2ref=w=oh*mdar:h=ih*{scale}[head][base];[base][head]overlay=x={x}:y={y}:shortest=0[out]"
 
 
 def overlay_talking_head(

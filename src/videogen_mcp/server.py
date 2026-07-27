@@ -56,13 +56,13 @@ rest = FastAPI(
 _tauri_desktop = os.environ.get("VIDEOGEN_TAURI", "").lower() in ("1", "true", "yes")
 rest.add_middleware(
     CORSMiddleware,
-        allow_origins=[
-            "http://127.0.0.1:11054",
-            "http://localhost:11054",
-            "http://goliath:11054",
-            "http://127.0.0.1:11055",
-            "http://localhost:11055",
-            "http://goliath:11055",
+    allow_origins=[
+        "http://127.0.0.1:11054",
+        "http://localhost:11054",
+        "http://goliath:11054",
+        "http://127.0.0.1:11055",
+        "http://localhost:11055",
+        "http://goliath:11055",
         "http://tauri.localhost",
         "https://tauri.localhost",
         "tauri://localhost",
@@ -107,16 +107,10 @@ if FastMCP:
         llm_provider: Annotated[
             str, Field(description="Topic LLM: deepseek | openai | lmstudio | ollama (ignored with custom script).")
         ] = "",
-        structure: Annotated[
-            str, Field(description="R10 trope preset, e.g. trope:pet-food-duo-review.")
-        ] = "",
+        structure: Annotated[str, Field(description="R10 trope preset, e.g. trope:pet-food-duo-review.")] = "",
         style_notes: Annotated[str, Field(description="Extra style guidance for scripting.")] = "",
-        intro: Annotated[
-            str, Field(description="Intro pack, e.g. intro:bluey-horror-contrast.")
-        ] = "",
-        visual_style: Annotated[
-            str, Field(description="AI footage style preset (see videogen_visual_look).")
-        ] = "",
+        intro: Annotated[str, Field(description="Intro pack, e.g. intro:bluey-horror-contrast.")] = "",
+        visual_style: Annotated[str, Field(description="AI footage style preset (see videogen_visual_look).")] = "",
         visual_material: Annotated[str, Field(description="AI footage material preset.")] = "",
         visual_tone: Annotated[str, Field(description="AI footage tone preset.")] = "",
     ) -> dict:
@@ -302,9 +296,7 @@ if FastMCP:
 
     @mcp.tool()
     async def videogen_credits_sample(
-        pack: Annotated[
-            str, Field(description="Credits pack id or credits:absurd-pixar.")
-        ] = "absurd-pixar",
+        pack: Annotated[str, Field(description="Credits pack id or credits:absurd-pixar.")] = "absurd-pixar",
         lines: Annotated[int, Field(description="Sample lines to return.", ge=5, le=80)] = 24,
         post_credits: Annotated[bool, Field(description="Include post-credits stinger hint.")] = True,
         seed: Annotated[int | None, Field(description="Optional RNG seed.")] = None,
@@ -591,20 +583,30 @@ async def health():
 
 @rest.get("/api/v1/diagnostics")
 async def cua_diagnostics():
-    import os, time
+    import os
+    import time
+
     uptime = int(time.time() - _start_time) if "_start_time" in dir() else 0
     cpu = mem = disk = None
     tesseract = window = False
     with __import__("contextlib").suppress(Exception):
         import psutil
+
         cpu = psutil.cpu_percent(interval=0.3)
         mem = psutil.virtual_memory().percent
         disk = psutil.disk_usage(os.environ.get("SystemDrive", "C:") + "\\").percent
     with __import__("contextlib").suppress(Exception):
         import subprocess
-        tesseract = subprocess.run([r"C:\Program Files\Tesseract-OCR\tesseract.exe", "--version"], capture_output=True, timeout=5).returncode == 0
+
+        tesseract = (
+            subprocess.run(
+                [r"C:\Program Files\Tesseract-OCR\tesseract.exe", "--version"], capture_output=True, timeout=5
+            ).returncode
+            == 0
+        )
     with __import__("contextlib").suppress(Exception):
         import pywinauto
+
         a = pywinauto.Application(backend="uia").connect(title_re="ittybitty")
         a.window(title_re="ittybitty").wait("visible", timeout=2)
         window = True

@@ -1,13 +1,14 @@
-# Minimal Windows CI — single job (fleet hygiene: speech-mcp pattern).
-# Note: ittybitty is currently private; GitHub Actions are disabled on private
-# fleet repos by default (see mcp-central-docs/standards/GITHUB_ACTIONS_NO_PRIVATE_CI.md).
-# This workflow runs when the repo is public or Actions are explicitly re-enabled.
+# Single Windows CI job — mirrors `just check` + webapp tsc/build.
+# Public repo: sandraschi/ittybittyvideos
 
 name: CI
 
 on:
   push:
+    branches: [main]
     tags: ["v*"]
+  pull_request:
+    branches: [main]
   workflow_dispatch:
 
 jobs:
@@ -31,8 +32,12 @@ jobs:
       - name: Install Python dependencies
         run: uv sync --extra dev
 
-      - name: Ruff check
-        run: uv run ruff check src tests
+      - name: Pre-commit (all files)
+        run: uv run pre-commit run --all-files
+
+      - name: Pyright (non-blocking until types are green)
+        continue-on-error: true
+        run: uv run pyright src/
 
       - name: Pytest
         run: uv run pytest -q
@@ -44,8 +49,9 @@ jobs:
           cache: npm
           cache-dependency-path: webapp/package-lock.json
 
-      - name: Webapp build
+      - name: Webapp typecheck and build
         run: |
           npm ci
+          npx tsc --noEmit
           npm run build
         working-directory: webapp

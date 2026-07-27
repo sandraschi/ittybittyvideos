@@ -86,7 +86,7 @@ Topic --> Trope Director --> LLM Storyboard --> Videographer Rules
 | Persistence | None (in-memory) | SQLite job store, depot, config store |
 | Desktop app | None | Tauri 2.0 NSIS installer (31 MB) |
 | Webapp | Streamlit | React + Vite (10+ pages) |
-| CI/CD | None | GitHub Actions (ruff + pytest) |
+| CI/CD | GitHub Actions (Windows, tag `v*`) | ruff + pytest + webapp build |
 | Fonts | Bundled proprietary Microsoft fonts | System fonts |
 | Chinese stack | Routes through OpenAI | Native Qwen/CosyVoice/CogVideoX (local GPU, no API keys) |
 | Distribution | GitHub only | GitHub + Gitee-ready (Mandarin README) |

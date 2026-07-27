@@ -214,10 +214,18 @@ def _generate_silence(output_path: Path, duration: float) -> Path:
     output_path.parent.mkdir(parents=True, exist_ok=True)
     result = subprocess.run(
         [
-            "ffmpeg", "-y",
-            "-f", "lavfi", "-i", "anullsrc=r=44100:cl=stereo",
-            "-t", str(duration),
-            "-c:a", "libmp3lame", "-q:a", "9",
+            "ffmpeg",
+            "-y",
+            "-f",
+            "lavfi",
+            "-i",
+            "anullsrc=r=44100:cl=stereo",
+            "-t",
+            str(duration),
+            "-c:a",
+            "libmp3lame",
+            "-q:a",
+            "9",
             str(output_path),
         ],
         capture_output=True,

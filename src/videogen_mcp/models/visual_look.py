@@ -36,8 +36,7 @@ LOOK_CATALOG: dict[str, list[dict[str, str]]] = {
 }
 
 _PROMPT_BY_GROUP: dict[str, dict[str, str]] = {
-    group: {item["id"]: item.get("prompt", "") for item in items if item["id"]}
-    for group, items in LOOK_CATALOG.items()
+    group: {item["id"]: item.get("prompt", "") for item in items if item["id"]} for group, items in LOOK_CATALOG.items()
 }
 
 

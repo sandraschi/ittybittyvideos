@@ -49,9 +49,9 @@ py -m videogen_mcp.server
 Or `.\start.bat` (Vite **11055** + API **11054** — fleet dev stack).
 
 - Dev UI: http://127.0.0.1:11055/
-- API docs: http://127.0.0.1:11054/docs  
-- MCP: http://127.0.0.1:11054/mcp  
-- Health: http://127.0.0.1:11054/health  
+- API docs: http://127.0.0.1:11054/docs
+- MCP: http://127.0.0.1:11054/mcp
+- Health: http://127.0.0.1:11054/health
 
 ---
 
@@ -104,23 +104,40 @@ No GPU required for default test suite (LocalGen tests may mock HTTP).
 
 ## Continuous integration
 
-Workflow: [`.github/workflows/ci.yml`](../.github/workflows/ci.yml) — **one job** on `windows-latest`:
+Workflow: [`.github/workflows/ci.yml`](../.github/workflows/ci.yml) — **one job** on `windows-latest` (mirrors `just check` + webapp `tsc`):
 
 1. `uv sync --extra dev`
-2. `uv run ruff check src tests`
-3. `uv run pytest -q`
-4. `npm ci` + `npm run build` in `webapp/`
+2. `pre-commit run --all-files` (Ruff + basic hygiene)
+3. `uv run pyright src/`
+4. `uv run pytest -q`
+5. `npm ci` + `npx tsc --noEmit` + `npm run build` in `webapp/`
 
-**Private repo note:** `sandraschi/ittybitty` is private. Per [mcp-central-docs/standards/GITHUB_ACTIONS_NO_PRIVATE_CI.md](../../mcp-central-docs/standards/GITHUB_ACTIONS_NO_PRIVATE_CI.md), GitHub Actions are **disabled** on private fleet repos to avoid billing. The workflow file is kept in git so CI runs automatically if the repo is made **public** or Actions are explicitly re-enabled.
+**Triggers:** push to `main`, **`v*`** tags, pull requests, manual dispatch.
 
-Local equivalent (run before push):
+**Public repo:** [`sandraschi/ittybittyvideos`](https://github.com/sandraschi/ittybittyvideos).
+
+### Pre-commit (local)
+
+After clone:
 
 ```powershell
-uv sync --extra dev
-uv run ruff check src tests
-uv run pytest -q
+just bootstrap
+# or: uv sync --extra dev; uv run pre-commit install
+```
+
+Hooks run automatically on `git commit`. Manual full scan:
+
+```powershell
+uv run pre-commit run --all-files
+```
+
+Local equivalent before push:
+
+```powershell
+just check
 Push-Location webapp
 npm ci
+npx tsc --noEmit
 npm run build
 Pop-Location
 ```

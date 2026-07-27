@@ -50,7 +50,8 @@
 
 - Minimal diffs; match FastMCP 3.2 + FastAPI patterns.
 - User-facing strings and native binaries: **ittybitty**; Python package stays `videogen_mcp`.
-- No GitHub Actions on private repos (fleet policy).
+- GitHub Actions CI on `main` / PRs / **`v*`** tags (public repo; see `.github/workflows/ci.yml`).
+- Pre-commit: `just bootstrap` after clone.
 - PowerShell on Windows — no `&&` in scripts shown to the user.
 
 ## Docs map
