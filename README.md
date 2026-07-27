@@ -3,9 +3,9 @@
 **Topic or script in → narrated video out.** Shorts for TikTok and Reels, or longer chaptered explainers — with stock footage, your Jellyfin/Plex home videos, or local AI clips.
 
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
-[![Status](https://img.shields.io/badge/status-alpha-orange.svg)](docs/ALPHA-RELEASE-CHECKLIST.md) · [中文 README](README-zh.md)
+[![Status](https://img.shields.io/badge/status-beta-yellow.svg)](CHANGELOG.md) · [中文 README](README-zh.md)
 
-> **Alpha — under construction.** APIs, pipelines (R3 screening, R9 talker), and the Windows installer may change between releases. Not production-ready. See [alpha release checklist](docs/ALPHA-RELEASE-CHECKLIST.md) before going public or tagging.
+> **Beta.** Core flows (generate, stock, MCP, Windows installer) are usable; R3 screening, R9 talker, and APIs may still change between releases. Report issues on [GitHub](https://github.com/sandraschi/ittybittyvideos/issues).
 
 **Three ways to use it** (pick one):
 
@@ -38,7 +38,7 @@ Same engine under all three: Python backend on port **11054**, React dashboard o
 
 Best if you just want to make videos.
 
-1. Download the latest **pre-release** installer from [Releases](https://github.com/sandraschi/ittybittyvideos/releases) (tag `v0.2.0-alpha.*` or newer)
+1. Download the latest installer from [Releases](https://github.com/sandraschi/ittybittyvideos/releases) (tag `v0.2.x` or newer)
 2. Run the installer → launch **ittybitty** from Start or your desktop shortcut
 3. In **Settings**, add a free stock API key ([Pexels](https://www.pexels.com/api/), [Pixabay](https://pixabay.com/api/docs/), or [Coverr](https://coverr.co/developers)) → **Generate** with a topic or paste a script
 
@@ -113,9 +113,9 @@ Finished videos land in `./output/` and appear in **Depot**.
 
 ## How this differs from MoneyPrinterTurbo
 
-[MoneyPrinterTurbo](https://github.com/Harry-Yu-001/MoneyPrinterTurbo) popularized *topic → short video*. ittybitty targets the same job with **fleet tooling**: agents, longer formats, your own libraries, and a path to local GPU — still **alpha**, so expect rough edges.
+[MoneyPrinterTurbo](https://github.com/Harry-Yu-001/MoneyPrinterTurbo) popularized *topic → short video*. ittybitty targets the same job with **fleet tooling**: agents, longer formats, your own libraries, and a path to local GPU — **beta** quality: solid for daily use, still evolving.
 
-| | MoneyPrinterTurbo | ittybitty (alpha) |
+| | MoneyPrinterTurbo | ittybitty (beta) |
 |--|-------------------|-------------------|
 | **How you run it** | Web UI | **Windows app** + web dashboard + **HTTP MCP** |
 | **Length** | Mostly shorts (~60s) | Shorts + **3–15 min** chapters (planner + videographer rules) |
@@ -125,7 +125,7 @@ Finished videos land in `./output/` and appear in **Depot**.
 | **Edit intelligence** | Assembly / concat | **Hook, pacing, B-roll, transitions**; R1 karaoke subs; R2 beat snap + ducking; R3 screening (experimental) |
 | **Architecture** | Monolith | **Plugin registry** — swap LLM, stock, and TTS providers |
 | **Desktop** | — | **NSIS installer** (Windows, backend bundled) |
-| **Status** | Mature OSS | **Alpha** — [checklist](docs/ALPHA-RELEASE-CHECKLIST.md) |
+| **Status** | Mature OSS | **Beta** — [CHANGELOG](CHANGELOG.md) |
 
 中文说明与中国本地栈（通义千问、CosyVoice 等）：[README-zh.md](README-zh.md)
 
@@ -155,11 +155,10 @@ py scripts/smoke_render.py
 | [INSTALL.md](INSTALL.md) | All install paths, MCPB, verification |
 | [docs/CONFIGURATION.md](docs/CONFIGURATION.md) | Env vars and providers |
 | [docs/TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md) | Something broke |
-| [docs/ALPHA-RELEASE-CHECKLIST.md](docs/ALPHA-RELEASE-CHECKLIST.md) | Going public / alpha tag |
 | [docs/PROMPT-DIRECTOR.md](docs/PROMPT-DIRECTOR.md) | R10 trope templates (mermaid) |
 | [docs/EXEMPLARS-RESEARCH.md](docs/EXEMPLARS-RESEARCH.md) | Viral Short formats + mid expansion |
 | [docs/TOOLS.md](docs/TOOLS.md) | MCP tools and REST API |
-| [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md) | Tests, Tauri build, CI |
+| [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md) | Tests, Tauri build, CI, pre-commit |
 | [SPEC.md](SPEC.md) | Architecture and roadmap |
 | [CHANGELOG.md](CHANGELOG.md) | Version history |
 
