@@ -22,7 +22,7 @@ try {
 
     $distIndex = Join-Path $Root "webapp\dist\index.html"
     if (-not (Test-Path $distIndex)) {
-        throw "webapp/dist missing — run webapp build first (build.ps1 step 1)"
+        throw "webapp/dist missing - run webapp build first (build.ps1 step 1)"
     }
 
     Remove-Item -Recurse -Force "$Root\build\ittybitty-backend" -ErrorAction SilentlyContinue

@@ -32,7 +32,7 @@ build-web:
     Set-Location "{{justfile_directory()}}\webapp"
     if (Get-Command bun -ErrorAction SilentlyContinue) { bun install; bun run build } else { npm install; npm run build }
 
-# Full stack dev (backend + Vite) — same as start.bat / just go
+# --- Full stack dev  backend  Vite same as start bat  just go ---
 stack:
     & "{{justfile_directory()}}\start.ps1"
 
@@ -61,7 +61,7 @@ test:
 # Full check (lint + typecheck + test)
 check: lint typecheck test
 
-# Build Tauri NSIS installer → dist/ittybitty-{version}-x64-setup.exe
+# --- Build Tauri NSIS installer  dist ittybitty- version x64-setup exe ---
 build-native:
     powershell.exe -NoProfile -File "{{justfile_directory()}}\native\build.ps1"
 
@@ -79,3 +79,5 @@ build-native-debug:
 # Sync with feature extras (plain 'uv sync' silently drops align/beats - use this instead)
 sync:
     uv sync --extra align --extra beats --extra dev
+
+# Bootstrap: install dev deps + pre-commit hook

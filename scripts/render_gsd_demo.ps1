@@ -11,7 +11,7 @@ param(
 )
 
 $body = @{
-    topic = "Two German Shepherd dogs taste-test the same treats — one loves everything (Yummy), one is picky (Whazzat). Funny pet food review short."
+    topic = "Two German Shepherd dogs taste-test the same treats - one loves everything (Yummy), one is picky (Whazzat). Funny pet food review short."
     aspect = "9:16"
     paragraph_count = 4
     clip_duration = 5
