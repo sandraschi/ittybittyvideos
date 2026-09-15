@@ -11,6 +11,7 @@ modules can import them transparently.
 
 from __future__ import annotations
 
+import asyncio
 import os
 import shutil
 import sys
@@ -199,7 +200,7 @@ async def install_addon(addon_id: str, progress_callback=None) -> dict:
         return {"success": True, "message": f"{addon.name} installed successfully", "path": str(dest)}
 
     except Exception as e:
-        shutil.rmtree(dest, ignore_errors=True)
+        await asyncio.to_thread(shutil.rmtree, dest, ignore_errors=True)
         logger.error(f"Addon install failed: {e}")
         return {"success": False, "error": str(e)}
 
@@ -221,7 +222,7 @@ async def uninstall_addon(addon_id: str) -> dict:
         return {"success": False, "error": f"{addon_id} is not installed"}
 
     dest = _addon_install_path(addon_id)
-    shutil.rmtree(dest, ignore_errors=True)
+    await asyncio.to_thread(shutil.rmtree, dest, ignore_errors=True)
     logger.info(f"Addon {addon_id} uninstalled")
     return {"success": True, "message": f"{addon_id} removed"}
 

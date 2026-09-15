@@ -254,7 +254,9 @@ async def _merge_audio(audio_paths: list[Path], output: Path) -> Path:
             f.write(f"file '{abs_path}'\n")
 
     output.parent.mkdir(parents=True, exist_ok=True)
-    result = subprocess.run(
+    # ffmpeg concat (up to 120s) — never on the event loop.
+    result = await asyncio.to_thread(
+        subprocess.run,
         ["ffmpeg", "-y", "-f", "concat", "-safe", "0", "-i", str(list_file), "-c", "copy", str(output)],
         capture_output=True,
         text=True,

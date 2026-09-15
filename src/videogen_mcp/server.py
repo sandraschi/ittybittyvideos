@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import asyncio
 import os
 import time
 from contextlib import asynccontextmanager
@@ -526,7 +527,7 @@ if FastMCP:
         """Build publish helpers for a completed job (hashtags, platform URLs).
 
         ## Return Format
-        {"success": bool, "platforms": [...], ...} — same shape as REST publish-pack.
+        {"success": bool, "platforms": [...], ...} - same shape as REST publish-pack.
 
         ## Examples
         videogen_publish_pack(job_id="abc123def456")
@@ -559,9 +560,9 @@ async def root():
 <h1>ittybitty</h1>
 <p>API and MCP are running on this port (<strong>11054</strong>).</p>
 <ul>
-<li><strong>Dev dashboard</strong> — <a href="http://127.0.0.1:11055/">http://127.0.0.1:11055/</a>
+<li><strong>Dev dashboard</strong> - <a href="http://127.0.0.1:11055/">http://127.0.0.1:11055/</a>
 (run <code>start.bat</code> or <code>just stack</code>)</li>
-<li><strong>Single-port UI here</strong> — <code>just build-web</code> then restart the backend</li>
+<li><strong>Single-port UI here</strong> - <code>just build-web</code> then restart the backend</li>
 <li><a href="/docs">OpenAPI /docs</a> · <a href="/health">/health</a> · <a href="/mcp">/mcp</a></li>
 </ul>
 </body></html>"""
@@ -592,18 +593,26 @@ async def cua_diagnostics():
     with __import__("contextlib").suppress(Exception):
         import psutil
 
-        cpu = psutil.cpu_percent(interval=0.3)
-        mem = psutil.virtual_memory().percent
-        disk = psutil.disk_usage(os.environ.get("SystemDrive", "C:") + "\\").percent
+        # 0.3s blocking sample + exe spawn — off the loop.
+        def _sample() -> tuple:
+            return (
+                psutil.cpu_percent(interval=0.3),
+                psutil.virtual_memory().percent,
+                psutil.disk_usage(os.environ.get("SystemDrive", "C:") + "\\").percent,
+            )
+
+        cpu, mem, disk = await asyncio.to_thread(_sample)
     with __import__("contextlib").suppress(Exception):
         import subprocess
 
         tesseract = (
-            subprocess.run(
-                [r"C:\Program Files\Tesseract-OCR\tesseract.exe", "--version"], capture_output=True, timeout=5
-            ).returncode
-            == 0
-        )
+            await asyncio.to_thread(
+                subprocess.run,
+                [r"C:\Program Files\Tesseract-OCR\tesseract.exe", "--version"],
+                capture_output=True,
+                timeout=5,
+            )
+        ).returncode == 0
     with __import__("contextlib").suppress(Exception):
         import pywinauto
 
