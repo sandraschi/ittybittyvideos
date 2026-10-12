@@ -135,7 +135,7 @@ async def critique_video(
 ) -> CritiqueReport | None:
     """Run one screening pass. Returns None when the VLM is unreachable."""
     settings = get_settings()
-    if not vlm_available():
+    if not await asyncio.to_thread(vlm_available):
         logger.warning(f"critic: VLM at {settings.videogen_vlm_url} unreachable; skipping screening pass")
         return None
 

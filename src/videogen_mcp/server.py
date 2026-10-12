@@ -471,7 +471,8 @@ if FastMCP:
         # No persisted storyboard for arbitrary jobs: sample evenly with generic scene stubs.
         import subprocess as sp
 
-        probe = sp.run(
+        probe = await asyncio.to_thread(
+            sp.run,
             ["ffprobe", "-v", "quiet", "-show_entries", "format=duration", "-of", "csv=p=0", str(path)],
             capture_output=True,
             text=True,
@@ -723,7 +724,7 @@ async def api_depot_delete(job_id: str, delete_file: bool = True):
 async def api_depot_poster(job_id: str):
     from videogen_mcp.services.depot import ensure_poster
 
-    poster = ensure_poster(job_id)
+    poster = await asyncio.to_thread(ensure_poster, job_id)
     if not poster:
         return {"success": False, "message": "Poster unavailable"}
     return FileResponse(poster, media_type="image/jpeg")

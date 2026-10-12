@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import asyncio
 import subprocess
 from pathlib import Path
 
@@ -36,7 +37,7 @@ class EdgeTTSProvider(TTSProvider):
                         )
                     )
 
-        duration = subs[-1].end if subs else _probe_audio_duration(output_path)
+        duration = subs[-1].end if subs else await asyncio.to_thread(_probe_audio_duration, output_path)
         sentence_subs = _merge_word_to_sentence(subs, text)
 
         logger.debug(f"TTS: {len(text)} chars -> {duration:.1f}s audio, {len(sentence_subs)} subtitle entries")
