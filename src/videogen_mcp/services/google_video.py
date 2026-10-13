@@ -1,4 +1,4 @@
-"""Google cloud video generation — Veo and Gemini Omni.
+"""Google cloud video generation - Veo and Gemini Omni.
 
 Primary path: HTTP bridge to fleet ``google-ai-mcp`` (``GOOGLE_AI_MCP_URL``, port 11014).
 Fallback: direct ``google-genai`` when ``pip install -e \".[google]\"`` and credentials set.
@@ -97,9 +97,9 @@ async def google_backend_status(backend: GoogleBackend) -> dict[str, Any]:
         ready = True
         hint = f"Via google-ai-mcp at {settings.google_ai_mcp_url.rstrip('/')}"
         if backend == "veo":
-            hint += " — Veo 3.x clips (~5–8 s)."
+            hint += " - Veo 3.x clips (~5-8 s)."
         else:
-            hint += " — Gemini Omni Flash (~10 s, multimodal)."
+            hint += " - Gemini Omni Flash (~10 s, multimodal)."
     elif creds and backend == "omni":
         ready = _omni_direct_available()
         hint = (
@@ -211,7 +211,7 @@ async def _generate_via_bridge(
 
     if data.get("mock_mode"):
         raise RuntimeError(
-            "google-ai-mcp returned mock output — set GOOGLE_API_KEY or GOOGLE_CLOUD_PROJECT in google-ai-mcp settings."
+            "google-ai-mcp returned mock output - set GOOGLE_API_KEY or GOOGLE_CLOUD_PROJECT in google-ai-mcp settings."
         )
 
     return _copy_result_to_dest(data, backend, dest)
@@ -234,7 +234,7 @@ def _copy_result_to_dest(data: dict[str, Any], backend: GoogleBackend, dest: Pat
             dest.write_bytes(src.read_bytes())
             return dest
 
-    raise RuntimeError("Google video path missing or unreadable — is google-ai-mcp on the same machine?")
+    raise RuntimeError("Google video path missing or unreadable - is google-ai-mcp on the same machine?")
 
 
 async def _generate_veo_direct(prompt: str, aspect_ratio: str, duration: int, dest: Path) -> Path:
@@ -282,7 +282,7 @@ async def _generate_veo_direct(prompt: str, aspect_ratio: str, duration: int, de
             dest.write_bytes(base64.b64decode(video_data))
             return dest
 
-    raise RuntimeError("Veo returned no video data — check project access and model availability.")
+    raise RuntimeError("Veo returned no video data - check project access and model availability.")
 
 
 async def _generate_omni_direct(prompt: str, aspect_ratio: str, duration: int, dest: Path) -> Path:
@@ -332,4 +332,4 @@ async def _generate_omni_direct(prompt: str, aspect_ratio: str, duration: int, d
         if tmp_dir.exists() and not any(tmp_dir.iterdir()):
             tmp_dir.rmdir()
 
-    raise RuntimeError("Gemini Omni returned no video — API may not be GA in your region yet.")
+    raise RuntimeError("Gemini Omni returned no video - API may not be GA in your region yet.")

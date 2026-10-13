@@ -79,7 +79,7 @@ def ffmpeg_extract_clip(source: str, dest: Path, start_sec: float, duration_sec:
     """Cut a segment with ffmpeg (-ss before -i for HTTP streams)."""
     ffmpeg = shutil.which("ffmpeg")
     if not ffmpeg:
-        raise RuntimeError("FFmpeg not found on PATH — required for library clip extraction")
+        raise RuntimeError("FFmpeg not found on PATH - required for library clip extraction")
 
     dest.parent.mkdir(parents=True, exist_ok=True)
     cmd = [

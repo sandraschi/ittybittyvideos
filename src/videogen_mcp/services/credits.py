@@ -1,4 +1,4 @@
-"""Absurd end-credits corpus — Pixar-style contributor rolls for LLM + future FFmpeg scroll."""
+"""Absurd end-credits corpus - Pixar-style contributor rolls for LLM + future FFmpeg scroll."""
 
 from __future__ import annotations
 
@@ -118,7 +118,7 @@ def format_roll_text(
         for dept in departments:
             lines.append(f"--- {dept} ---")
     for entry in roll[: max_lines or len(roll)]:
-        lines.append(f"{entry.name} — {entry.role}")
+        lines.append(f"{entry.name} - {entry.role}")
     return "\n".join(lines)
 
 
@@ -129,7 +129,7 @@ def sample_credits_block(
     seed: int | None = None,
     post_credits: bool = False,
 ) -> str:
-    """Text block for LLM prompts — sample of the full absurd roll."""
+    """Text block for LLM prompts - sample of the full absurd roll."""
     pack = load_credits_pack(pack_id)
     if not pack:
         return ""
@@ -144,7 +144,7 @@ def sample_credits_block(
         f"Absurd credits roll ({pack.label}): aim for {pack.min_contributors}+ joke contributors total.\n"
         "Featured names MUST appear:\n"
     )
-    featured_lines = "\n".join(f"  • {e.name} — {e.role}" for e in pack.featured[:10])
+    featured_lines = "\n".join(f"  • {e.name} - {e.role}" for e in pack.featured[:10])
     body = format_roll_text(roll, max_lines=line_count, include_departments=True, departments=dept_sample)
 
     block = f"{header}{featured_lines}\n\nSample scroll lines (generate more in this voice):\n{body}"

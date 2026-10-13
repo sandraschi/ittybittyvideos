@@ -62,15 +62,15 @@ async def stock_footage_status() -> dict:
 
     hint = "Free stock: Pexels/Pixabay/Coverr (API key) or Mixkit/NASA (no key)."
     if active == "mixkit":
-        hint = "Mixkit — no API key; free 1080p clips (category search by keyword)."
+        hint = "Mixkit - no API key; free 1080p clips (category search by keyword)."
     elif active == "nasa":
-        hint = "NASA Images API — no key required; public-domain space/science footage."
+        hint = "NASA Images API - no key required; public-domain space/science footage."
     elif active == "pexels":
-        hint = "Pexels API key required — free at pexels.com/api."
+        hint = "Pexels API key required - free at pexels.com/api."
     elif active == "pixabay":
-        hint = "Pixabay API key required — free at pixabay.com/api/docs."
+        hint = "Pixabay API key required - free at pixabay.com/api/docs."
     elif active == "coverr":
-        hint = "Coverr API key required — request at coverr.co/developers."
+        hint = "Coverr API key required - request at coverr.co/developers."
     elif active in ("localgen", "cogvideo"):
         hint = (
             "LocalGen sidecar required (Wan 2.2 default). Start start-localgen.bat on RTX 4090. "
@@ -89,11 +89,11 @@ async def stock_footage_status() -> dict:
         hint = jellyfin_msg if jellyfin_configured() else "Set JELLYFIN_SERVER_URL + JELLYFIN_API_KEY."
         if jellyfin_ok:
             dur = settings.videogen_clip_duration
-            hint = f"{jellyfin_msg} — searches libraries and ffmpeg-cuts ~{dur}s clips."
+            hint = f"{jellyfin_msg} - searches libraries and ffmpeg-cuts ~{dur}s clips."
     elif active == "plex":
         hint = plex_msg if plex_configured() else "Set PLEX_URL + PLEX_TOKEN."
         if plex_ok:
-            hint = f"{plex_msg} — vacation/dog/home videos from your Plex libraries."
+            hint = f"{plex_msg} - vacation/dog/home videos from your Plex libraries."
 
     return {
         "active_provider": active,

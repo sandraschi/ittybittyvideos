@@ -1,4 +1,4 @@
-"""R10 prompt director — load trope YAML and enrich LLM script/planner prompts."""
+"""R10 prompt director - load trope YAML and enrich LLM script/planner prompts."""
 
 from __future__ import annotations
 
@@ -158,7 +158,7 @@ def enrich_for_short_script(
     if trope and trope.credits:
         system += (
             " If credits/post-credits beats exist: dedicate final segment(s) to the absurd roll "
-            "and post-credits stinger — do not rush the featured historical advisors."
+            "and post-credits stinger - do not rush the featured historical advisors."
         )
     if trope and trope.intro and not intro.strip():
         system += " Honor intro scene_type beats before hook when present."

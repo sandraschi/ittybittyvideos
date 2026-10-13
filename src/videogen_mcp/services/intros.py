@@ -1,4 +1,4 @@
-"""Intro sequence packs — serious opens and hilarious visual/audio contrast."""
+"""Intro sequence packs - serious opens and hilarious visual/audio contrast."""
 
 from __future__ import annotations
 
@@ -76,7 +76,7 @@ def intro_prompt_block(pack_id: str, *, seed: int | None = None) -> str:
 
     rng = random.Random(seed)
     lines = [
-        f"Intro sequence: {pack.label} ({pack.id}) — tone: {pack.tone}",
+        f"Intro sequence: {pack.label} ({pack.id}) - tone: {pack.tone}",
         pack.description.strip(),
         f"Target intro duration: ~{pack.duration_hint}s before main hook.",
     ]
@@ -116,7 +116,7 @@ def intro_prompt_block(pack_id: str, *, seed: int | None = None) -> str:
 
     lines.append(
         "Put intro in first segment(s) or dedicated intro scene. "
-        "Describe audio/SFX in segment narration notes — pipeline BGM is separate; "
+        "Describe audio/SFX in segment narration notes - pipeline BGM is separate; "
         "flag contrast for human or future sfx layer."
     )
     return "\n".join(lines)

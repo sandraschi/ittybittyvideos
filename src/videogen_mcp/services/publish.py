@@ -1,4 +1,4 @@
-"""Social publish helpers — minimum-fuss handoff to TikTok, Shorts, Reels, etc."""
+"""Social publish helpers - minimum-fuss handoff to TikTok, Shorts, Reels, etc."""
 
 from __future__ import annotations
 
@@ -109,7 +109,7 @@ def build_publish_pack(job: JobInfo) -> dict[str, Any]:
         ],
         "future_api": {
             "youtube": "Set YOUTUBE_CLIENT_SECRETS + OAuth for resumable Shorts upload (v0.2).",
-            "tiktok": "TikTok Content Posting API — app review required.",
+            "tiktok": "TikTok Content Posting API - app review required.",
             "postiz": "Self-hosted Postiz/Buffer for schedule-once-publish-many.",
         },
     }
