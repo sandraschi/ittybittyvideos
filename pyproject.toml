@@ -95,3 +95,10 @@ reportOptionalOperand = "warning"
 reportArgumentType = "warning"
 reportAttributeAccessIssue = "warning"
 reportTypedDictNotRequiredAccess = "warning"
+
+[dependency-groups]
+dev = [
+    "pillow>=12.2.0",
+    "pytesseract>=0.3.13",
+    "pywinauto>=0.6.9",
+]
