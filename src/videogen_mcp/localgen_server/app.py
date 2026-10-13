@@ -62,11 +62,11 @@ def _health_hint(info: gen_pipeline.RuntimeInfo) -> str:
     if not info.deps_installed:
         return 'Install 2026 stack: py -m pip install -e ".[localgen]"'
     if info.tier == "legacy":
-        return "Legacy CogVideoX backend — set LOCALGEN_BACKEND=wan22-14b for 2026 tier"
+        return "Legacy CogVideoX backend - set LOCALGEN_BACKEND=wan22-14b for 2026 tier"
     if not info.cuda_available:
-        return "No CUDA — Wan 2.2 on CPU is impractical"
+        return "No CUDA - Wan 2.2 on CPU is impractical"
     if not gen_pipeline.is_model_loaded():
-        return f"Ready; first clip loads {info.label} (~10–40GB download once)"
+        return f"Ready; first clip loads {info.label} (~10-40GB download once)"
     return f"{info.label} loaded ({info.memory_mode or 'ready'})"
 
 

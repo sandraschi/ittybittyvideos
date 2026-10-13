@@ -1,4 +1,4 @@
-"""Plugin provider registry. Each provider is a module — no monolith router."""
+"""Plugin provider registry. Each provider is a module - no monolith router."""
 
 from __future__ import annotations
 

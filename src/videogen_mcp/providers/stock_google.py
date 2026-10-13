@@ -1,4 +1,4 @@
-"""Google cloud generated footage — Veo 3.x and Gemini Omni Flash."""
+"""Google cloud generated footage - Veo 3.x and Gemini Omni Flash."""
 
 from __future__ import annotations
 

@@ -1,4 +1,4 @@
-"""Canonical MCP tool catalog — drives /api/v1/tools, /api/v1/status, and videogen_help."""
+"""Canonical MCP tool catalog - drives /api/v1/tools, /api/v1/status, and videogen_help."""
 
 from __future__ import annotations
 
@@ -19,7 +19,7 @@ MCP_TOOL_CATALOG: list[McpToolMeta] = [
     },
     {
         "name": "videogen_generate",
-        "description": "Short video (~15–50 s) from topic or custom script.",
+        "description": "Short video (~15-50 s) from topic or custom script.",
         "kind": "pipeline",
     },
     {
@@ -29,7 +29,7 @@ MCP_TOOL_CATALOG: list[McpToolMeta] = [
     },
     {
         "name": "videogen_list_jobs",
-        "description": "List recent generation jobs (limit 1–50).",
+        "description": "List recent generation jobs (limit 1-50).",
         "kind": "pipeline",
     },
     {
@@ -39,7 +39,7 @@ MCP_TOOL_CATALOG: list[McpToolMeta] = [
     },
     {
         "name": "videogen_plan_render",
-        "description": "Plan and render mid-length video (3–15 min).",
+        "description": "Plan and render mid-length video (3-15 min).",
         "kind": "pipeline",
     },
     {

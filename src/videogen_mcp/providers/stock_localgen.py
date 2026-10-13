@@ -1,4 +1,4 @@
-"""Local AI video generation — Wan 2.2 sidecar (2026 tier).
+"""Local AI video generation - Wan 2.2 sidecar (2026 tier).
 
 Calls the ittybitty LocalGen HTTP server (default :8188). Legacy env COGVIDEO_URL
 still works. Set VIDEOGEN_STOCK_PROVIDER=localgen (or cogvideo alias).

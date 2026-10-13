@@ -1,1 +1,1 @@
-"""Deprecated alias — use localgen_server."""
+"""Deprecated alias - use localgen_server."""

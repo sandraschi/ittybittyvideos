@@ -77,7 +77,7 @@ def load_pipeline(model_id: str | None = None) -> tuple[Any, dict[str, str]]:
     vae = AutoencoderKLWan.from_pretrained(model_id, subfolder="vae", torch_dtype=torch.float32)
     pipe = WanPipeline.from_pretrained(model_id, vae=vae, torch_dtype=torch.bfloat16)
     mode = _configure_memory(pipe, model_id=model_id)
-    logger.info(f"Wan ready — {mode}")
+    logger.info(f"Wan ready - {mode}")
     return pipe, {**meta, "model_id": model_id, "backend": key, "memory_mode": mode}
 
 
