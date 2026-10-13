@@ -23,7 +23,7 @@ if (-not (Test-PortListening 11054)) {
 
 if (-not (Test-PortListening 11055)) {
     Write-Host "Starting Vite dev UI on :11055..."
-    Start-Process -FilePath "npm" -ArgumentList "run", "dev" -WorkingDirectory (Join-Path $Root "webapp") -WindowStyle Minimized
+    Start-Process -FilePath "cmd.exe" -ArgumentList "/c","npm run dev" -WorkingDirectory (Join-Path $Root "webapp") -WindowStyle Minimized
     $deadline = (Get-Date).AddSeconds(60)
     while ((Get-Date) -lt $deadline) {
         if (Test-PortListening 11055) { break }
